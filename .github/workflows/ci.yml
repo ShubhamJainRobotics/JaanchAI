@@ -10,13 +10,19 @@ jobs:
   test-and-verify:
     runs-on: ubuntu-latest
 
+    env:
+      NODE_ENV: test
+      SUPABASE_URL: https://dummy-project.supabase.co
+      SUPABASE_ANON_KEY: dummy-anon-key-placeholder-for-dev
+      REPORT_HASH_PEPPER: dummy-test-report-hash-pepper-must-be-24-chars
+
     steps:
     - uses: actions/checkout@v4
 
-    - name: Use Node.js 20.x
+    - name: Use Node.js 22.x
       uses: actions/setup-node@v4
       with:
-        node-version: 20.x
+        node-version: 22.x
         cache: 'npm'
 
     - name: Install dependencies
