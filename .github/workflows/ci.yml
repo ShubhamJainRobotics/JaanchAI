@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-verify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Security Check - No Secrets in Client
+      run: npm run check:no-secrets
+
+    - name: Security Check - No Banned Verdict Copy
+      run: npm run check:banned-phrases
+
+    - name: Typecheck
+      run: npm run typecheck
+
+    - name: Run Regression Corpus Evaluation
+      run: npm run eval
+
+    - name: Run Tests
+      run: npm run test

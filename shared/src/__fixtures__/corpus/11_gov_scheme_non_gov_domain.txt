@@ -1,0 +1,8 @@
+# expected: HIGH_RISK
+# why: National scholarship portal government claim operating on non-government domain (GOV-001 hard disqualifier).
+
+Dear Scholar,
+Your National Scholarship Portal (NSP) scholarship application has been pre-approved for ₹20,000.
+To claim your disbursement, visit our portal at https://nsp-scholarship-claim.example.org and enter your bank credentials.
+National Scholarship Portal Helpdesk
+contact@nsp-example.invalid

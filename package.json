@@ -1,0 +1,25 @@
+{
+  "name": "jaanch-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"server,client\" -c \"blue,green\" \"npm run dev -w server\" \"npm run dev -w client\"",
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run dev -w client",
+    "build": "npm run build -w shared && npm run build -w server && npm run build -w client",
+    "test": "npm run test -w shared && npm run test -w server && npm run test -w client",
+    "typecheck": "npm run typecheck -w shared && npm run typecheck -w server && npm run typecheck -w client",
+    "eval": "npm run eval -w shared",
+    "lint": "npm run check:no-secrets && npm run check:banned-phrases && npm run typecheck",
+    "check:no-secrets": "node scripts/check-no-secrets.cjs",
+    "check:banned-phrases": "vitest run shared/src/config/__tests__/bannedPhrases.test.ts"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

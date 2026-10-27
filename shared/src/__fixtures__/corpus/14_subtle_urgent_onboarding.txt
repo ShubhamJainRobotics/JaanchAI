@@ -1,0 +1,12 @@
+# expected: NEEDS_REVIEW
+# why: Short onboarding window within 24 hours (URG-004) and missing evaluation details (MIS-003).
+
+Dear Student,
+You are selected for our Web Development Internship at CloudPeak Systems.
+Stipend: ₹20,000 per month
+Work Mode: Remote
+Duration: 2 months
+You must confirm your joining and submit documents within 24 hours to secure your allocation.
+HR Department,
+CloudPeak Systems
+support@cloudpeak-example.invalid

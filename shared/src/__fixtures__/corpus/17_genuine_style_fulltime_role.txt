@@ -1,0 +1,20 @@
+# expected: NEEDS_REVIEW
+# why: Full details provided but unverified sender and no listing check (insufficient evidence).
+
+Dear Candidate,
+Vertex Analytics Pvt. Ltd. invites applications for the position of Junior Data Scientist.
+
+Job Profile:
+* Company: Vertex Analytics Pvt. Ltd.
+* Role: Junior Data Scientist
+* Location: Pune, Onsite
+* Remuneration: Salary of ₹6,50,000 per annum
+* Eligibility criteria: Degree required in Statistics, Mathematics, or Computer Science
+* Selection process: Round 1 written test, Round 2 technical interview, Round 3 HR interview
+* Application deadline: Apply before 30 May 2026
+* Official website: https://vertexanalytics.example.com
+
+Applications must be submitted via our official careers page above.
+Talent Acquisition Team,
+Vertex Analytics Pvt. Ltd.
+recruitment@vertex-example.invalid

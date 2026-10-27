@@ -1,0 +1,9 @@
+# expected: HIGH_RISK
+# why: Brand impersonation using Gmail with brand in localpart (SND-004 hard disqualifier).
+
+Dear Student,
+Congratulations from Infosys BPM.
+Your profile is approved for Operations Analyst role with compensation of ₹3.6 LPA.
+Submit your details to infosys.careers.hiring@gmail.com within 24 hours.
+Infosys Recruitment Cell
+infosys.careers.hiring@gmail.com

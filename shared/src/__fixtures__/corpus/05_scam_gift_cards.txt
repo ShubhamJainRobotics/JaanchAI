@@ -1,0 +1,10 @@
+# expected: HIGH_RISK
+# why: Payment requested via gift cards and UPI transfer (PAY-002 hard disqualifier).
+
+Dear Applicant,
+Congratulations on clearing the preliminary round for Project Associate at Stellar Corp.
+To complete verification of your background documents, purchase Amazon gift cards worth ₹2,000 or pay via UPI to testrecruiter@okhdfcbank.
+Send the 16-digit gift card claim code to our WhatsApp immediately.
+HR Department,
+Stellar Corp
+hr@stellar-example.invalid

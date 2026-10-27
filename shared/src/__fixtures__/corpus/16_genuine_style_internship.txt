@@ -1,0 +1,22 @@
+# expected: NEEDS_REVIEW
+# why: Realistic genuine-style message with complete details, but no external verification inputs provided (insufficient evidence).
+
+Dear Student,
+Academix Research Foundation invites applications for the Summer Research Internship in Applied Machine Learning.
+
+Program Details:
+* Organization: Academix Research Foundation
+* Role: Summer Research Intern
+* Duration: 10 weeks (1 June 2026 to 10 August 2026)
+* Location: Bengaluru / Hybrid
+* Stipend: ₹30,000 per month
+* Eligibility criteria: B.Tech / M.Tech in Computer Science with minimum 8.0 CGPA
+* Selection process: Online coding assessment followed by a technical interview round
+* Application deadline: Apply before 15 April 2026
+* Official portal: https://academix-research.example.org/careers
+
+All selected interns will receive an official project guide and certificate of completion. No fee is required at any stage of application.
+Regards,
+Academic Outreach Cell
+Academix Research Foundation
+outreach@academix-example.invalid

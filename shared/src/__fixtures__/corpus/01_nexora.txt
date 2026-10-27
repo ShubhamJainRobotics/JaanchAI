@@ -1,0 +1,35 @@
+# expected: NEEDS_REVIEW
+# why: Subtle signals (URG-004, MIS-007, MIS-003, DAT-006) + unregistered org + insufficient positive evidence.
+
+Dear Candidate,
+Congratulations!
+We are pleased to inform you that your application has been shortlisted for the position of Technical Operations Intern at Nexora Digital Solutions.
+Following an initial review of your profile, our recruitment team believes that your technical interests and willingness to learn would make you a suitable candidate for our internship program.
+Internship Details
+
+* Position: Technical Operations Intern
+* Duration: 3 months
+* Work Mode: Hybrid
+* Proposed Start Date: 9 November 2026
+* Monthly Stipend: ₹15,000
+* Working Hours: 10:00 AM – 5:00 PM, Monday to Friday
+* Certificate: Internship completion certificate and performance evaluation
+
+Role and Responsibilities
+During the internship, you will assist with basic technical documentation, internal project coordination, software testing, and operational reporting. Training sessions will be provided during the first week.
+Next Steps
+To proceed with your onboarding, please reply to this email with the following information:
+
+1. Full name as per official records
+2. Contact number
+3. Preferred internship start date
+4. Updated résumé
+
+Shortlisted candidates are generally expected to complete the onboarding process within 48 hours of receiving this communication.
+Please note that the final allocation of projects and reporting managers will be communicated after registration.
+We look forward to the possibility of working with you.
+Regards,
+Recruitment & Talent Acquisition Team
+Nexora Digital Solutions
+Sample contact: hr@nexora-example.invalid
+This is a fictional offer message created exclusively for testing and analysis. No actual position is being offered.

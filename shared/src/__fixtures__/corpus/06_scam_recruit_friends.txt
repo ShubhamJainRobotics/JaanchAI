@@ -1,0 +1,10 @@
+# expected: HIGH_RISK
+# why: Conditioning job or stipend on recruiting peers or friends (PAY-004 hard disqualifier).
+
+Dear Student,
+You are shortlisted for our Student Ambassador Program with daily income of ₹5,000.
+To activate your ambassador account and unlock your weekly payout, you must recruit 5 friends from your college and have each of them complete registration.
+Direct joining bonus is released only after 5 peer referrals are confirmed.
+Campus Outreach Team,
+Vanguard Network
+ambassador@vanguard-example.invalid

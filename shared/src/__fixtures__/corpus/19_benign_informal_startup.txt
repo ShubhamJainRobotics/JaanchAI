@@ -1,0 +1,12 @@
+# expected: NEEDS_REVIEW
+# why: Benign informal startup message with grammar imperfections; must not be penalised as HIGH_RISK.
+
+Hi student,
+i saw your github projects on rust and web dev. our comapny is building a small developer tool in bangalore.
+we want to hire an intern for 2 months to help us with testing and docs.
+stipend is 10000 per month.
+if you are intrested, please reply and we can setup a google meet call to discuss the code.
+Best,
+Rohan
+Founder, DevCraft Labs
+rohan@devcraft-example.invalid

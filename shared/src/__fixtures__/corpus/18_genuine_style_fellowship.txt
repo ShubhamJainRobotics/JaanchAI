@@ -1,0 +1,21 @@
+# expected: NEEDS_REVIEW
+# why: Complete details for graduate fellowship, but unverified sender domain (insufficient evidence).
+
+Dear Scholar,
+Pragati Innovation Labs announces the 2026 Climate Tech Graduate Fellowship.
+
+Fellowship Outline:
+* Organization: Pragati Innovation Labs
+* Position: Graduate Research Fellow
+* Duration: 12 months starting 1 August 2026
+* Location: Hyderabad / Remote
+* Compensation: Monthly stipend of ₹45,000
+* Eligibility criteria: Open to students of M.Sc or M.Tech with background in Environmental Sciences
+* Selection process: Research proposal evaluation followed by interview round
+* Application deadline: Valid till 20 June 2026
+* Official link: https://pragati-labs.example.org
+
+Please review guidelines on our portal before submitting your application.
+Fellowship Committee,
+Pragati Innovation Labs
+fellowship@pragati-example.invalid

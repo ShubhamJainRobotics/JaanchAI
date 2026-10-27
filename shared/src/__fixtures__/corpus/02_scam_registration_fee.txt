@@ -1,0 +1,11 @@
+# expected: HIGH_RISK
+# why: Direct upfront registration fee requested (PAY-001 hard disqualifier).
+
+Dear Student,
+You have been selected for the Data Analyst Internship at Acme Global Solutions.
+To confirm your internship seat, you are required to pay a mandatory training and registration fee of ₹1,500.
+This security deposit is mandatory for seat booking and verification kit processing.
+Pay immediately to confirm your slot.
+Regards,
+HR Team Acme
+contact@acme-example.invalid

@@ -1,0 +1,9 @@
+# expected: HIGH_RISK
+# why: Brand impersonation using Gmail with brand in username (SND-004 hard disqualifier).
+
+Dear Candidate,
+Google India is pleased to announce your selection for our Software Engineering Fellowship.
+Stipend: ₹75,000 per month.
+Please send your Aadhaar and resume directly to google-careers-india@gmail.com for fast-track processing.
+Google Campus Hiring
+google-careers-india@gmail.com

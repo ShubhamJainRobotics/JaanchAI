@@ -1,0 +1,12 @@
+# expected: NEEDS_REVIEW
+# why: Direct message from professor offering academic assistantship; benign with typos, must not be HIGH_RISK.
+
+Dear student,
+congradulat on securing top grades in the algorithms course.
+i have an opening for undergraduate research assistant in my lab next semester.
+tenure is 4 months with stipend of 8000 per month.
+come to my cabin room 302 tomorrow between 2pm to 4pm to discuss the project topics.
+bring your latest marksheet.
+Prof. K. Sharma
+Department of Computer Science
+sharma@campus-example.invalid

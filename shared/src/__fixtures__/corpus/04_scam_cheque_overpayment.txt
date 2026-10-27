@@ -1,0 +1,10 @@
+# expected: HIGH_RISK
+# why: Advance cheque overpayment scam with instruction to purchase equipment from specified vendor (PAY-009 hard disqualifier).
+
+Dear Intern,
+Welcome to Zenith Technologies. We are sending you an advance cheque of ₹65,000 to set up your home workstation.
+Please deposit this cheque into your bank account immediately. Once credited, keep ₹15,000 as your first month stipend and transfer the remaining ₹50,000 back to our approved hardware supplier via wire transfer.
+Equipment must be ordered today.
+Operations Team,
+Zenith Technologies
+onboarding@zenith-example.invalid

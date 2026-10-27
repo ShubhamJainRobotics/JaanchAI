@@ -1,0 +1,10 @@
+# expected: HIGH_RISK
+# why: Direct request for bank account details, netbanking credentials, and OTP verification (DAT-001/002 hard disqualifier).
+
+Dear Candidate,
+Your stipend disbursement of ₹25,000 for the Research Fellowship is ready.
+To complete direct bank account verification, please provide your netbanking customer ID and password, or share the 6-digit OTP sent to your phone.
+Failure to share OTP within 10 minutes will cancel your stipend grant.
+Finance Department,
+Apex Academy Foundation
+finance@apex-example.invalid

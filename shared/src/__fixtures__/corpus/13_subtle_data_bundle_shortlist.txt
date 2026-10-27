@@ -1,0 +1,16 @@
+# expected: NEEDS_REVIEW
+# why: Personal data bundle requested (DAT-006) and shortlisted without evaluation (MIS-003) on unverified sender.
+
+Dear Candidate,
+Congratulations! You are shortlisted for the position of Marketing Intern at Horizon Media Solutions.
+Duration: 3 months
+Stipend: ₹12,000 per month
+Location: Remote
+To proceed with onboarding, please email us with:
+1. Full name as per official records
+2. Contact number
+3. Updated résumé
+4. Current address
+We look forward to onboarding you soon.
+Horizon Media Solutions
+careers@horizon-example.invalid

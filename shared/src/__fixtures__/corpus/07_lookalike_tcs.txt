@@ -1,0 +1,11 @@
+# expected: HIGH_RISK
+# why: Misleading brand impersonation using free email provider with corporate name (SND-004 hard disqualifier).
+
+Dear Candidate,
+TCS Recruitment Drive 2026.
+You are selected for Assistant Systems Engineer at Tata Consultancy Services.
+Your monthly package will be ₹35,000.
+Please reply with your documents to tcs.recruitment.hr@gmail.com to receive your appointment letter.
+Regards,
+TCS Talent Acquisition Team
+tcs.recruitment.hr@gmail.com

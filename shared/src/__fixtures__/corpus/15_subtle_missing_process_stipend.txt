@@ -1,0 +1,12 @@
+# expected: NEEDS_REVIEW
+# why: Undefined registration step (MIS-007) with short action window (URG-004) without hard disqualifier.
+
+Dear Candidate,
+We are pleased to inform you that your application has been shortlisted for the QA Engineer Intern at Matrix Technologies.
+Work Mode: Onsite Bangalore
+Stipend: ₹22,000 per month
+Duration: 6 months
+Please confirm your acceptance and complete registration within 48 hours to receive reporting manager details.
+Recruitment Team,
+Matrix Technologies
+hr@matrix-example.invalid

@@ -1,0 +1,9 @@
+# expected: HIGH_RISK
+# why: Government scheme claim requesting upfront application/registration fee (GOV-001 hard disqualifier).
+
+Dear Student,
+Under the PM Internship Scheme, you have been selected for a central government internship grant.
+Stipend: ₹5,000 per month with one-time grant of ₹6,000.
+To release your joining kit, you must pay a processing fee of ₹750 via online portal.
+Ministry of Corporate Affairs Scheme Cell
+support@pminternship-example.invalid

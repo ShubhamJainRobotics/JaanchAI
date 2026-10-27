@@ -1,0 +1,14 @@
+# expected: NEEDS_REVIEW
+# why: Undefined registration step (MIS-007) and short action window (URG-004) without hard disqualifier.
+
+Dear Candidate,
+We have shortlisted your application for the Junior Research Fellow at Lumina BioLabs.
+Position: Junior Research Fellow
+Duration: 6 months
+Stipend: ₹18,000 per month
+Location: Hybrid, Pune
+To confirm your place, please complete the registration process within 48 hours of this notice.
+Project details will be finalized after registration.
+Recruitment Team,
+Lumina BioLabs
+contact@lumina-example.invalid
