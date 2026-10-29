@@ -1,10 +1,10 @@
 import { VerificationStatus, CheckRow, STATUS_COPY, computeIndependentCoverage } from "shared";
 import {
   ShieldCheck,
-  Info,
+  CheckCircle2,
+  AlertCircle,
   AlertTriangle,
   ShieldAlert,
-  Ban,
   Sparkles,
 } from "lucide-react";
 
@@ -30,113 +30,116 @@ export function StatusBanner({
     switch (status) {
       case "VERIFIED_OFFICIAL":
         return {
-          bg: "bg-emerald-50 border-emerald-300 text-emerald-950 dark:bg-emerald-950/30 dark:border-emerald-800 dark:text-emerald-100",
-          iconBg: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300",
-          icon: <ShieldCheck className="w-8 h-8 text-emerald-700 dark:text-emerald-300 shrink-0" aria-hidden="true" />,
-          badge: "bg-emerald-100 text-emerald-900 border-emerald-300",
+          containerClass: "bg-status-verified-bg border-status-verified-border text-status-verified-fg",
+          iconContainer: "bg-surface/80 border-status-verified-border text-status-verified-icon",
+          icon: <ShieldCheck className="w-8 h-8" strokeWidth={1.75} aria-hidden="true" />,
+          statusType: "Verified Official",
         };
       case "LIKELY_GENUINE":
         return {
-          bg: "bg-teal-50 border-teal-300 text-teal-950 dark:bg-teal-950/30 dark:border-teal-800 dark:text-teal-100",
-          iconBg: "bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300",
-          icon: <Info className="w-8 h-8 text-teal-700 dark:text-teal-300 shrink-0" aria-hidden="true" />,
-          badge: "bg-teal-100 text-teal-900 border-teal-300",
+          containerClass: "bg-status-likely-bg border-status-likely-border text-status-likely-fg",
+          iconContainer: "bg-surface/80 border-status-likely-border text-status-likely-icon",
+          icon: <CheckCircle2 className="w-8 h-8" strokeWidth={1.75} aria-hidden="true" />,
+          statusType: "Likely Genuine",
         };
       case "NEEDS_REVIEW":
         return {
-          bg: "bg-amber-50 border-amber-300 text-amber-950 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-100",
-          iconBg: "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300",
-          icon: <AlertTriangle className="w-8 h-8 text-amber-700 dark:text-amber-300 shrink-0" aria-hidden="true" />,
-          badge: "bg-amber-100 text-amber-900 border-amber-300",
+          containerClass: "bg-status-review-bg border-status-review-border text-status-review-fg",
+          iconContainer: "bg-surface/80 border-status-review-border text-status-review-icon",
+          icon: <AlertCircle className="w-8 h-8" strokeWidth={1.75} aria-hidden="true" />,
+          statusType: "Needs Review",
         };
       case "HIGH_RISK":
         return {
-          bg: "bg-red-50 border-red-300 text-red-950 dark:bg-red-950/30 dark:border-red-800 dark:text-red-100",
-          iconBg: "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300",
-          icon: <ShieldAlert className="w-8 h-8 text-red-700 dark:text-red-300 shrink-0" aria-hidden="true" />,
-          badge: "bg-red-100 text-red-900 border-red-300",
+          containerClass: "bg-status-high-risk-bg border-status-high-risk-border text-status-high-risk-fg",
+          iconContainer: "bg-surface/80 border-status-high-risk-border text-status-high-risk-icon",
+          icon: <AlertTriangle className="w-8 h-8" strokeWidth={1.75} aria-hidden="true" />,
+          statusType: "High Concern",
         };
       case "CONFIRMED_SCAM":
         return {
-          bg: "bg-rose-900 text-white border-rose-950 dark:bg-rose-950 dark:border-rose-900",
-          iconBg: "bg-rose-800 text-rose-100",
-          icon: <Ban className="w-8 h-8 text-rose-100 shrink-0" aria-hidden="true" />,
-          badge: "bg-rose-800 text-rose-100 border-rose-700",
+          containerClass: "bg-status-confirmed-scam-bg border-status-confirmed-scam-border text-status-confirmed-scam-fg",
+          iconContainer: "bg-surface/80 border-status-confirmed-scam-border text-status-confirmed-scam-icon",
+          icon: <ShieldAlert className="w-8 h-8" strokeWidth={1.75} aria-hidden="true" />,
+          statusType: "Confirmed Scam",
         };
     }
   };
 
   const theme = getTheme();
-
-  // Verification coverage calculation (Fix H)
   const coverage = computeIndependentCoverage(checks);
 
   return (
     <section
-      className={`rounded-2xl border p-6 sm:p-7 shadow-xs ${theme.bg}`}
+      data-testid="status-banner"
+      className={`rounded-lg border p-6 sm:p-7 shadow-sm transition-colors ${theme.containerClass}`}
       role="region"
       aria-label="Verification status banner"
     >
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-current/15">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-current/20">
         <div className="flex items-center gap-3.5">
-          <div className={`p-2.5 rounded-xl border border-current/15 shadow-xs ${theme.iconBg}`}>
+          <div className={`p-2.5 rounded-md border shadow-xs ${theme.iconContainer}`}>
             {theme.icon}
           </div>
           <div>
-            <span className="text-xs uppercase font-extrabold tracking-wider block opacity-80">
+            <span className="text-xs uppercase font-bold tracking-wider block opacity-85">
               Verification Status
             </span>
-            <span className="text-xl sm:text-2xl font-black tracking-tight block">
+            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight block">
               {copy.label}
-            </span>
+            </h1>
           </div>
         </div>
 
-        {/* Engine badges (Rule Engine Score is intentionally removed from UI) */}
+        {/* AI status badge if included */}
         <div className="flex flex-wrap items-center gap-2 text-xs">
           {aiUsed && aiStatus === "ok" ? (
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-100 text-indigo-900 font-semibold border border-indigo-200">
-              <Sparkles className="w-3 h-3 text-indigo-600" aria-hidden="true" />
-              Gemini AI Context Included
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface text-foreground font-semibold border border-current/25 shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
+              <span>Gemini AI Context Included</span>
             </span>
           ) : aiUsed && aiStatus !== "ok" ? (
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-200 text-slate-800 font-medium">
-              AI Unavailable (Rule Fallback)
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-raised text-muted-foreground font-medium border border-border">
+              <span>AI Unavailable (Rule Fallback)</span>
             </span>
           ) : null}
         </div>
       </div>
 
       <div className="py-4 space-y-2">
-        <p className="text-sm font-medium opacity-90 leading-relaxed">
+        <p className="text-sm font-semibold opacity-95 leading-relaxed">
           {copy.meaning}
         </p>
         {summary && summary !== copy.meaning && (
-          <p className="text-sm sm:text-base font-semibold leading-relaxed pt-1">
+          <p className="text-sm sm:text-base font-medium opacity-90 leading-relaxed pt-1">
             {summary}
           </p>
         )}
       </div>
 
       {/* Verification coverage meter */}
-      <div className="pt-3 border-t border-current/15 space-y-1.5">
+      <div
+        data-testid="coverage-meter"
+        className="pt-3 border-t border-current/20 space-y-2"
+      >
         <div className="flex items-center justify-between text-xs font-semibold">
           <span>{coverage.label}</span>
-          <span className="font-mono text-xs opacity-80">
+          <span className="tabular-nums font-mono text-xs opacity-90">
             {coverage.completed} / {coverage.total}
           </span>
         </div>
-        <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-1.5 overflow-hidden">
+        <div className="w-full bg-current/15 rounded-full h-2 overflow-hidden">
           <div
-            className="bg-current h-1.5 rounded-full transition-all duration-300"
+            className="bg-current h-2 rounded-full transition-all duration-300"
             style={{ width: `${(coverage.completed / coverage.total) * 100}%` }}
             role="progressbar"
             aria-valuenow={coverage.completed}
             aria-valuemin={0}
             aria-valuemax={coverage.total}
+            aria-label={`${coverage.label}: ${coverage.completed} of ${coverage.total} completed`}
           />
         </div>
-        <p className="text-[11px] opacity-75">
+        <p className="text-xs opacity-80 leading-normal">
           {coverage.caption}
         </p>
       </div>

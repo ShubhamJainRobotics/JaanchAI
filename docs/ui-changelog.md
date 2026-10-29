@@ -39,3 +39,24 @@ This document tracks all visual and interaction restyle batches, design system o
   - Added anti-pattern scan ensuring 0 numeric risk % and 0 fake marketing claims.
 - **Verification:** All 33 client tests, 38 server tests, and 267 shared tests passed. Screenshots saved to `docs/ui-shots/after/batch-1/`.
 
+---
+
+## Batch 2: Status Components
+- **StatusBanner Restyle:**
+  - Migrated from hardcoded arbitrary colors to semantic status tokens (`status-verified`, `status-likely`, `status-review`, `status-high-risk`, `status-confirmed-scam`).
+  - Added `data-testid="status-banner"` and `data-testid="coverage-meter"`.
+  - Icon + text pairing enforced for all statuses with `lucide-react` vector icons (stroke 1.75px).
+  - Integrated verification coverage meter as a clean, thin progress bar (`role="progressbar"`) with accessible aria labeling and tabular-nums.
+- **Payment Alert Notice:**
+  - Added `data-testid="payment-alert"` with calm, high-contrast framing (`status-high-risk` border/bg/fg tokens).
+  - Preserved verbatim non-negotiable safety copy including 1930 and cybercrime.gov.in guidance.
+- **Pattern Insight Card:**
+  - Restyled using `surface-card`, semantic `warning` accents, and single-level elevation.
+  - Added `data-testid="pattern-insight-card"` and clean structured list for "Don't send yet".
+- **Input Adjusted Notices:**
+  - Standardized across `Results.tsx` and `Analyze.tsx` with `data-testid="input-adjusted-notice"`.
+- **Verification:**
+  - Vitest test suites passed (33 client tests including contrast test assertions).
+  - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-2/`.
+
+

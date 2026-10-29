@@ -152,30 +152,31 @@ export function Results() {
         checks={analysis.checks}
       />
 
-      {/* Payment Alert Notice (Fix G) */}
+      {/* Payment Alert Notice (§5: High contrast with calm wording) */}
       {analysis.paymentAlert && (
         <aside
           role="alert"
-          className="rounded-2xl border-2 border-red-500 bg-red-50 dark:bg-red-950/40 p-5 sm:p-6 shadow-xs text-red-900 dark:text-red-100 space-y-2"
+          data-testid="payment-alert"
+          className="rounded-md border-2 border-status-high-risk-border bg-status-high-risk-bg p-5 sm:p-6 shadow-sm text-status-high-risk-fg space-y-2 transition-colors"
         >
           <div className="flex items-start gap-3">
-            <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
+            <AlertTriangle className="w-6 h-6 text-status-high-risk-icon shrink-0 mt-0.5" strokeWidth={2} aria-hidden="true" />
             <div className="space-y-1.5">
-              <h3 className="text-base font-black tracking-tight text-red-900 dark:text-red-100 uppercase">
+              <h2 className="text-base font-extrabold tracking-tight uppercase">
                 Payment Warning Notice
-              </h3>
-              <p className="text-sm font-semibold leading-relaxed">
+              </h2>
+              <p className="text-sm font-semibold leading-relaxed opacity-95">
                 A payment is being requested. Do not pay, and do not share Aadhaar, PAN, bank details or OTPs, until you have independently verified the sender.
               </p>
               {(analysis.status === "HIGH_RISK" || analysis.status === "CONFIRMED_SCAM") && (
-                <p className="text-xs font-medium pt-1 text-red-800 dark:text-red-200">
+                <p className="text-xs font-medium pt-1 opacity-90">
                   If you have already paid or shared credentials, report immediately to National Cyber Crime Helpline{" "}
-                  <a href="tel:1930" className="underline font-bold hover:text-red-950 dark:hover:text-white">1930</a> or visit{" "}
+                  <a href="tel:1930" className="underline font-bold hover:opacity-100">1930</a> or visit{" "}
                   <a
                     href="https://cybercrime.gov.in"
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="underline font-bold hover:text-red-950 dark:hover:text-white"
+                    className="underline font-bold hover:opacity-100"
                   >
                     cybercrime.gov.in
                   </a>.
@@ -186,17 +187,18 @@ export function Results() {
         </aside>
       )}
 
-      {/* Input Adjusted Notices (Fix A) */}
+      {/* Input Adjusted Notices */}
       {analysis.inputNotices && analysis.inputNotices.length > 0 && (
         <aside
           role="note"
-          className="rounded-xl border border-amber-300 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-950/30 p-4 text-amber-900 dark:text-amber-200 text-xs sm:text-sm space-y-1.5"
+          data-testid="input-adjusted-notice"
+          className="rounded-md border border-warning/40 bg-surface p-4 text-foreground text-xs sm:text-sm space-y-2 shadow-xs transition-colors"
         >
-          <div className="flex items-center gap-2 font-bold">
-            <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+          <div className="flex items-center gap-2 font-bold text-warning">
+            <Info className="w-4 h-4 shrink-0" strokeWidth={2} aria-hidden="true" />
             <span>Input adjusted for optimal verification</span>
           </div>
-          <ul className="list-disc list-inside space-y-1 pl-1 opacity-90">
+          <ul className="list-disc list-inside space-y-1 pl-1 text-muted-foreground font-medium">
             {analysis.inputNotices.map((notice, i) => (
               <li key={i}>{notice}</li>
             ))}
@@ -207,20 +209,21 @@ export function Results() {
       {/* Section 2: Why This Status — Top 3 reasons in plain language */}
       {analysis.reasons && analysis.reasons.length > 0 && (
         <section
-          className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs space-y-3"
+          data-testid="why-this-status"
+          className="surface-card p-5 sm:p-6 space-y-3 transition-colors"
           aria-label="Why this status explanation"
         >
-          <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-            <HelpCircle className="w-5 h-5 text-brand-600 dark:text-brand-400" />
-            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+          <div className="flex items-center gap-2.5 pb-2.5 border-b border-border">
+            <HelpCircle className="w-5 h-5 text-primary shrink-0" strokeWidth={1.75} aria-hidden="true" />
+            <h2 className="text-base font-bold text-foreground tracking-tight">
               Why this status: Key Evidence Rationale
-            </h3>
+            </h2>
           </div>
-          <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+          <ul className="space-y-2 text-xs sm:text-sm text-muted-foreground font-medium">
             {analysis.reasons.slice(0, 3).map((r, i) => (
               <li key={i} className="flex items-start gap-2.5 leading-relaxed">
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-500 shrink-0 mt-2" />
-                <span className="font-medium text-slate-900 dark:text-slate-100">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 mt-2" aria-hidden="true" />
+                <span className="text-foreground">
                   {humanizeReason(r)}
                 </span>
               </li>

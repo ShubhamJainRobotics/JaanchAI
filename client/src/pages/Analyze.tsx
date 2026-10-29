@@ -226,11 +226,14 @@ export function Analyze() {
 
           {/* Input adjustment notice */}
           {inputNotices.length > 0 && (
-            <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-amber-50 text-amber-900 text-xs border border-amber-200">
-              <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <span className="font-bold">Input adjusted:</span>
-                <ul className="list-disc list-inside space-y-0.5 opacity-90">
+            <div
+              data-testid="input-adjusted-notice"
+              className="flex items-start gap-3 p-4 rounded-md bg-surface text-foreground text-xs sm:text-sm border border-warning/40 shadow-xs transition-colors"
+            >
+              <Info className="w-4 h-4 text-warning shrink-0 mt-0.5" strokeWidth={2} aria-hidden="true" />
+              <div className="space-y-1.5">
+                <span className="font-bold text-warning">Input adjusted for verification:</span>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground font-medium">
                   {inputNotices.map((notice, i) => (
                     <li key={i}>{notice}</li>
                   ))}
