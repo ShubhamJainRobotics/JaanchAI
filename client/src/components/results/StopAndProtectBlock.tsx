@@ -3,6 +3,7 @@ import { ShieldAlert, PhoneCall, ExternalLink } from "lucide-react";
 export function StopAndProtectBlock() {
   return (
     <div
+      id="stop-and-protect-block"
       role="alert"
       data-testid="stop-and-protect-block"
       className="rounded-lg border-2 border-status-high-risk-border bg-status-high-risk-bg p-4 sm:p-5 text-status-high-risk-fg shadow-xs space-y-3"

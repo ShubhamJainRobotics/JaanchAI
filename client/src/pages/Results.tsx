@@ -180,7 +180,7 @@ export function Results() {
         {/* ======================================================== */}
         {/* ABOVE-THE-FOLD HERO CONTRACT (§6.1)                      */}
         {/* ======================================================== */}
-        <div className="space-y-4">
+        <div id="above-the-fold-summary" className="space-y-4">
           {/* High-Risk Variant: Stop and Protect Block (§6.3) */}
           {isHighRisk && <StopAndProtectBlock />}
 
@@ -275,6 +275,7 @@ export function Results() {
           {/* Above-the-fold Quick Actions: Anchor to Next Steps + Export */}
           <div className="pt-1 flex flex-wrap items-center justify-between gap-3">
             <button
+              id="see-what-to-do-next-btn"
               type="button"
               onClick={scrollToNextSteps}
               className="min-h-[44px] px-5 py-2.5 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm shadow-xs transition-colors flex items-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"

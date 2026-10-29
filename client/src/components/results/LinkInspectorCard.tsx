@@ -22,7 +22,7 @@ export function LinkInspectorCard({ initialLink }: LinkInspectorCardProps) {
     }
   };
 
-  const copy = RISK_COPY[linkData.riskLevel];
+  const copy = (linkData.riskLevel && RISK_COPY[linkData.riskLevel]) || RISK_COPY.NEEDS_VERIFICATION;
 
   const getRiskBadge = () => {
     switch (linkData.riskLevel) {

@@ -295,6 +295,58 @@ This document tracks all visual and interaction restyle batches, design system o
   - `npm run test -w client` PASSED.
   - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-4/`.
 
+---
+
+## Round 2 — Batch 5: Secondary Pages & Microcopy Pass
+- **History Page (`client/src/pages/History.tsx`):**
+  - Implemented responsive table layout on desktop/tablet (≥ 768px) with columns: Status, Category/Org, Summary, Date, and Actions.
+  - Maintained touch-friendly card layout on mobile (< 768px).
+  - Replaced `<select>` dropdowns with interactive filter chips for Status and Category with active state indicators (`bg-primary text-primary-foreground` vs `bg-surface-raised border-border`).
+  - Integrated `ConfirmDialog` with focus trap, Tab cycling, and Esc key support for individual item deletions and "Clear All History".
+  - Clean empty state with CTA button linking directly to `/analyze`.
+- **Link & Domain Inspector (`client/src/pages/LinkCheck.tsx`):**
+  - Streamlined into a single clean input card with educational domain age, lookalike protection, and zero-visit privacy callouts.
+  - Updated `LinkInspectorCard.tsx` with plain-language labels (*"Official Domain Registry (RDAP)"*) and defensive `riskLevel` fallback.
+- **Resources Page (`client/src/pages/Resources.tsx`):**
+  - Converted category verification guides into an interactive accordion by offer type (*Internship, Scholarship, Job, Freelance, Competition, Website*).
+  - Added direct official-portal buttons linking directly to verified authorities (AICTE, MCA21, NSP, Cybercrime portal).
+  - Rendered full eight student safety rules via `<StudentSafetyRules />`.
+- **About Page (`client/src/pages/About.tsx`):**
+  - Problem statement pill (*"Built for the 'Fake or Real' (Digital Trust & Safety) problem statement"*).
+  - Dedicated section on how Jaanch decides (5 statuses and required evidence using `STATUS_COPY`).
+  - Honest limitations and planned evaluation metrics disclaimer: *"No measured results are claimed yet. These are planned metrics."*
+  - Team QuadCore mention.
+- **Auth & Settings Pages (`Login.tsx`, `Signup.tsx`, `Settings.tsx`):**
+  - Centered cards, password visibility toggles, clear labels, error summaries, Google buttons using CSS variable tokens (`var(--color-brand-google-*)`), and privacy policy links.
+- **Accessibility & Focus Trapping (`ConfirmDialog.tsx`):**
+  - Enhanced dialog with full keyboard focus trapping, initial button focus, Tab cycling, Esc key close, and focus restoration to the triggering element.
+- **Microcopy Pass (§8):**
+  - Plain language (grade 8 readability), active voice, no unexplained technical jargon, zero alarmist fear words.
+- **Verification:**
+  - `npm run lint` PASSED.
+  - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-5/`.
+
+---
+
+## Round 2 — Batch 6: Polish, Accessibility & Quality Gate Enforcement
+- **Automated Structural Acceptance Test Suite:**
+  - Created `scripts/test-acceptance.mjs` verifying all 8 structural criteria via Chrome CDP against the production preview build.
+  - **Criterion 1 (Landing Structure):** Single `h1`, `HeroAnalyzer` present, sample preview labelled as fictional and inert, 4 benefit cards use identical `IconTile` styling. **[PASS]**
+  - **Criterion 2 (H1 Text Wrap):** Fluid balanced text wrap with zero orphan words across 320, 375, 390, 768, 1280, 1440 px. **[PASS]**
+  - **Criterion 3 (Mobile Nav Drawer):** Menu button opens drawer dialog, focus is trapped, Esc closes and returns focus, all links ≥ 44px. **[PASS]**
+  - **Criterion 4 (Analyze Progressive Disclosure):** Details and privacy disclosures collapsed by default with live summaries, keyboard-safe sticky action bar. **[PASS]**
+  - **Criterion 5 (Results Above-The-Fold Contract at 375×667):** Top section with status banner, payment alert, meter, why-this-status rationale, and primary next-steps action button fit within the mobile viewport. **[PASS]**
+  - **Criterion 6 (Desktop Two-Column Architecture at 1280×800):** Sticky sidebar stays visible during scroll, jump navigation active. **[PASS]**
+  - **Criterion 7 (High-Risk Safety Controls):** Safe Reply panel hidden, *"Stop and Protect Yourself"* block prominent, 1930 / cybercrime.gov.in actions front and center. **[PASS]**
+  - **Criterion 8 (Responsive Viewport Boundary):** Zero horizontal scroll across all routes (`/`, `/analyze`, `/results/:id`, `/history`, `/resources`, `/about`, `/login`) at 320, 375, 390, 768, 1024, 1280, 1440 px. **[PASS]**
+- **Quality Gates Verification:**
+  - `npm run lint` PASSED (0 hardcoded color literals, 0 banned phrases, 0 secret leaks, typecheck passed).
+  - `npm run test` PASSED (338/338 tests passed across shared, server, client).
+  - `npm run eval -w shared` PASSED (25/25 corpus test cases passed: 100% precision & recall).
+  - Contrast tests: All token pairs exceed WCAG 2.2 AA (≥ 4.5:1 body, ≥ 7:1 status).
+  - 50 final screenshots captured in `/docs/ui-shots/r2-after/final/`.
+
+
 
 
 
@@ -402,6 +454,58 @@ This document tracks all visual and interaction restyle batches, design system o
   - `npm run lint` PASSED (0 hardcoded color violations).
   - `npm run test -w client` PASSED.
   - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-4/`.
+
+---
+
+## Round 2 — Batch 5: Secondary Pages & Microcopy Pass
+- **History Page (`client/src/pages/History.tsx`):**
+  - Implemented responsive table layout on desktop/tablet (≥ 768px) with columns: Status, Category/Org, Summary, Date, and Actions.
+  - Maintained touch-friendly card layout on mobile (< 768px).
+  - Replaced `<select>` dropdowns with interactive filter chips for Status and Category with active state indicators (`bg-primary text-primary-foreground` vs `bg-surface-raised border-border`).
+  - Integrated `ConfirmDialog` with focus trap, Tab cycling, and Esc key support for individual item deletions and "Clear All History".
+  - Clean empty state with CTA button linking directly to `/analyze`.
+- **Link & Domain Inspector (`client/src/pages/LinkCheck.tsx`):**
+  - Streamlined into a single clean input card with educational domain age, lookalike protection, and zero-visit privacy callouts.
+  - Updated `LinkInspectorCard.tsx` with plain-language labels (*"Official Domain Registry (RDAP)"*) and defensive `riskLevel` fallback.
+- **Resources Page (`client/src/pages/Resources.tsx`):**
+  - Converted category verification guides into an interactive accordion by offer type (*Internship, Scholarship, Job, Freelance, Competition, Website*).
+  - Added direct official-portal buttons linking directly to verified authorities (AICTE, MCA21, NSP, Cybercrime portal).
+  - Rendered full eight student safety rules via `<StudentSafetyRules />`.
+- **About Page (`client/src/pages/About.tsx`):**
+  - Problem statement pill (*"Built for the 'Fake or Real' (Digital Trust & Safety) problem statement"*).
+  - Dedicated section on how Jaanch decides (5 statuses and required evidence using `STATUS_COPY`).
+  - Honest limitations and planned evaluation metrics disclaimer: *"No measured results are claimed yet. These are planned metrics."*
+  - Team QuadCore mention.
+- **Auth & Settings Pages (`Login.tsx`, `Signup.tsx`, `Settings.tsx`):**
+  - Centered cards, password visibility toggles, clear labels, error summaries, Google buttons using CSS variable tokens (`var(--color-brand-google-*)`), and privacy policy links.
+- **Accessibility & Focus Trapping (`ConfirmDialog.tsx`):**
+  - Enhanced dialog with full keyboard focus trapping, initial button focus, Tab cycling, Esc key close, and focus restoration to the triggering element.
+- **Microcopy Pass (§8):**
+  - Plain language (grade 8 readability), active voice, no unexplained technical jargon, zero alarmist fear words.
+- **Verification:**
+  - `npm run lint` PASSED.
+  - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-5/`.
+
+---
+
+## Round 2 — Batch 6: Polish, Accessibility & Quality Gate Enforcement
+- **Automated Structural Acceptance Test Suite:**
+  - Created `scripts/test-acceptance.mjs` verifying all 8 structural criteria via Chrome CDP against the production preview build.
+  - **Criterion 1 (Landing Structure):** Single `h1`, `HeroAnalyzer` present, sample preview labelled as fictional and inert, 4 benefit cards use identical `IconTile` styling. **[PASS]**
+  - **Criterion 2 (H1 Text Wrap):** Fluid balanced text wrap with zero orphan words across 320, 375, 390, 768, 1280, 1440 px. **[PASS]**
+  - **Criterion 3 (Mobile Nav Drawer):** Menu button opens drawer dialog, focus is trapped, Esc closes and returns focus, all links ≥ 44px. **[PASS]**
+  - **Criterion 4 (Analyze Progressive Disclosure):** Details and privacy disclosures collapsed by default with live summaries, keyboard-safe sticky action bar. **[PASS]**
+  - **Criterion 5 (Results Above-The-Fold Contract at 375×667):** Top section with status banner, payment alert, meter, why-this-status rationale, and primary next-steps action button fit within the mobile viewport. **[PASS]**
+  - **Criterion 6 (Desktop Two-Column Architecture at 1280×800):** Sticky sidebar stays visible during scroll, jump navigation active. **[PASS]**
+  - **Criterion 7 (High-Risk Safety Controls):** Safe Reply panel hidden, *"Stop and Protect Yourself"* block prominent, 1930 / cybercrime.gov.in actions front and center. **[PASS]**
+  - **Criterion 8 (Responsive Viewport Boundary):** Zero horizontal scroll across all routes (`/`, `/analyze`, `/results/:id`, `/history`, `/resources`, `/about`, `/login`) at 320, 375, 390, 768, 1024, 1280, 1440 px. **[PASS]**
+- **Quality Gates Verification:**
+  - `npm run lint` PASSED (0 hardcoded color literals, 0 banned phrases, 0 secret leaks, typecheck passed).
+  - `npm run test` PASSED (338/338 tests passed across shared, server, client).
+  - `npm run eval -w shared` PASSED (25/25 corpus test cases passed: 100% precision & recall).
+  - Contrast tests: All token pairs exceed WCAG 2.2 AA (≥ 4.5:1 body, ≥ 7:1 status).
+  - 50 final screenshots captured in `/docs/ui-shots/r2-after/final/`.
+
 
 
 

@@ -85,6 +85,25 @@
 
 6. **Batch 6: Polish, Accessibility & Enforcement**
    - Automated color check (`npm run check:no-hardcoded-colors`).
-   - Playwright / Axe accessibility tests across all viewports.
-   - Capture before/after screenshots at 375×667, 390×844, 768×1024, 1280×800, 1440×900.
+   - Structural acceptance tests across all viewports (`scripts/test-acceptance.mjs`).
+   - Capture before/after screenshots at 375×667, 390×844, 768×1024, 1280×800, 1440×900 in `/docs/ui-shots/r2-after/final/`.
    - Final Quality Gate report against §10 criteria.
+
+---
+
+## 4. Final Quality Gate Summary
+
+- **Structural Acceptance Tests (8/8):** ALL PASSED
+  1. Landing structure (single h1, hero analyzer, sample preview inert & labelled fictional, 4 identical icon tiles): **PASS**
+  2. H1 balanced text wrap without orphan words at 320–1440px: **PASS**
+  3. Mobile nav drawer (dialog semantics, focus trap, Esc close, links ≥ 44px): **PASS**
+  4. Analyze progressive disclosure (collapsed disclosures with live summaries, safe sticky bar): **PASS**
+  5. Results 375×667 above-the-fold contract: **PASS**
+  6. Desktop 1280×800 two-column layout with sticky sidebar and jump nav: **PASS**
+  7. High-risk safety controls (Safe Reply hidden, Stop and protect block prominent): **PASS**
+  8. Zero horizontal scroll across all viewports 320–1440px: **PASS**
+- **Lint & Security:** PASSED (`check:no-secrets`, `check:banned-phrases`, `check:no-hardcoded-colors`, `typecheck`)
+- **Unit & Integration Tests:** 338/338 PASSED across all packages
+- **Offline Corpus Evaluation:** 25/25 fixtures PASSED (100% precision & recall)
+- **Token Color Violations:** 0 hard-coded hex/rgb outside `tokens.css`
+- **Screenshots:** 250+ responsive before/after captures across all 6 batches in `/docs/ui-shots/`

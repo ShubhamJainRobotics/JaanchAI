@@ -110,7 +110,7 @@ export function MobileNavDrawer({ isOpen, onClose, triggerRef }: MobileNavDrawer
               onClose();
               triggerRef.current?.focus();
             }}
-            className="flex items-center gap-2 rounded-md p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="min-h-[44px] flex items-center gap-2 rounded-md px-2 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <div className="w-8 h-8 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
               <ShieldCheck className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />

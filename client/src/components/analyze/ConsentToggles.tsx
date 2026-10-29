@@ -34,6 +34,7 @@ export function ConsentToggles({
   return (
     <div className="rounded-md border border-border bg-surface shadow-2xs overflow-hidden">
       <button
+        id="consent-toggles-header"
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="w-full min-h-[52px] flex items-center justify-between p-4 sm:p-5 text-left bg-surface-raised/60 hover:bg-surface-raised transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
