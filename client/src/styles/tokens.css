@@ -5,21 +5,28 @@
 
 :root {
   /* Color Palette - Light Theme */
-  --color-background: #f8fafc;
+  --color-background: #fafaff;
   --color-surface: #ffffff;
-  --color-surface-raised: #f1f5f9;
-  --color-foreground: #0f172a;
-  --color-muted-foreground: #475569;
-  --color-border: #cbd5e1;
-  --color-border-subtle: #e2e8f0;
-  --color-ring: #0284c7;
+  --color-surface-raised: #ffffff;
+  --color-foreground: #12102b;
+  --color-muted-foreground: #5b5878;
+  --color-border: #e3dff7;
+  --color-border-subtle: #efebfd;
+  --color-ring: #8f7bff;
 
-  --color-primary: #0369a1;
-  --color-primary-hover: #075985;
+  --color-primary: #5b3df5;
+  --color-primary-hover: #4b2fe0;
+  --color-primary-pressed: #3f26c4;
   --color-primary-foreground: #ffffff;
+  --color-primary-tint: #f1eeff;
+  --color-primary-tint-border: #d9d2ff;
 
-  --color-link: #0369a1;
-  --color-link-hover: #075985;
+  --color-link: #5b3df5;
+  --color-link-hover: #4b2fe0;
+
+  --color-highlight: #ffd43b;
+  --color-gradient-accent-from: #5b3df5;
+  --color-gradient-accent-to: #8b5cf6;
 
   --color-destructive: #dc2626;
   --color-destructive-hover: #b91c1c;
@@ -27,7 +34,7 @@
 
   --color-success: #047857;
   --color-warning: #b45309;
-  --color-info: #0369a1;
+  --color-info: #5b3df5;
 
   /* OAuth Provider Branding */
   --color-brand-google-blue: #4285f4;
@@ -157,21 +164,28 @@
 /* Dark Theme - Prefers Color Scheme */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --color-background: #0b0f19;
-    --color-surface: #111827;
-    --color-surface-raised: #1f2937;
-    --color-foreground: #f8fafc;
-    --color-muted-foreground: #94a3b8;
-    --color-border: #334155;
-    --color-border-subtle: #1e293b;
-    --color-ring: #38bdf8;
+    --color-background: #0f0d24;
+    --color-surface: #17143a;
+    --color-surface-raised: #201c4d;
+    --color-foreground: #f3f1ff;
+    --color-muted-foreground: #b9b4de;
+    --color-border: #2d2960;
+    --color-border-subtle: #242050;
+    --color-ring: #b7a8ff;
 
-    --color-primary: #0284c7;
-    --color-primary-hover: #38bdf8;
-    --color-primary-foreground: #ffffff;
+    --color-primary: #8f7bff;
+    --color-primary-hover: #a594ff;
+    --color-primary-pressed: #7c66ff;
+    --color-primary-foreground: #0f0d24;
+    --color-primary-tint: #2a2570;
+    --color-primary-tint-border: #3d368a;
 
-    --color-link: #38bdf8;
-    --color-link-hover: #7dd3fc;
+    --color-link: #8f7bff;
+    --color-link-hover: #b7a8ff;
+
+    --color-highlight: #ffd43b;
+    --color-gradient-accent-from: #8f7bff;
+    --color-gradient-accent-to: #b7a8ff;
 
     --color-destructive: #ef4444;
     --color-destructive-hover: #dc2626;
@@ -179,7 +193,7 @@
 
     --color-success: #10b981;
     --color-warning: #f59e0b;
-    --color-info: #38bdf8;
+    --color-info: #8f7bff;
 
     /* Status Tokens - Dark Theme */
     --status-verified-bg: #06281e;
@@ -260,21 +274,28 @@
 
 /* Explicit class-based dark mode override */
 .dark {
-  --color-background: #0b0f19;
-  --color-surface: #111827;
-  --color-surface-raised: #1f2937;
-  --color-foreground: #f8fafc;
-  --color-muted-foreground: #94a3b8;
-  --color-border: #334155;
-  --color-border-subtle: #1e293b;
-  --color-ring: #38bdf8;
+  --color-background: #0f0d24;
+  --color-surface: #17143a;
+  --color-surface-raised: #201c4d;
+  --color-foreground: #f3f1ff;
+  --color-muted-foreground: #b9b4de;
+  --color-border: #2d2960;
+  --color-border-subtle: #242050;
+  --color-ring: #b7a8ff;
 
-  --color-primary: #0284c7;
-  --color-primary-hover: #38bdf8;
-  --color-primary-foreground: #ffffff;
+  --color-primary: #8f7bff;
+  --color-primary-hover: #a594ff;
+  --color-primary-pressed: #7c66ff;
+  --color-primary-foreground: #0f0d24;
+  --color-primary-tint: #2a2570;
+  --color-primary-tint-border: #3d368a;
 
-  --color-link: #38bdf8;
-  --color-link-hover: #7dd3fc;
+  --color-link: #8f7bff;
+  --color-link-hover: #b7a8ff;
+
+  --color-highlight: #ffd43b;
+  --color-gradient-accent-from: #8f7bff;
+  --color-gradient-accent-to: #b7a8ff;
 
   --color-destructive: #ef4444;
   --color-destructive-hover: #dc2626;
@@ -282,7 +303,7 @@
 
   --color-success: #10b981;
   --color-warning: #f59e0b;
-  --color-info: #38bdf8;
+  --color-info: #8f7bff;
 
   --status-verified-bg: #06281e;
   --status-verified-border: #065f46;

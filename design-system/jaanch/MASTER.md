@@ -20,20 +20,25 @@ Implemented via CSS custom properties in `/client/src/styles/tokens.css` and map
 
 | Role | Light Value | Dark Value | CSS Variable |
 |------|-------------|------------|--------------|
-| Background | `#F8FAFC` (slate-50) | `#090D16` | `--color-background` |
-| Surface | `#FFFFFF` | `#111827` | `--color-surface` |
-| Surface Raised | `#F1F5F9` | `#1F2937` | `--color-surface-raised` |
-| Foreground | `#0F172A` | `#F8FAFC` | `--color-foreground` |
-| Muted Foreground | `#475569` | `#94A3B8` | `--color-muted-foreground` |
-| Border | `#E2E8F0` | `#1E293B` | `--color-border` |
-| Ring | `#0284C7` | `#38BDF8` | `--color-ring` |
-| Primary | `#0369A1` | `#0284C7` | `--color-primary` |
-| Primary Foreground | `#FFFFFF` | `#FFFFFF` | `--color-primary-foreground` |
-| Link | `#0284C7` | `#38BDF8` | `--color-link` |
+| Background | `#FAFAFF` | `#0F0D24` | `--color-background` |
+| Surface | `#FFFFFF` | `#17143A` | `--color-surface` |
+| Surface Raised | `#FFFFFF` | `#201C4D` | `--color-surface-raised` |
+| Foreground | `#12102B` | `#F3F1FF` | `--color-foreground` |
+| Muted Foreground | `#5B5878` | `#B9B4DE` | `--color-muted-foreground` |
+| Border | `#E3DFF7` | `#2D2960` | `--color-border` |
+| Ring | `#8F7BFF` | `#B7A8FF` | `--color-ring` |
+| Primary | `#5B3DF5` (Electric Indigo) | `#8F7BFF` | `--color-primary` |
+| Primary Hover | `#4B2FE0` | `#A594FF` | `--color-primary-hover` |
+| Primary Pressed | `#3F26C4` | `#7C66FF` | `--color-primary-pressed` |
+| Primary Foreground | `#FFFFFF` | `#0F0D24` | `--color-primary-foreground` |
+| Primary Tint | `#F1EEFF` | `#2A2570` | `--color-primary-tint` |
+| Primary Tint Border | `#D9D2FF` | `#3D368A` | `--color-primary-tint-border` |
+| Link | `#5B3DF5` | `#8F7BFF` | `--color-link` |
+| Marketing Highlight | `#FFD43B` (Warm marker) | `#FFD43B` | `--color-highlight` |
 | Destructive | `#DC2626` | `#EF4444` | `--color-destructive` |
-| Success | `#059669` | `#10B981` | `--color-success` |
-| Warning | `#D97706` | `#F59E0B` | `--color-warning` |
-| Info | `#0284C7` | `#38BDF8` | `--color-info` |
+| Success | `#047857` | `#10B981` | `--color-success` |
+| Warning | `#B45309` | `#F59E0B` | `--color-warning` |
+| Info | `#5B3DF5` | `#8F7BFF` | `--color-info` |
 
 ### 1.2 Status Tokens (Icon + Text Label Mandatory)
 
@@ -128,12 +133,15 @@ Implemented via CSS custom properties in `/client/src/styles/tokens.css` and map
 3. **Shadow Scale Override:**  
    *Generated:* 4 shadow levels up to `--shadow-xl` (25px blur).  
    *Override:* Security and safety interfaces require crisp, calm elevation. Only 2 subtle shadow levels (`sm`, `md`) are allowed.
-4. **Color Palette & Status Tokens Override:**  
+4. **Color Palette & Status Tokens Override (Round 3 Electric Indigo):**  
    *Generated:* Single accent `#0369A1` with general UI colors.  
-   *Override:* Trust-and-safety workflow requires distinct, accessible status tokens for 5 verification statuses (`status-verified`, `status-likely`, `status-review`, `status-high-risk`, `status-confirmed-scam`), 6 outcome chips, and 5 severity levels, fully defined for both light and dark modes with contrast ≥ 4.5:1.
+   *Override:* Replaced teal-blue with Electric Indigo (`#5B3DF5` light, `#8F7BFF` dark). Ensures brand primary maintains a minimum 30° hue separation from all 5 verification status hues (emerald, teal, amber, red, dark rose), eliminating brand-status collision. Status tokens remain strictly isolated. Added marketing-only warm highlight (`#FFD43B`) strictly for landing page display markers.
 5. **Border Radius Override:**  
    *Generated:* Arbitrary 8px/12px/16px mix.  
    *Override:* Standardized 3-tier scale: `sm: 6px`, `md: 10px`, `lg: 14px`.
 6. **Hover Transitions Override:**  
-   *Generated:* `transform: translateY(-2px)` on card hover.  
-   *Override:* Prohibited due to jitter and instability on mobile touch devices. Replaced with subtle border/ring color transition.
+   *Generated:* `transform: translateY(-2px)` on all card hover states.  
+   *Override:* Prohibited in core application views and on mobile touch devices to eliminate layout shifts. Subtle hover lift is permitted strictly on desktop marketing cards when `prefers-reduced-motion: no-preference`.
+7. **Monospace Strict Containment (Round 3):**  
+   *Generated:* Monospace applied broadly across badges, section headers, and timestamps.  
+   *Override:* Monospace font (`font-mono`) is strictly restricted to quoted message content, code tokens, and rule IDs; eliminated from all UI labels, badges, and timestamps.

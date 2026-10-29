@@ -27,8 +27,14 @@ export default {
         primary: {
           DEFAULT: 'var(--color-primary)',
           hover: 'var(--color-primary-hover)',
+          pressed: 'var(--color-primary-pressed)',
           foreground: 'var(--color-primary-foreground)',
+          tint: 'var(--color-primary-tint)',
+          'tint-border': 'var(--color-primary-tint-border)',
         },
+        highlight: 'var(--color-highlight)',
+        'gradient-accent-from': 'var(--color-gradient-accent-from)',
+        'gradient-accent-to': 'var(--color-gradient-accent-to)',
         link: {
           DEFAULT: 'var(--color-link)',
           hover: 'var(--color-link-hover)',
