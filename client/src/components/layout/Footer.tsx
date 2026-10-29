@@ -1,114 +1,83 @@
 import { Link } from "react-router-dom";
 import { ShieldCheck, PhoneCall, ExternalLink } from "lucide-react";
-import { ADVISORY, HELPLINE } from "shared";
 
 export function Footer() {
   return (
     <footer className="mt-auto bg-surface-raised border-t border-border text-muted-foreground transition-colors duration-150">
-      {/* Non-negotiable Disclaimer Banner */}
-      <div className="bg-surface border-b border-border py-3.5 px-4 text-center">
+      {/* Standing Disclaimer Banner */}
+      <div className="bg-surface border-b border-border py-3 px-4 text-center">
         <p className="text-xs sm:text-sm font-medium text-foreground max-w-4xl mx-auto flex items-center justify-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-primary shrink-0" aria-hidden="true" />
-          <span>{ADVISORY.footer}</span>
+          <span>Jaanch supports informed decisions. It does not prove that an opportunity is genuine or fraudulent.</span>
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           {/* Brand & mission */}
-          <div className="md:col-span-2 space-y-4">
+          <div className="space-y-2">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-md bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
-                <ShieldCheck className="w-5 h-5" aria-hidden="true" />
+              <div className="w-8 h-8 rounded-md bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
+                <ShieldCheck className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
               </div>
-              <span className="text-lg font-bold text-foreground tracking-tight">Jaanch</span>
+              <span className="text-lg font-extrabold tracking-tight text-foreground">Jaanch</span>
               <span className="text-xs font-semibold px-1.5 py-0.5 rounded-sm bg-surface text-muted-foreground border border-border">
-                Team QuadCore
+                जाँच
               </span>
             </div>
-            <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-              AI-powered scam verification detector for Indian students. Helping you understand why an opportunity is risky and what to verify before you pay or share sensitive data.
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-md">
+              A student-first verification utility for internships, scholarships, and opportunities.
             </p>
-            <div className="flex items-center gap-2.5 text-xs text-foreground bg-surface p-3.5 rounded-md border border-border max-w-md shadow-sm">
-              <PhoneCall className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
-              <span>
-                Cybercrime Emergency? Call <strong>{HELPLINE.number}</strong> or visit{" "}
-                <a
-                  href="https://cybercrime.gov.in"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-link underline hover:text-link-hover inline-flex items-center gap-0.5 font-semibold"
-                >
-                  cybercrime.gov.in
-                  <ExternalLink className="w-3 h-3" aria-hidden="true" />
-                </a>
-              </span>
-            </div>
           </div>
 
-          {/* Quick links */}
-          <div>
-            <h4 className="text-xs font-bold text-foreground uppercase tracking-wider mb-3">Tools & Verification</h4>
-            <ul className="space-y-2.5 text-sm">
-              <li>
-                <Link to="/analyze" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Check an Offer
-                </Link>
-              </li>
-              <li>
-                <Link to="/link-check" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Link & Domain Inspector
-                </Link>
-              </li>
+          {/* Links: Resources, About, Privacy, Link checker */}
+          <nav aria-label="Footer navigation">
+            <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium">
               <li>
                 <Link to="/resources" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Official Portals Directory
+                  Resources
                 </Link>
               </li>
               <li>
-                <a
-                  href="https://internship.aicte-india.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                >
-                  AICTE Portal <ExternalLink className="w-3 h-3" aria-hidden="true" />
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Trust & transparency */}
-          <div>
-            <h4 className="text-xs font-bold text-foreground uppercase tracking-wider mb-3">Trust & Transparency</h4>
-            <ul className="space-y-2.5 text-sm">
-              <li>
                 <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Scope & Limitations
+                  About
                 </Link>
               </li>
               <li>
                 <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Privacy Policy & Data Handling
+                  Privacy
                 </Link>
               </li>
               <li>
-                <a
-                  href="https://www.mca.gov.in"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                >
-                  MCA Master Data <ExternalLink className="w-3 h-3" aria-hidden="true" />
-                </a>
+                <Link to="/link-check" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Link checker
+                </Link>
               </li>
             </ul>
-          </div>
+          </nav>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row justify-between items-center text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} Jaanch. Developed for "Fake or Real" (Digital Trust & Safety) Hackathon.</p>
-          <p className="mt-2 sm:mt-0 font-medium">Built by Team QuadCore.</p>
+        {/* Helpline Row */}
+        <div className="mt-6 pt-6 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 text-foreground">
+            <PhoneCall className="w-4 h-4 text-primary shrink-0" strokeWidth={1.75} aria-hidden="true" />
+            <span>
+              If you've lost money to online fraud: call <strong>1930</strong> or visit{" "}
+              <a
+                href="https://cybercrime.gov.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-link underline hover:text-link-hover inline-flex items-center gap-0.5 font-semibold"
+              >
+                cybercrime.gov.in
+                <ExternalLink className="w-3 h-3" aria-hidden="true" />
+              </a>
+            </span>
+          </div>
+
+          <div>
+            <span>Team QuadCore · Built for Indian college students</span>
+          </div>
         </div>
       </div>
     </footer>

@@ -239,6 +239,55 @@ This document tracks all visual and interaction restyle batches, design system o
   - Verbatim preservation of non-negotiable safety copy (1930, cybercrime.gov.in, status definitions).
   - `ReportDocument.tsx` remains completely untouched.
 
+---
+
+# ROUND 2: STRUCTURAL UI/UX REDESIGN
+
+## Pre-Flight & Baseline Verification
+- Verified on branch `ui-redesign` with clean working tree.
+- Ran full test baseline: `npm run lint` PASSED, `npm run test` PASSED (329 tests), `npm run eval -w shared` PASSED (25/25 corpus test cases).
+- Verified data flow and created [`docs/privacy-copy-check.md`](./privacy-copy-check.md) proving browser-only OCR/PDF parsing and zero guest DB storage.
+- Created [`docs/ui-plan-r2.md`](./ui-plan-r2.md) with layout audits across 375×667, 390×844, 768×1024, 1280×800, 1440×900.
+- Captured 50 baseline before screenshots in `/docs/ui-shots/r2-before/`.
+
+---
+
+## Round 2 — Batch 1: Carry-Over Fixes & Global Shell
+- **Unified IconTile Component:**
+  - Created `client/src/components/common/IconTile.tsx` supporting standard variants (`primary`, `warning`, `verified`, `neutral`, `high-risk`) and sizes (`sm`, `md`, `lg`) using design tokens.
+- **Top Navigation Bar:**
+  - Replaced backdrop blur with solid background and bottom border (`bg-surface border-b border-border`).
+  - Added active route visual indicators (`aria-current="page"` and `border-b-2 border-primary`).
+  - Standardized nav link labels: *Check an offer · Link checker · Resources · About*.
+  - Kept Devanagari mark "जाँच".
+- **Accessible Mobile Navigation Drawer:**
+  - Implemented `client/src/components/layout/MobileNavDrawer.tsx` with dialog semantics (`role="dialog"`, `aria-modal="true"`).
+  - Focus trap inside drawer cycling focusable elements.
+  - Esc key closes drawer and returns focus to menu button (`triggerRef`).
+  - Body scroll lock during drawer presentation.
+  - Links and actions all enforce `min-h-[44px]`.
+- **Global Footer & Landmarks:**
+  - Semantic landmark structure confirmed (`header`, `nav`, `main#main-content`, `footer`).
+  - Skip link tested as first focusable element.
+  - Standardized footer links: Resources, About, Privacy, Link checker.
+  - Verbatim standing disclaimer and cybercrime helpline (1930 / cybercrime.gov.in) displayed cleanly.
+- **Verification:**
+  - `npm run lint` PASSED (0 hardcoded color violations).
+  - `npm run test -w client` PASSED (33/33 tests).
+  - Production client build passed (Vite + TypeScript).
+  - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-1/`.
+
+- **Final Capture:**
+  - Captured complete 20-screenshot final set at 1440px and 375px viewports in `/docs/ui-shots/after/final/`.
+- **Full Test Suite & Regression Verification:**
+  - `npm run lint` PASSED (secrets check, banned phrases check, typecheck, no-hardcoded-colors check).
+  - `npm run typecheck` PASSED across all workspaces (`client`, `server`, `shared`).
+  - `npm run test` PASSED (329/329 tests across all test suites, including contrast assertions).
+  - `npm run eval -w shared` PASSED (25/25 corpus test cases passed with 100% precision & recall).
+  - 0 occurrences of `% risk` or numeric risk percentages.
+  - Verbatim preservation of non-negotiable safety copy (1930, cybercrime.gov.in, status definitions).
+  - `ReportDocument.tsx` remains completely untouched.
+
 
 
 

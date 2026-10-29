@@ -172,6 +172,14 @@ const mockLikelyGenuine = {
   patternInsight: null,
 };
 
+const VIEWPORTS = [
+  { name: "375x667", width: 375, height: 667, mobile: true },
+  { name: "390x844", width: 390, height: 844, mobile: true },
+  { name: "768x1024", width: 768, height: 1024, mobile: true },
+  { name: "1280x800", width: 1280, height: 800, mobile: false },
+  { name: "1440x900", width: 1440, height: 900, mobile: false },
+];
+
 async function main() {
   console.log(`Starting Chrome for screenshots into ${TARGET_DIR}...`);
   const chromeProc = spawn(CHROME_PATH, [
@@ -192,24 +200,23 @@ async function main() {
     await cdp.send("DOM.enable");
 
     async function capture(pageName, url, setupFn) {
-      for (const width of [1440, 375]) {
-        const height = width === 375 ? 812 : 900;
+      for (const vp of VIEWPORTS) {
         await cdp.send("Emulation.setDeviceMetricsOverride", {
-          width,
-          height,
+          width: vp.width,
+          height: vp.height,
           deviceScaleFactor: 1,
-          mobile: width === 375,
+          mobile: vp.mobile,
         });
 
         await cdp.send("Page.navigate", { url: `${APP_BASE}${url}` });
-        await sleep(600);
+        await sleep(350);
 
         if (setupFn) {
           await cdp.send("Runtime.evaluate", {
             expression: setupFn,
             awaitPromise: true,
           });
-          await sleep(300);
+          await sleep(200);
         }
 
         const { data } = await cdp.send("Page.captureScreenshot", {
@@ -217,9 +224,9 @@ async function main() {
           captureBeyondViewport: false,
         });
 
-        const outPath = path.join(TARGET_DIR, `${pageName}-${width}.png`);
+        const outPath = path.join(TARGET_DIR, `${pageName}-${vp.name}.png`);
         fs.writeFileSync(outPath, Buffer.from(data, "base64"));
-        console.log(`  Saved: ${outPath} (${width}px)`);
+        console.log(`  Saved: ${outPath}`);
       }
     }
 
