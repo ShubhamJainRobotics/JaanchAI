@@ -28,28 +28,28 @@ export function LinkInspectorCard({ initialLink }: LinkInspectorCardProps) {
     switch (linkData.riskLevel) {
       case "HIGH_CONCERN":
         return (
-          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border font-semibold bg-status-high-risk-bg text-status-high-risk-fg border-status-high-risk-border shrink-0">
+          <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-sm border font-semibold bg-status-high-risk-bg text-status-high-risk-fg border-status-high-risk-border shrink-0">
             <AlertTriangle className="w-3.5 h-3.5 shrink-0" strokeWidth={2} aria-hidden="true" />
             <span>{copy.label}</span>
           </span>
         );
       case "NEEDS_VERIFICATION":
         return (
-          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border font-semibold bg-status-review-bg text-status-review-fg border-status-review-border shrink-0">
+          <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-sm border font-semibold bg-status-review-bg text-status-review-fg border-status-review-border shrink-0">
             <AlertCircle className="w-3.5 h-3.5 shrink-0" strokeWidth={2} aria-hidden="true" />
             <span>{copy.label}</span>
           </span>
         );
       case "NO_MAJOR_WARNING_SIGNS":
         return (
-          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border font-semibold bg-status-likely-bg text-status-likely-fg border-status-likely-border shrink-0">
+          <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-sm border font-semibold bg-status-likely-bg text-status-likely-fg border-status-likely-border shrink-0">
             <CheckCircle2 className="w-3.5 h-3.5 shrink-0" strokeWidth={2} aria-hidden="true" />
             <span>{copy.label}</span>
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border font-semibold bg-surface-raised text-muted-foreground border-border shrink-0">
+          <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-sm border font-semibold bg-surface-raised text-muted-foreground border-border shrink-0">
             <span>{copy.label}</span>
           </span>
         );
@@ -57,8 +57,8 @@ export function LinkInspectorCard({ initialLink }: LinkInspectorCardProps) {
   };
 
   return (
-    <div className="surface-card p-4 sm:p-5 shadow-xs space-y-3.5 transition-colors">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-border">
+    <div className="surface-card p-5 shadow-xs space-y-4 transition-colors">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border">
         <div className="flex items-center gap-2 min-w-0">
           <Link2 className="w-4 h-4 text-muted-foreground shrink-0" strokeWidth={1.75} aria-hidden="true" />
           <span className="font-mono text-xs text-foreground break-all select-all font-semibold">
@@ -68,10 +68,10 @@ export function LinkInspectorCard({ initialLink }: LinkInspectorCardProps) {
         {getRiskBadge()}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
-        <div>
-          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
-            Observations
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+        <div className="space-y-1.5">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+            Observed Findings
           </span>
           <ul className="space-y-1.5 text-foreground/90 font-medium">
             {linkData.observations.map((obs, idx) => (
@@ -83,9 +83,9 @@ export function LinkInspectorCard({ initialLink }: LinkInspectorCardProps) {
           </ul>
         </div>
 
-        <div>
-          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
-            What is Unverified
+        <div className="space-y-1.5">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+            What Cannot Be Verified Automatically
           </span>
           <ul className="space-y-1.5 text-muted-foreground font-medium">
             {linkData.unverified.map((unv, idx) => (
@@ -98,7 +98,7 @@ export function LinkInspectorCard({ initialLink }: LinkInspectorCardProps) {
         </div>
       </div>
 
-      <div className="pt-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs border-t border-border">
+      <div className="pt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs border-t border-border">
         <span className="text-muted-foreground italic leading-normal">{linkData.disclaimer}</span>
 
         {linkData.rdapStatus === "not_run" ? (
@@ -106,23 +106,23 @@ export function LinkInspectorCard({ initialLink }: LinkInspectorCardProps) {
             type="button"
             disabled={linkCheckMutation.isPending}
             onClick={handleRunDomainCheck}
-            className="min-h-[44px] inline-flex items-center gap-2 px-3.5 py-2 btn-secondary font-semibold text-xs rounded-md disabled:opacity-50 transition-colors"
+            className="min-h-[44px] inline-flex items-center gap-2 px-3.5 py-2 btn-secondary font-semibold text-xs rounded-md disabled:opacity-50 transition-colors cursor-pointer"
           >
             {linkCheckMutation.isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin text-primary" aria-hidden="true" />
-                <span>Checking RDAP registry...</span>
+                <span>Checking official registry records...</span>
               </>
             ) : (
               <>
                 <Search className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
-                <span>Run Live RDAP Domain Check</span>
+                <span>Check Official Domain Registry (RDAP)</span>
               </>
             )}
           </button>
         ) : (
           <span className="text-muted-foreground font-mono text-xs">
-            RDAP Registration Checked • Status: {linkData.rdapStatus}
+            Official Registry (RDAP) Status: {linkData.rdapStatus}
           </span>
         )}
       </div>

@@ -416,6 +416,13 @@ export function Login() {
                   Continue as Guest (No login required) →
                 </Link>
               </p>
+              <p className="pt-2 border-t border-border text-[11px]">
+                By signing in, you agree to our{" "}
+                <Link to="/about" className="text-primary underline hover:text-primary/80">
+                  Privacy Principles
+                </Link>
+                . We never sell your data or share your reports.
+              </p>
             </div>
           </>
         )}

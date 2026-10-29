@@ -240,11 +240,20 @@ export function Signup() {
               ⚡ Google Sign-In automatically verifies your email through your Google account (no password or OTP required). To set a password and verify with an OTP code, use the form above.
             </p>
 
-            <div className="pt-2 text-center text-xs text-muted-foreground">
-              Already have an account?{" "}
-              <Link to="/login" className="text-primary font-bold hover:underline min-h-[44px] inline-flex items-center">
-                Log in
-              </Link>
+            <div className="pt-2 text-center space-y-2 text-xs text-muted-foreground">
+              <p>
+                Already have an account?{" "}
+                <Link to="/login" className="text-primary font-bold hover:underline min-h-[44px] inline-flex items-center">
+                  Log in
+                </Link>
+              </p>
+              <p className="pt-2 border-t border-border text-[11px]">
+                By creating an account, you agree to our{" "}
+                <Link to="/about" className="text-primary underline hover:text-primary/80">
+                  Privacy Principles
+                </Link>
+                . We never sell your data or share your reports.
+              </p>
             </div>
           </form>
         )}

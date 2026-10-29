@@ -17,7 +17,29 @@ import {
   AlertTriangle,
   ShieldAlert,
   Ban,
+  Calendar,
+  Building2,
 } from "lucide-react";
+
+const STATUS_FILTERS: { label: string; value: VerificationStatus | undefined }[] = [
+  { label: "All Statuses", value: undefined },
+  { label: "Verified", value: "VERIFIED_OFFICIAL" },
+  { label: "Likely Genuine", value: "LIKELY_GENUINE" },
+  { label: "Needs Review", value: "NEEDS_REVIEW" },
+  { label: "High Risk", value: "HIGH_RISK" },
+  { label: "Confirmed Scam", value: "CONFIRMED_SCAM" },
+];
+
+const DOMAIN_FILTERS: { label: string; value: OpportunityDomain | undefined }[] = [
+  { label: "All Categories", value: undefined },
+  { label: "Internship", value: "internship" },
+  { label: "Scholarship", value: "scholarship" },
+  { label: "Job", value: "job" },
+  { label: "Freelance", value: "freelance" },
+  { label: "Competition", value: "competition" },
+  { label: "Website", value: "website" },
+  { label: "Other", value: "message_other" },
+];
 
 export function History() {
   const queryClient = useQueryClient();
@@ -75,7 +97,7 @@ export function History() {
     }
 
     return (
-      <span className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-0.5 rounded-sm border font-semibold ${badgeClass}`}>
+      <span className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-0.5 rounded-sm border font-semibold whitespace-nowrap ${badgeClass}`}>
         <Icon className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
         <span>{copy.label}</span>
       </span>
@@ -83,7 +105,8 @@ export function History() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2.5">
@@ -107,48 +130,68 @@ export function History() {
         )}
       </div>
 
-      {/* Filter Bar */}
-      <div className="bg-surface p-4 rounded-md border border-border shadow-xs flex flex-wrap items-center gap-4 text-xs font-medium">
-        <span className="flex items-center gap-1.5 text-muted-foreground font-semibold uppercase tracking-wider">
+      {/* Filter Chips Bar */}
+      <div className="bg-surface p-4 sm:p-5 rounded-md border border-border shadow-xs space-y-3.5">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
           <Filter className="w-3.5 h-3.5" strokeWidth={1.75} aria-hidden="true" />
-          Filter by:
-        </span>
+          <span>Filters</span>
+        </div>
 
-        {/* Verification Status Filter */}
-        <select
-          value={selectedStatus || ""}
-          onChange={(e) => {
-            setSelectedStatus((e.target.value as VerificationStatus) || undefined);
-            setPage(1);
-          }}
-          className="min-h-[44px] p-2 bg-surface-raised border border-border rounded-md text-foreground cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <option value="">All Verification Statuses</option>
-          <option value="VERIFIED_OFFICIAL">Verified / Official</option>
-          <option value="LIKELY_GENUINE">Likely Genuine</option>
-          <option value="NEEDS_REVIEW">Needs Review</option>
-          <option value="HIGH_RISK">High Risk</option>
-          <option value="CONFIRMED_SCAM">Confirmed Scam</option>
-        </select>
+        {/* Status filter chips */}
+        <div className="space-y-1.5">
+          <span className="text-[11px] font-semibold text-muted-foreground block">Verification Status:</span>
+          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by verification status">
+            {STATUS_FILTERS.map((filter) => {
+              const active = selectedStatus === filter.value;
+              return (
+                <button
+                  key={filter.label}
+                  type="button"
+                  onClick={() => {
+                    setSelectedStatus(filter.value);
+                    setPage(1);
+                  }}
+                  className={`min-h-[36px] px-3 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer border ${
+                    active
+                      ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                      : "bg-surface-raised text-muted-foreground hover:text-foreground border-border hover:bg-surface"
+                  }`}
+                  aria-pressed={active}
+                >
+                  {filter.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-        {/* Domain Filter */}
-        <select
-          value={selectedDomain || ""}
-          onChange={(e) => {
-            setSelectedDomain((e.target.value as OpportunityDomain) || undefined);
-            setPage(1);
-          }}
-          className="min-h-[44px] p-2 bg-surface-raised border border-border rounded-md text-foreground cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <option value="">All Categories</option>
-          <option value="internship">Internship</option>
-          <option value="scholarship">Scholarship</option>
-          <option value="job">Job Offer</option>
-          <option value="freelance">Freelance</option>
-          <option value="competition">Competition</option>
-          <option value="website">Website</option>
-          <option value="message_other">Other</option>
-        </select>
+        {/* Category filter chips */}
+        <div className="space-y-1.5 pt-2 border-t border-border">
+          <span className="text-[11px] font-semibold text-muted-foreground block">Offer Category:</span>
+          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by category">
+            {DOMAIN_FILTERS.map((filter) => {
+              const active = selectedDomain === filter.value;
+              return (
+                <button
+                  key={filter.label}
+                  type="button"
+                  onClick={() => {
+                    setSelectedDomain(filter.value);
+                    setPage(1);
+                  }}
+                  className={`min-h-[36px] px-3 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer border ${
+                    active
+                      ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                      : "bg-surface-raised text-muted-foreground hover:text-foreground border-border hover:bg-surface"
+                  }`}
+                  aria-pressed={active}
+                >
+                  {filter.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* List Content */}
@@ -159,7 +202,7 @@ export function History() {
           <div className="w-12 h-12 rounded-full bg-surface-raised text-muted-foreground flex items-center justify-center mx-auto">
             <HistoryIcon className="w-6 h-6" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <h3 className="text-base font-bold text-foreground">No analyses found</h3>
+          <h2 className="text-base font-bold text-foreground">No analyses found</h2>
           <p className="text-xs text-muted-foreground max-w-sm mx-auto">
             You haven&apos;t saved any analyses matching this filter yet. Check a new offer from the analyzer.
           </p>
@@ -171,59 +214,136 @@ export function History() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-3">
-          {data.items.map((item) => {
-            const currentStatus =
-              (item.verification_status || item.verificationStatus || "NEEDS_REVIEW") as VerificationStatus;
-            return (
-              <div
-                key={item.id}
-                className="bg-surface border border-border hover:border-primary/40 rounded-md p-5 shadow-xs transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-              >
-                <div className="space-y-1.5 flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
+        <div className="space-y-4">
+          {/* Desktop/Tablet Table Layout (>= 768px) */}
+          <div className="hidden md:block overflow-hidden rounded-md border border-border bg-surface shadow-xs">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-border bg-surface-raised text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                  <th scope="col" className="p-3.5">Status</th>
+                  <th scope="col" className="p-3.5">Category &amp; Org</th>
+                  <th scope="col" className="p-3.5">Summary</th>
+                  <th scope="col" className="p-3.5">Date</th>
+                  <th scope="col" className="p-3.5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border text-xs">
+                {data.items.map((item) => {
+                  const currentStatus =
+                    (item.verification_status || item.verificationStatus || "NEEDS_REVIEW") as VerificationStatus;
+                  return (
+                    <tr key={item.id} className="hover:bg-surface-raised/60 transition-colors">
+                      <td className="p-3.5 align-middle">
+                        {getStatusBadge(currentStatus)}
+                      </td>
+                      <td className="p-3.5 align-middle">
+                        <div className="space-y-0.5">
+                          <span className="font-mono uppercase font-bold text-[11px] text-muted-foreground block">
+                            {item.domain}
+                          </span>
+                          {item.claimed_org && (
+                            <span className="font-semibold text-foreground flex items-center gap-1">
+                              <Building2 className="w-3 h-3 text-muted-foreground" aria-hidden="true" />
+                              {item.claimed_org}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-3.5 align-middle max-w-xs">
+                        <p className="font-medium text-foreground line-clamp-2">
+                          {item.summary}
+                        </p>
+                      </td>
+                      <td className="p-3.5 align-middle whitespace-nowrap text-muted-foreground font-mono text-[11px]">
+                        {new Date(item.created_at).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </td>
+                      <td className="p-3.5 align-middle text-right whitespace-nowrap">
+                        <div className="inline-flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setDeleteTargetId(item.id)}
+                            className="min-w-[36px] min-h-[36px] inline-flex items-center justify-center text-muted-foreground hover:text-destructive rounded-md hover:bg-surface-raised transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            title="Delete this analysis"
+                            aria-label={`Delete analysis for ${item.claimed_org || item.summary}`}
+                          >
+                            <Trash2 className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
+                          </button>
+                          <Link
+                            to={`/results/${item.id}`}
+                            className="min-h-[36px] inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-surface-raised hover:bg-primary/10 text-foreground hover:text-primary text-xs font-bold transition-colors cursor-pointer border border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          >
+                            <span>View</span>
+                            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} aria-hidden="true" />
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card Layout (< 768px) */}
+          <div className="md:hidden space-y-3">
+            {data.items.map((item) => {
+              const currentStatus =
+                (item.verification_status || item.verificationStatus || "NEEDS_REVIEW") as VerificationStatus;
+              return (
+                <div
+                  key={item.id}
+                  className="bg-surface border border-border hover:border-primary/40 rounded-md p-4 shadow-xs transition-colors space-y-3"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     {getStatusBadge(currentStatus)}
-                    <span className="text-xs uppercase font-bold text-muted-foreground font-mono">
-                      {item.domain}
+                    <span className="text-[11px] text-muted-foreground font-mono flex items-center gap-1">
+                      <Calendar className="w-3 h-3" aria-hidden="true" />
+                      {new Date(item.created_at).toLocaleDateString()}
                     </span>
-                    {item.claimed_org && (
-                      <span className="text-xs font-semibold text-foreground">
-                        • {item.claimed_org}
-                      </span>
-                    )}
                   </div>
 
-                  <p className="text-sm font-semibold text-foreground line-clamp-1">
-                    {item.summary}
-                  </p>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <span className="uppercase font-bold font-mono">{item.domain}</span>
+                      {item.claimed_org && (
+                        <>
+                          <span>•</span>
+                          <span className="font-semibold text-foreground">{item.claimed_org}</span>
+                        </>
+                      )}
+                    </div>
+                    <p className="text-xs font-semibold text-foreground line-clamp-2">
+                      {item.summary}
+                    </p>
+                  </div>
 
-                  <span className="text-[11px] text-muted-foreground font-mono block">
-                    {new Date(item.created_at).toLocaleString()}
-                  </span>
+                  <div className="flex items-center justify-between pt-2 border-t border-border">
+                    <button
+                      type="button"
+                      onClick={() => setDeleteTargetId(item.id)}
+                      className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center text-muted-foreground hover:text-destructive rounded-md transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      title="Delete this analysis"
+                      aria-label="Delete this analysis"
+                    >
+                      <Trash2 className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
+                    </button>
+
+                    <Link
+                      to={`/results/${item.id}`}
+                      className="min-h-[44px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-surface-raised hover:bg-primary/10 text-foreground hover:text-primary text-xs font-bold transition-colors cursor-pointer border border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      View Report
+                      <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} aria-hidden="true" />
+                    </Link>
+                  </div>
                 </div>
-
-                <div className="flex items-center gap-3 self-end sm:self-center shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setDeleteTargetId(item.id)}
-                    className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center text-muted-foreground hover:text-destructive rounded-md hover:bg-surface-raised transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    title="Delete this analysis"
-                    aria-label="Delete this analysis"
-                  >
-                    <Trash2 className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
-                  </button>
-
-                  <Link
-                    to={`/results/${item.id}`}
-                    className="min-h-[44px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-surface-raised hover:bg-primary/10 text-foreground hover:text-primary text-xs font-bold transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    View Report
-                    <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} aria-hidden="true" />
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
 
           {/* Pagination */}
           {data.totalPages > 1 && (

@@ -1,15 +1,25 @@
-import { ADVISORY } from "shared";
-import { Target, AlertTriangle, Users, Award } from "lucide-react";
+import { ADVISORY, STATUS_COPY } from "shared";
+import {
+  Target,
+  AlertTriangle,
+  Users,
+  Award,
+  Scale,
+  CheckCircle2,
+  ShieldCheck,
+  ShieldAlert,
+  Ban,
+} from "lucide-react";
 
 export function About() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       <div>
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-3">
-          Built for the "Fake or Real" (Digital Trust & Safety) problem statement
+          Built for the &ldquo;Fake or Real&rdquo; (Digital Trust &amp; Safety) problem statement
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
-          About Jaanch ("जाँच")
+          About Jaanch (&ldquo;जाँच&rdquo;)
         </h1>
         <p className="mt-2 text-base text-muted-foreground leading-relaxed">
           Built by <strong>Team QuadCore</strong>, Jaanch is an explainable risk-assessment tool designed to help Indian students navigate suspicious internship offers, scholarships, freelance work, and unsolicited digital communications.
@@ -23,15 +33,89 @@ export function About() {
             <Target className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
           </div>
           <h2 className="text-lg font-bold text-foreground tracking-tight">
-            Our Core Mission & Philosophy
+            Our Core Mission &amp; Philosophy
           </h2>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Students encounter opportunities on Telegram, WhatsApp, LinkedIn, and job boards daily. While many are genuine, bad actors increasingly exploit youthful ambition to harvest money through "refundable registration deposits", fake laptop kits, or identity theft.
+          Students encounter opportunities on Telegram, WhatsApp, LinkedIn, and job boards daily. While many are genuine, bad actors increasingly exploit youthful ambition to harvest money through &ldquo;refundable registration deposits&rdquo;, fake laptop kits, or identity theft.
         </p>
         <p className="text-sm text-foreground leading-relaxed font-semibold">
           The non-negotiable principle of Jaanch is: <em>We support informed decisions. We do NOT pretend to prove that an opportunity is genuine or fraudulent.</em>
         </p>
+      </section>
+
+      {/* How Jaanch Decides — The 5 Verification Statuses */}
+      <section className="bg-surface border border-border rounded-md p-6 sm:p-8 shadow-xs space-y-5">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-md bg-primary/10 text-primary flex items-center justify-center">
+            <Scale className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-foreground tracking-tight">
+              How Jaanch Decides — The 5 Verification Statuses
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Evidence-gated status model. Statuses are determined by transparent heuristics and verified evidence.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs">
+          <div className="p-4 rounded-md bg-status-verified-bg border border-status-verified-border text-status-verified-fg space-y-1">
+            <div className="flex items-center gap-1.5 font-bold">
+              <CheckCircle2 className="w-4 h-4 text-status-verified-icon shrink-0" strokeWidth={2} aria-hidden="true" />
+              <span>{STATUS_COPY.VERIFIED_OFFICIAL.label}</span>
+            </div>
+            <p className="leading-relaxed opacity-95">{STATUS_COPY.VERIFIED_OFFICIAL.meaning}</p>
+            <span className="text-[11px] font-bold block pt-1">
+              Required: Registry match + corporate domain + SPF/DKIM authentication + listing cross-reference.
+            </span>
+          </div>
+
+          <div className="p-4 rounded-md bg-status-likely-bg border border-status-likely-border text-status-likely-fg space-y-1">
+            <div className="flex items-center gap-1.5 font-bold">
+              <ShieldCheck className="w-4 h-4 text-status-likely-icon shrink-0" strokeWidth={2} aria-hidden="true" />
+              <span>{STATUS_COPY.LIKELY_GENUINE.label}</span>
+            </div>
+            <p className="leading-relaxed opacity-95">{STATUS_COPY.LIKELY_GENUINE.meaning}</p>
+            <span className="text-[11px] font-bold block pt-1">
+              Required: 0 scam signals, satisfactory completeness, but unconfirmed on official listing.
+            </span>
+          </div>
+
+          <div className="p-4 rounded-md bg-status-review-bg border border-status-review-border text-status-review-fg space-y-1">
+            <div className="flex items-center gap-1.5 font-bold">
+              <AlertTriangle className="w-4 h-4 text-status-review-icon shrink-0" strokeWidth={2} aria-hidden="true" />
+              <span>{STATUS_COPY.NEEDS_REVIEW.label}</span>
+            </div>
+            <p className="leading-relaxed opacity-95">{STATUS_COPY.NEEDS_REVIEW.meaning}</p>
+            <span className="text-[11px] font-bold block pt-1">
+              Triggered: Free webmail, 3+ missing details, unverified recruiter, or minor discrepancies.
+            </span>
+          </div>
+
+          <div className="p-4 rounded-md bg-status-high-risk-bg border border-status-high-risk-border text-status-high-risk-fg space-y-1">
+            <div className="flex items-center gap-1.5 font-bold">
+              <ShieldAlert className="w-4 h-4 text-status-high-risk-icon shrink-0" strokeWidth={2} aria-hidden="true" />
+              <span>{STATUS_COPY.HIGH_RISK.label}</span>
+            </div>
+            <p className="leading-relaxed opacity-95">{STATUS_COPY.HIGH_RISK.meaning}</p>
+            <span className="text-[11px] font-bold block pt-1">
+              Triggered: Immediate on hard disqualifiers (advance fees, UPI/crypto demands, credential theft).
+            </span>
+          </div>
+
+          <div className="p-4 rounded-md bg-status-confirmed-scam-bg border border-status-confirmed-scam-border text-status-confirmed-scam-fg space-y-1 md:col-span-2">
+            <div className="flex items-center gap-1.5 font-bold">
+              <Ban className="w-4 h-4 text-status-confirmed-scam-icon shrink-0" strokeWidth={2} aria-hidden="true" />
+              <span>{STATUS_COPY.CONFIRMED_SCAM.label}</span>
+            </div>
+            <p className="leading-relaxed opacity-95">{STATUS_COPY.CONFIRMED_SCAM.meaning}</p>
+            <span className="text-[11px] font-bold block pt-1">
+              Triggered: Reachable ONLY when sender email, domain, phone, or UPI matches a moderator-confirmed fraud record.
+            </span>
+          </div>
+        </div>
       </section>
 
       {/* Honest Scope & Limitations */}
@@ -41,7 +125,7 @@ export function About() {
             <AlertTriangle className="w-5 h-5" strokeWidth={2} aria-hidden="true" />
           </div>
           <h2 className="text-lg font-bold text-foreground tracking-tight">
-            Known Limitations & Honest Scope
+            Known Limitations &amp; Honest Scope
           </h2>
         </div>
         <ul className="space-y-2.5 text-xs sm:text-sm text-muted-foreground">
@@ -57,10 +141,10 @@ export function About() {
       {/* Verification Policy & Architecture Decisions */}
       <section className="bg-surface border border-border rounded-md p-6 sm:p-8 shadow-xs space-y-4">
         <h2 className="text-lg font-bold text-foreground tracking-tight">
-          Verification Policy & Architecture Decisions
+          Verification Policy &amp; Architecture Decisions
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-          To protect students from false confidence while delivering rigorous fraud prevention, Jaanch implements explicit trust & safety principles:
+          To protect students from false confidence while delivering rigorous fraud prevention, Jaanch implements explicit trust &amp; safety principles:
         </p>
         <ul className="space-y-3 text-xs sm:text-sm text-muted-foreground">
           <li className="flex items-start gap-2">
@@ -136,7 +220,7 @@ export function About() {
           </h2>
         </div>
         <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-          Developed with a focus on privacy-first design, deterministic heuristics, zero telemetry leakage, and evidence-grounded explainability for the Digital Trust & Safety hackathon.
+          Developed with a focus on privacy-first design, deterministic heuristics, zero telemetry leakage, and evidence-grounded explainability for the Digital Trust &amp; Safety hackathon.
         </p>
       </section>
     </div>

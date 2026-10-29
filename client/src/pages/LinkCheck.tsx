@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { LinkCheckResult } from "shared";
 import { apiClient } from "../lib/apiClient";
 import { LinkInspectorCard } from "../components/results/LinkInspectorCard";
-import { Search, Link2, AlertTriangle, Loader2 } from "lucide-react";
+import { Search, Link2, AlertTriangle, Loader2, ShieldCheck, Clock, HelpCircle } from "lucide-react";
 
 export function LinkCheck() {
   const [searchParams] = useSearchParams();
@@ -37,7 +37,7 @@ export function LinkCheck() {
     if (!trimmed) return;
 
     if (!/^https?:\/\//i.test(trimmed)) {
-      setError("Please include http:// or https:// at the beginning of the URL.");
+      setError("Please include http:// or https:// at the beginning of the web address.");
       return;
     }
 
@@ -47,20 +47,20 @@ export function LinkCheck() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <div>
-        <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2.5">
-          <Link2 className="w-8 h-8 text-primary" strokeWidth={1.75} aria-hidden="true" />
-          Link & Domain Inspector
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2.5">
+          <Link2 className="w-7 h-7 text-primary" strokeWidth={1.75} aria-hidden="true" />
+          Link &amp; Domain Inspector
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Check domain age, lookalike impersonations, and shorteners. We query RDAP registries directly and <strong>never fetch or visit the target website</strong>.
+        <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+          Verify domain age, brand lookalikes, and hidden redirects before opening an unfamiliar link. We check official domain registration records directly and <strong>never visit or download content from the target website</strong>.
         </p>
       </div>
 
       {/* Input Form */}
-      <div className="bg-surface rounded-md border border-border shadow-elevation-1 p-6 sm:p-8">
+      <div className="bg-surface rounded-md border border-border shadow-elevation-1 p-6 sm:p-8 space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">
           <label htmlFor="url-input" className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
-            Enter URL to Inspect
+            Enter Web Address to Inspect
           </label>
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
@@ -92,7 +92,7 @@ export function LinkCheck() {
               ) : (
                 <>
                   <Search className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
-                  Inspect Domain
+                  Inspect Link
                 </>
               )}
             </button>
@@ -105,6 +105,31 @@ export function LinkCheck() {
             </div>
           )}
         </form>
+
+        {/* Educational hints */}
+        <div className="pt-3 border-t border-border grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-muted-foreground">
+          <div className="flex items-start gap-2">
+            <Clock className="w-4 h-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+            <div>
+              <strong className="text-foreground block font-semibold">Domain Age Check</strong>
+              <span>Brand-new domains (less than 30 days old) are a frequent sign of temporary scam campaigns.</span>
+            </div>
+          </div>
+          <div className="flex items-start gap-2">
+            <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+            <div>
+              <strong className="text-foreground block font-semibold">Lookalike Protection</strong>
+              <span>Detects deceptive spellings that pretend to be legitimate companies or government bodies.</span>
+            </div>
+          </div>
+          <div className="flex items-start gap-2">
+            <HelpCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+            <div>
+              <strong className="text-foreground block font-semibold">Zero-Visit Privacy</strong>
+              <span>Queries official internet registries only. The target site never gets your IP address.</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Result Display */}
