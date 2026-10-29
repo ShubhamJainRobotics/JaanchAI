@@ -111,7 +111,7 @@ export function PdfUploadPanel({ onTextExtracted }: PdfUploadPanelProps) {
           className="p-4 rounded-md bg-surface-raised border border-border"
           aria-live="polite"
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-foreground mb-1.5 font-mono">
+          <div className="flex items-center justify-between text-xs font-semibold text-foreground mb-1.5">
             <span className="flex items-center gap-2">
               <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" strokeWidth={2} aria-hidden="true" />
               {progress.status}

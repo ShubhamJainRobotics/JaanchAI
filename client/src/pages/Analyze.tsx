@@ -221,7 +221,7 @@ export function Analyze() {
                 <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                   Step 1 · The Offer
                 </span>
-                <span className="text-xs text-muted-foreground font-mono">
+                <span className="text-xs text-muted-foreground tabular-nums">
                   Min {INPUT_LIMITS.textMin} characters
                 </span>
               </div>

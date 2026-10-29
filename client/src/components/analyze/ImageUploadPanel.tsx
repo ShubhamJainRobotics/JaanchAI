@@ -101,7 +101,7 @@ export function ImageUploadPanel({ onTextExtracted }: ImageUploadPanelProps) {
               alt="Screenshot preview"
               className="max-h-48 rounded-md shadow-xs mx-auto object-contain border border-border"
             />
-            <p className="text-xs text-muted-foreground font-mono">
+            <p className="text-xs text-muted-foreground">
               {file?.name} ({(file?.size! / 1024).toFixed(0)} KB)
             </p>
           </div>
@@ -128,7 +128,7 @@ export function ImageUploadPanel({ onTextExtracted }: ImageUploadPanelProps) {
           className="p-4 rounded-md bg-surface-raised border border-border"
           aria-live="polite"
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-foreground mb-1.5 font-mono">
+          <div className="flex items-center justify-between text-xs font-semibold text-foreground mb-1.5">
             <span className="flex items-center gap-2">
               <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" strokeWidth={2} aria-hidden="true" />
               {ocrProgress.status}

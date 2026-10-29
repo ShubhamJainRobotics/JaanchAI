@@ -238,7 +238,7 @@ export function History() {
                       </td>
                       <td className="p-3.5 align-middle">
                         <div className="space-y-0.5">
-                          <span className="font-mono uppercase font-bold text-[11px] text-muted-foreground block">
+                          <span className="uppercase font-semibold tracking-wide text-[11px] text-muted-foreground block">
                             {item.domain}
                           </span>
                           {item.claimed_org && (
@@ -254,7 +254,7 @@ export function History() {
                           {item.summary}
                         </p>
                       </td>
-                      <td className="p-3.5 align-middle whitespace-nowrap text-muted-foreground font-mono text-[11px]">
+                      <td className="p-3.5 align-middle whitespace-nowrap text-muted-foreground text-[11px] tabular-nums">
                         {new Date(item.created_at).toLocaleDateString(undefined, {
                           year: "numeric",
                           month: "short",
@@ -300,7 +300,7 @@ export function History() {
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     {getStatusBadge(currentStatus)}
-                    <span className="text-[11px] text-muted-foreground font-mono flex items-center gap-1">
+                    <span className="text-[11px] text-muted-foreground flex items-center gap-1 tabular-nums">
                       <Calendar className="w-3 h-3" aria-hidden="true" />
                       {new Date(item.created_at).toLocaleDateString()}
                     </span>
@@ -308,7 +308,7 @@ export function History() {
 
                   <div className="space-y-1">
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <span className="uppercase font-bold font-mono">{item.domain}</span>
+                      <span className="uppercase font-semibold tracking-wide">{item.domain}</span>
                       {item.claimed_org && (
                         <>
                           <span>•</span>
@@ -356,7 +356,7 @@ export function History() {
                 <ChevronLeft className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
                 Previous
               </button>
-              <span className="text-xs text-muted-foreground font-medium font-mono tabular-nums">
+              <span className="text-xs text-muted-foreground font-medium tabular-nums">
                 Page {page} of {data.totalPages}
               </span>
               <button

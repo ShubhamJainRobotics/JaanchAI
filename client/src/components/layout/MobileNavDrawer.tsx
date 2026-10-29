@@ -116,7 +116,7 @@ export function MobileNavDrawer({ isOpen, onClose, triggerRef }: MobileNavDrawer
               <ShieldCheck className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
             </div>
             <span className="font-extrabold tracking-tight text-foreground text-base">Jaanch</span>
-            <span className="text-xs font-semibold px-1 py-0.5 rounded-sm bg-surface-raised text-primary border border-border">
+            <span className="text-xs font-semibold px-1.5 py-0.5 rounded-sm bg-primary-tint text-primary border border-primary-tint-border">
               जाँच
             </span>
           </Link>

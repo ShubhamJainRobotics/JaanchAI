@@ -87,7 +87,7 @@ export function ExtractedTextEditor({
       {/* Counter bar */}
       <div
         id="char-count-msg"
-        className="flex items-center justify-between text-xs text-muted-foreground font-mono"
+        className="flex items-center justify-between text-xs text-muted-foreground"
       >
         <span>
           {isTooShort && (

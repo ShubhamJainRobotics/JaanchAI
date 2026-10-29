@@ -180,4 +180,41 @@ describe("Content Authenticity & Anti-Pattern Verification (§8.6)", () => {
       expect(content).not.toMatch(bannedPartners);
     }
   });
+
+  it("ensures font-mono is strictly contained and not leaked into UI labels or headers (§3.4, §6)", () => {
+    const clientSrc = path.resolve(__dirname, "..");
+    const files: string[] = [];
+
+    function walk(dir: string) {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (entry.name !== "node_modules" && entry.name !== "dist") {
+            walk(full);
+          }
+        } else if (/\.tsx$/.test(entry.name)) {
+          files.push(full);
+        }
+      }
+    }
+    walk(clientSrc);
+
+    // Banned places for font-mono: headers, buttons, UI labels, channel strings, fictional offer banners
+    const bannedMonoPatterns = [
+      /<h[1-6][^>]*font-mono/i,
+      /<button[^>]*font-mono/i,
+      /WhatsApp \/ Telegram \/ Email[^>]*font-mono/i,
+      /font-mono[^>]*>WhatsApp \/ Telegram \/ Email/i,
+      /Example\s*[-—]\s*fictional offer[^>]*font-mono/i,
+      /Sample Preview[^>]*font-mono/i,
+    ];
+
+    for (const f of files) {
+      if (f.includes("__tests__")) continue;
+      const content = fs.readFileSync(f, "utf-8");
+      for (const pattern of bannedMonoPatterns) {
+        expect(content).not.toMatch(pattern);
+      }
+    }
+  });
 });

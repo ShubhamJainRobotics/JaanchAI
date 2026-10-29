@@ -163,7 +163,7 @@ export function ExportReportDialog({
         </div>
 
         {/* Live Status Announcements */}
-        <div aria-live="polite" className="text-xs font-mono">
+        <div aria-live="polite" className="text-xs">
           {isGenerating && (
             <div className="flex items-center gap-2 text-primary font-medium py-1">
               <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} aria-hidden="true" />

@@ -121,8 +121,8 @@ export function LinkInspectorCard({ initialLink }: LinkInspectorCardProps) {
             )}
           </button>
         ) : (
-          <span className="text-muted-foreground font-mono text-xs">
-            Official Registry (RDAP) Status: {linkData.rdapStatus}
+          <span className="text-muted-foreground text-xs font-medium">
+            Official Registry (RDAP) Status: <span className="font-mono">{linkData.rdapStatus}</span>
           </span>
         )}
       </div>

@@ -157,7 +157,7 @@ export function Results() {
             <div className="hidden sm:block">
               <ExportReportButtons result={analysis} />
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-mono">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground tabular-nums">
               <Clock className="w-3.5 h-3.5" aria-hidden="true" />
               <span>Analyzed in {analysis.durationMs}ms</span>
             </div>
@@ -368,7 +368,7 @@ export function Results() {
                 <div className="p-4 bg-surface-raised border border-border rounded-lg text-xs text-muted-foreground italic">
                   {analysis.disclaimer}
                 </div>
-                <p className="text-[11px] text-muted-foreground font-mono">
+                <p className="text-[11px] text-muted-foreground tabular-nums">
                   Report generated on {new Date(analysis.createdAt).toLocaleDateString()}
                 </p>
               </div>

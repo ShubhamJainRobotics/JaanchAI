@@ -110,7 +110,7 @@ export function Resources() {
                       <h3 className="text-sm font-bold text-foreground">
                         {guide.title}
                       </h3>
-                      <span className="text-[11px] text-muted-foreground uppercase font-mono tracking-wider font-semibold">
+                      <span className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">
                         {domain}
                       </span>
                     </div>
@@ -197,7 +197,7 @@ export function Resources() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="font-bold text-sm text-foreground">{portal.name}</h3>
-                  <span className="text-[10px] font-mono uppercase bg-surface-raised text-muted-foreground px-2 py-0.5 rounded-sm font-semibold">
+                  <span className="text-[10px] uppercase bg-surface-raised text-muted-foreground px-2 py-0.5 rounded-sm font-semibold tracking-wide">
                     {portal.domains.join(", ")}
                   </span>
                 </div>

@@ -81,7 +81,7 @@ export function ResultsSidebar({ result, sections }: ResultsSidebarProps) {
         <div className="space-y-1.5 pt-2 border-t border-border">
           <div className="flex items-center justify-between text-xs font-medium text-foreground">
             <span>Independent checks</span>
-            <span className="font-mono tabular-nums">{completedChecks} of {totalChecks}</span>
+            <span className="font-semibold tabular-nums">{completedChecks} of {totalChecks}</span>
           </div>
           <div
             role="progressbar"

@@ -37,7 +37,7 @@ export function Navbar() {
               <span className="text-xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors">
                 Jaanch
               </span>
-              <span className="ml-1 text-xs font-semibold px-1.5 py-0.5 rounded-sm bg-surface-raised text-primary border border-border">
+              <span className="ml-1 text-xs font-semibold px-1.5 py-0.5 rounded-sm bg-primary-tint text-primary border border-primary-tint-border">
                 जाँच
               </span>
             </div>

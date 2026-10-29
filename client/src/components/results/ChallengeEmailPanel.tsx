@@ -251,15 +251,15 @@ export function ChallengeEmailPanel({
         <div className="space-y-3 pt-2">
           <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
             <div>
-              <span className="text-[10px] font-mono uppercase text-slate-400 dark:text-slate-500 block">
+              <span className="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 block font-medium">
                 Subject
               </span>
-              <p className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 font-mono">
+              <p className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
                 {emailData.subject}
               </p>
             </div>
             <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
-              <span className="text-[10px] font-mono uppercase text-slate-400 dark:text-slate-500 block mb-1">
+              <span className="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-1 font-medium">
                 Body
               </span>
               <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed font-sans">

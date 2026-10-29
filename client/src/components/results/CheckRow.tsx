@@ -84,7 +84,7 @@ export function CheckRow({
             {label}
           </span>
           {source && (
-            <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-sm bg-surface-raised text-muted-foreground border border-border">
+            <span className="text-[10px] uppercase tracking-wide font-medium px-1.5 py-0.5 rounded-sm bg-surface-raised text-muted-foreground border border-border">
               {source}
             </span>
           )}

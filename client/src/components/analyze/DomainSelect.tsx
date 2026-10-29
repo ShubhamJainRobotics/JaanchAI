@@ -39,7 +39,7 @@ export function DomainSelect({ value, onChange }: DomainSelectProps) {
               onClick={() => onChange(opt.id)}
               className={`min-h-[64px] flex flex-col items-center justify-center p-2.5 rounded-md border text-center transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 isSelected
-                  ? "border-primary bg-primary/10 text-primary font-bold shadow-xs ring-1 ring-primary"
+                  ? "border-primary bg-primary-tint text-primary font-bold shadow-xs ring-1 ring-primary"
                   : "border-border bg-surface hover:bg-surface-raised text-foreground font-medium"
               }`}
             >

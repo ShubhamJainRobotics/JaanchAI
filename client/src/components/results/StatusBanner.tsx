@@ -124,7 +124,7 @@ export function StatusBanner({
       >
         <div className="flex items-center justify-between text-xs font-semibold">
           <span>{coverage.label}</span>
-          <span className="tabular-nums font-mono text-xs opacity-90">
+          <span className="tabular-nums font-semibold text-xs opacity-90">
             {coverage.completed} / {coverage.total}
           </span>
         </div>

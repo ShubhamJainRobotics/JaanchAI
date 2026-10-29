@@ -50,7 +50,7 @@ export function HowItWorks() {
               <div>
                 <div className="flex items-center justify-between mb-3.5">
                   <IconTile icon={step.icon} variant="primary" size="md" />
-                  <span className="text-2xl font-black text-muted-foreground/40 font-mono">
+                  <span className="text-2xl font-black text-muted-foreground/30 tabular-nums">
                     0{step.number}
                   </span>
                 </div>

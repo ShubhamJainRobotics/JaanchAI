@@ -27,7 +27,7 @@ export function StudentSafetyRules() {
             key={rule.id}
             className="flex items-start gap-3 p-3.5 rounded-md bg-surface border border-border shadow-xs"
           >
-            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-black shrink-0 font-mono tabular-nums">
+            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 tabular-nums">
               {idx + 1}
             </span>
             <div className="space-y-0.5">

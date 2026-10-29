@@ -148,7 +148,7 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
             <h2 className="text-base sm:text-lg font-bold text-foreground tracking-tight">
               Offer Verification Evidence Report
             </h2>
-            <p className="text-xs text-muted-foreground font-mono mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               {summaryLine}
             </p>
           </div>

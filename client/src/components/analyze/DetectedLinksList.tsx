@@ -28,9 +28,9 @@ export function DetectedLinksList({ text }: DetectedLinksListProps) {
         {matches.map((url, idx) => (
           <div
             key={idx}
-            className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 bg-surface rounded-md border border-border font-mono text-xs gap-2"
+            className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 bg-surface rounded-md border border-border text-xs gap-2"
           >
-            <span className="text-foreground select-all break-all overflow-wrap-anywhere">
+            <span className="font-mono text-foreground select-all break-all overflow-wrap-anywhere">
               {url}
             </span>
             <Link

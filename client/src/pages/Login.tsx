@@ -370,7 +370,7 @@ export function Login() {
                 <div className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-surface px-3 text-muted-foreground font-semibold font-mono">Or</span>
+                <span className="bg-surface px-3 text-muted-foreground font-semibold tracking-wider">Or</span>
               </div>
             </div>
 

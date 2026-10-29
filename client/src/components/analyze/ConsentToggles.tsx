@@ -48,7 +48,7 @@ export function ConsentToggles({
             <h3 className="text-sm font-bold text-foreground">
               Privacy options
             </h3>
-            <p className="text-xs text-muted-foreground font-mono mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               {summaryText}
             </p>
           </div>

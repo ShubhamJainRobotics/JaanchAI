@@ -60,7 +60,7 @@ export function FiveStepFlow() {
                     <div className="w-10 h-10 rounded-md bg-surface border border-border text-primary flex items-center justify-center shadow-xs">
                       <IconComponent className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
                     </div>
-                    <span className="text-2xl font-black text-muted-foreground/40 font-mono tabular-nums">
+                    <span className="text-2xl font-black text-muted-foreground/30 tabular-nums">
                       {step.num}
                     </span>
                   </div>

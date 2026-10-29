@@ -56,7 +56,7 @@ export function ReportedRecordsCard({
               <div className="space-y-0.5 text-xs sm:text-sm">
                 <div className="flex items-center gap-2 font-bold">
                   <span>Matched {m.entityType}</span>
-                  <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-white/80 dark:bg-black/30 border border-current/20">
+                  <span className="text-[10px] uppercase font-medium tracking-wide px-2 py-0.5 rounded-full bg-white/80 dark:bg-black/30 border border-current/20">
                     {m.status === "confirmed" ? "Confirmed Fraud" : `Reported (${m.reportCount} reports)`}
                   </span>
                 </div>

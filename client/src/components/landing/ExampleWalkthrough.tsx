@@ -22,7 +22,7 @@ export function ExampleWalkthrough() {
 
         {/* Input Message Card */}
         <div className="bg-surface border border-border rounded-md p-5 mb-8 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-2 font-mono">
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-2 font-medium tracking-wide">
             <span>INCOMING MESSAGE (WHATSAPP)</span>
             <span>DOMAIN: INTERNSHIP</span>
           </div>

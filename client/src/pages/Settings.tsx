@@ -145,7 +145,7 @@ export function Settings() {
                 type="email"
                 disabled
                 value={user?.email || ""}
-                className="w-full min-h-[44px] px-3.5 py-2.5 bg-surface-raised border border-border rounded-md text-sm text-muted-foreground font-mono"
+                className="w-full min-h-[44px] px-3.5 py-2.5 bg-surface-raised border border-border rounded-md text-sm text-muted-foreground"
               />
             </div>
 

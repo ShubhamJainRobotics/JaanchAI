@@ -52,9 +52,9 @@ export function RiskBanner({
 
         {/* Engine badges */}
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 font-mono font-medium border border-current/10">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 font-medium border border-current/10">
             <Cpu className="w-3.5 h-3.5" />
-            Rule Engine Score: {ruleScore}/100
+            Rule Engine Score: <span className="tabular-nums font-semibold">{ruleScore}/100</span>
           </span>
 
           {aiUsed && aiStatus === "ok" ? (

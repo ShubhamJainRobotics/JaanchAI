@@ -17,7 +17,7 @@ export function SampleReportPreview() {
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-surface-raised border border-border text-xs font-semibold text-muted-foreground uppercase tracking-wider">
           Example — fictional offer
         </span>
-        <span className="text-xs text-muted-foreground font-mono">
+        <span className="text-xs text-muted-foreground font-medium">
           Sample Preview
         </span>
       </div>
@@ -100,7 +100,7 @@ export function SampleReportPreview() {
       <div className="mt-4 pt-3 border-t border-border space-y-1.5">
         <div className="flex items-center justify-between text-xs font-medium text-foreground">
           <span>Independent checks completed</span>
-          <span className="font-mono tabular-nums">{completedChecks} of {totalChecks}</span>
+          <span className="font-semibold tabular-nums">{completedChecks} of {totalChecks}</span>
         </div>
         <div
           role="progressbar"

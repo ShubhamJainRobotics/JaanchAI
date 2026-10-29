@@ -51,7 +51,7 @@ export function ClaimedOrgInput({ value, onChange }: ClaimedOrgInputProps) {
               className="w-full min-h-[44px] text-left px-4 py-2 text-xs font-medium text-foreground hover:bg-surface-raised transition-colors flex items-center justify-between cursor-pointer"
             >
               <span>{org.name}</span>
-              <span className="text-muted-foreground font-mono text-[10px]">
+              <span className="text-muted-foreground text-[10px]">
                 {org.officialDomains[0]}
               </span>
             </button>

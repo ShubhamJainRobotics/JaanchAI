@@ -139,11 +139,11 @@ export function OrganizationAutocomplete({
                     <span className="font-bold text-foreground truncate">
                       {org.name}
                     </span>
-                    <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded-sm bg-surface-raised text-muted-foreground">
+                    <span className="text-[10px] uppercase font-medium tracking-wide px-1.5 py-0.5 rounded-sm bg-surface-raised text-muted-foreground">
                       {org.kind}
                     </span>
                     {org.isDemo && (
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-sm bg-status-review-bg text-status-review-fg border border-status-review-border">
+                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-sm bg-status-review-bg text-status-review-fg border border-status-review-border">
                         Demo
                       </span>
                     )}

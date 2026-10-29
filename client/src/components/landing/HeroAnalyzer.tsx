@@ -55,7 +55,7 @@ export function HeroAnalyzer() {
             <label htmlFor="hero-offer-text" className="block text-sm font-bold text-foreground">
               Paste the offer message
             </label>
-            <span className="text-xs text-muted-foreground font-mono tabular-nums">
+            <span className="text-xs text-muted-foreground tabular-nums">
               {text.length > 0 ? `${text.length} chars` : "WhatsApp / Telegram / Email"}
             </span>
           </div>
