@@ -35,20 +35,20 @@ export function FeedbackWidget({ analysisId }: FeedbackWidgetProps) {
 
   if (submitted) {
     return (
-      <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-center flex items-center justify-center gap-2 text-xs font-semibold text-slate-700">
-        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+      <div className="p-4 bg-status-verified-bg border border-status-verified-border rounded-md text-center flex items-center justify-center gap-2 text-xs font-semibold text-status-verified-fg">
+        <CheckCircle2 className="w-4 h-4 text-status-verified-icon" strokeWidth={2} aria-hidden="true" />
         Thank you for your feedback! It helps improve Jaanch's safety guidance.
       </div>
     );
   }
 
   return (
-    <div className="p-4 bg-white border border-slate-200 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+    <div className="p-4 bg-surface border border-border rounded-md flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-xs">
       <div>
-        <span className="font-bold text-slate-900 block">
+        <span className="font-bold text-foreground block">
           Was this verification breakdown helpful?
         </span>
-        <span className="text-slate-500 text-[11px]">
+        <span className="text-muted-foreground text-[11px]">
           Your feedback sharpens our rule engine and guidance clarity.
         </span>
       </div>
@@ -58,18 +58,18 @@ export function FeedbackWidget({ analysisId }: FeedbackWidgetProps) {
           type="button"
           disabled={loading}
           onClick={() => handleSubmit(true)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium transition-colors"
+          className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-md border border-border hover:bg-surface-raised text-foreground font-medium transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <ThumbsUp className="w-3.5 h-3.5 text-emerald-600" />
+          <ThumbsUp className="w-3.5 h-3.5 text-status-verified-icon" strokeWidth={1.75} aria-hidden="true" />
           Yes
         </button>
         <button
           type="button"
           disabled={loading}
           onClick={() => handleSubmit(false)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium transition-colors"
+          className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-md border border-border hover:bg-surface-raised text-foreground font-medium transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <ThumbsDown className="w-3.5 h-3.5 text-red-600" />
+          <ThumbsDown className="w-3.5 h-3.5 text-status-high-risk-icon" strokeWidth={1.75} aria-hidden="true" />
           No
         </button>
       </div>

@@ -186,6 +186,39 @@ This document tracks all visual and interaction restyle batches, design system o
   - Production client build passed (Vite + TypeScript).
   - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-6/`.
 
+---
+
+## Batch 7: System States & Accessible Dialogs
+- **Loading Skeleton (PageSkeleton.tsx):**
+  - Upgraded pulsing skeleton to use token variables (`bg-surface-raised border border-border rounded-md`).
+  - Added accessibility attributes (`role="status"`, `aria-busy="true"`, screen-reader-only announcement).
+- **ErrorBoundary (ErrorBoundary.tsx):**
+  - Restyled fallback card using `status-high-risk` border/icon tokens and `surface` card styling.
+  - Added min 44px reload button with visible focus ring.
+- **Confirmation Dialog (ConfirmDialog.tsx):**
+  - Esc key close handler with body scroll lock management.
+  - Focus trapping and accessible dialog semantics (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`).
+  - Min 44px touch targets for Cancel and Confirm buttons.
+- **Export Report Dialog (ExportReportDialog.tsx):**
+  - Restyled using design tokens, Esc key handler, and backdrop blur.
+  - Download and fallback Print buttons upgraded with min 44px hit heights.
+  - Token-styled status announcements with `aria-live="polite"`.
+- **Scam Report Dialog (ReportEntityDialog.tsx):**
+  - Added Esc key close listener with clean scroll lock teardown.
+  - Form selects, text inputs, and submit button upgraded to min 44px touch targets.
+- **Feedback Widget (FeedbackWidget.tsx):**
+  - Restyled with `surface`, `border-border`, and `status-verified` tokens on submission.
+  - Min 44px touch targets for Yes/No feedback thumbs.
+- **Student Safety Rules (StudentSafetyRules.tsx):**
+  - Restyled container and principle rows using `surface-raised` and `border-border` tokens.
+  - Min 44px hit area for cybercrime.gov.in official link.
+- **Verification:**
+  - All 33 client vitest tests passed.
+  - Full workspace typecheck passed.
+  - Production client build passed (Vite + TypeScript).
+  - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-7/`.
+
+
 
 
 

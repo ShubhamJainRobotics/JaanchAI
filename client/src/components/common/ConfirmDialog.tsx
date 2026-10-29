@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { AlertTriangle } from "lucide-react";
 
 interface ConfirmDialogProps {
@@ -21,49 +22,70 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onCancel();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [isOpen, onCancel]);
+
   if (!isOpen) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-xs"
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
     >
-      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
+      <div
+        ref={dialogRef}
+        className="bg-surface rounded-md max-w-md w-full p-6 shadow-elevation-2 border border-border"
+      >
         <div className="flex items-start gap-4">
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+            className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 border ${
               isDestructive
-                ? "bg-red-50 text-red-600"
-                : "bg-brand-50 text-brand-600"
+                ? "bg-status-high-risk-bg text-status-high-risk-icon border-status-high-risk-border"
+                : "bg-primary/10 text-primary border-primary/20"
             }`}
           >
-            <AlertTriangle className="w-5 h-5" />
+            <AlertTriangle className="w-5 h-5" strokeWidth={2} aria-hidden="true" />
           </div>
           <div className="flex-1">
             <h3
               id="dialog-title"
-              className="text-lg font-bold text-slate-900 mb-1"
+              className="text-lg font-bold text-foreground mb-1"
             >
               {title}
             </h3>
-            <p className="text-sm text-slate-600 mb-6">{message}</p>
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">{message}</p>
             <div className="flex justify-end gap-3">
               <button
                 type="button"
                 onClick={onCancel}
-                className="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                className="min-h-[44px] px-4 py-2 border border-border rounded-md text-sm font-medium text-foreground bg-surface hover:bg-surface-raised transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {cancelLabel}
               </button>
               <button
                 type="button"
                 onClick={onConfirm}
-                className={`px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors ${
+                className={`min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isDestructive
-                    ? "bg-red-600 hover:bg-red-700"
-                    : "bg-brand-600 hover:bg-brand-700"
+                    ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold shadow-xs"
+                    : "bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-xs"
                 }`}
               >
                 {confirmLabel}
