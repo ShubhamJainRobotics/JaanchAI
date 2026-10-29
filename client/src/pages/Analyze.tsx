@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { OpportunityDomain, Channel, INPUT_LIMITS } from "shared";
+import { OpportunityDomain, Channel, INPUT_LIMITS, routeFields } from "shared";
 import { InputTabs, InputMode } from "../components/analyze/InputTabs";
 import { ImageUploadPanel } from "../components/analyze/ImageUploadPanel";
 import { PdfUploadPanel } from "../components/analyze/PdfUploadPanel";
@@ -12,7 +12,7 @@ import { ConsentToggles } from "../components/analyze/ConsentToggles";
 import { useAuth } from "../hooks/useAuth";
 import { useAnalyze } from "../hooks/useAnalyze";
 import { DemoSample } from "../demo/samples";
-import { ShieldCheck, Loader2, AlertCircle } from "lucide-react";
+import { ShieldCheck, Loader2, AlertCircle, Info } from "lucide-react";
 
 import { SenderDetailsSection, SenderDetailsState } from "../components/analyze/SenderDetailsSection";
 
@@ -29,6 +29,7 @@ export function Analyze() {
   const [saveToHistory, setSaveToHistory] = useState(isAuthenticated);
   const [storeRawText, setStoreRawText] = useState(true);
   const [formError, setFormError] = useState<string | null>(null);
+  const [inputNotices, setInputNotices] = useState<string[]>([]);
 
   const [senderDetails, setSenderDetails] = useState<SenderDetailsState>({
     email: "",
@@ -95,9 +96,8 @@ export function Analyze() {
       : undefined;
 
     try {
-      await analyzeMutation.mutateAsync({
+      const routed = routeFields({
         text: trimmed,
-        inputType: activeTab,
         domain,
         channel,
         claimedOrg: claimedOrg.trim() || undefined,
@@ -110,6 +110,24 @@ export function Analyze() {
         saveToHistory: isAuthenticated ? saveToHistory : false,
         storeRawText,
       });
+
+      if (routed.notices.length > 0) {
+        setInputNotices(routed.notices);
+        if (routed.request.claimedOrg !== undefined) {
+          setClaimedOrg(routed.request.claimedOrg || "");
+        }
+        if (routed.request.sender) {
+          setSenderDetails((prev) => ({
+            ...prev,
+            email: routed.request.sender?.email || prev.email,
+            phone: routed.request.sender?.phone || prev.phone,
+            upiId: routed.request.sender?.upiId || prev.upiId,
+            websiteUrl: routed.request.sender?.websiteUrl || prev.websiteUrl,
+          }));
+        }
+      }
+
+      await analyzeMutation.mutateAsync(routed.request);
     } catch (err: any) {
       setFormError(err.message || "Analysis request failed. Please check your connection and try again.");
     }
@@ -203,6 +221,21 @@ export function Analyze() {
             <div className="flex items-center gap-2 p-3.5 rounded-xl bg-red-50 text-red-700 text-xs border border-red-200">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{formError}</span>
+            </div>
+          )}
+
+          {/* Input adjustment notice */}
+          {inputNotices.length > 0 && (
+            <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-amber-50 text-amber-900 text-xs border border-amber-200">
+              <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <span className="font-bold">Input adjusted:</span>
+                <ul className="list-disc list-inside space-y-0.5 opacity-90">
+                  {inputNotices.map((notice, i) => (
+                    <li key={i}>{notice}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           )}
 

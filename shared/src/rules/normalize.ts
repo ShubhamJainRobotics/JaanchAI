@@ -1,3 +1,5 @@
+import { findSpan } from "../text/spans.js";
+
 /**
  * Normalizes text for consistent analysis while maintaining helper to extract original quotes.
  */
@@ -11,32 +13,29 @@ export function normalizeText(text: string): string {
 }
 
 /**
- * Finds an exact substring from the original raw text that caused the match.
- * Ensures the evidence quote is a real contiguous substring of the original user input.
+ * Finds an exact whole-word bounded substring from original raw text that caused the match,
+ * using findSpan. Stops at sentence boundaries and keeps length <= 160 characters.
  */
 export function extractQuote(
   rawText: string,
   regex: RegExp,
-  maxLength = 180
+  maxLength = 160
 ): string {
+  if (!rawText) return "";
+
   const match = regex.exec(rawText);
-  if (match) {
-    const rawQuote = match[0].trim();
-    if (rawQuote.length <= maxLength) {
-      return rawQuote;
-    }
-    return rawQuote.slice(0, maxLength);
+  if (match && match.index !== undefined) {
+    return findSpan(rawText, match.index, match[0].length, { maxLen: maxLength }).quote;
   }
 
   // Fallback: search case-insensitive substring
   const flags = regex.flags.includes("i") ? regex.flags : regex.flags + "i";
   const caseInsensitiveRegex = new RegExp(regex.source, flags);
   const fallbackMatch = caseInsensitiveRegex.exec(rawText);
-  if (fallbackMatch) {
-    const quote = fallbackMatch[0].trim();
-    return quote.length <= maxLength ? quote : quote.slice(0, maxLength);
+  if (fallbackMatch && fallbackMatch.index !== undefined) {
+    return findSpan(rawText, fallbackMatch.index, fallbackMatch[0].length, { maxLen: maxLength }).quote;
   }
 
-  // If no match in rawText, return a slice of rawText
-  return rawText.slice(0, Math.min(rawText.length, 60));
+  // If no match in rawText, return a clean whole-word slice of rawText
+  return findSpan(rawText, 0, Math.min(rawText.length, 60), { maxLen: maxLength }).quote;
 }

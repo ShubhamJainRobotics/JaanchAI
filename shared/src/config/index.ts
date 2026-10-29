@@ -11,3 +11,4 @@ export * from "./plausibility.js";
 export * from "./safetyRules.js";
 export * from "./nextSteps.js";
 export * from "./safetyBanner.js";
+export * from "./reasonCopy.js";

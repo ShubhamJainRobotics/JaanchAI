@@ -18,6 +18,7 @@ interface ChallengeEmailPanelProps {
   initialKind?: "safe_reply" | "challenge";
   initialQuestions?: string[];
   autoGenerateOnMount?: boolean;
+  status?: string;
 }
 
 export function ChallengeEmailPanel({
@@ -27,6 +28,7 @@ export function ChallengeEmailPanel({
   initialKind = "safe_reply",
   initialQuestions,
   autoGenerateOnMount,
+  status,
 }: ChallengeEmailPanelProps) {
   const [kind, setKind] = useState<"safe_reply" | "challenge">(initialKind);
   const [tone, setTone] = useState<"polite" | "firm">("polite");
@@ -99,10 +101,15 @@ export function ChallengeEmailPanel({
     ? `mailto:?subject=${encodeURIComponent(emailData.subject)}&body=${encodeURIComponent(emailData.body)}`
     : "#";
 
+  const isHighRisk = status === "HIGH_RISK" || status === "CONFIRMED_SCAM";
+  const hideInPrint = !emailData || isHighRisk;
+
   return (
     <div
       id="challenge-panel"
-      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4"
+      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4 ${
+        hideInPrint ? "print:hidden" : ""
+      }`}
     >
       {/* Tab Switcher: Safe Reply vs Challenge Email */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">

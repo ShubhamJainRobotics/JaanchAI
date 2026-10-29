@@ -83,6 +83,7 @@ export function ProtectYourselfList({
             step={step}
             completed={Boolean(completedMap[step.stepKey] ?? step.completed)}
             onToggleStep={onToggleStep}
+            variant="protect"
           />
         ))}
       </div>

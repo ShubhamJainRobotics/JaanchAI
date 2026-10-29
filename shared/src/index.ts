@@ -20,4 +20,11 @@ export * from "./verification/compareListing.js";
 export * from "./sender/email.js";
 export * from "./sender/headers.js";
 export * from "./nextSteps/build.js";
+export * from "./report/format.js";
+export * from "./report/buildReportViewModel.js";
+export * from "./input/routeFields.js";
+export * from "./text/segment.js";
+export * from "./text/spans.js";
+export * from "./extraction/organization.js";
+export * from "./verification/coverage.js";
 

@@ -23,9 +23,29 @@ describe("Print / PDF Export Verification (Change E8)", () => {
     expect(cssContent).toContain("display: block !important");
   });
 
-  it("avoids page breaks inside content blocks and cards", () => {
+  it("configures A4 size and 14mm margin in @page directive (§8)", () => {
+    expect(cssContent).toContain("@page");
+    expect(cssContent).toMatch(/size:\s*A4/i);
+    expect(cssContent).toMatch(/margin:\s*14mm/i);
+  });
+
+  it("avoids page breaks inside small cards and rows, but allows breaks in large containers (§8)", () => {
+    // tr, .signal-card, .step-card avoid breaks
+    expect(cssContent).toMatch(/tr,\s*\.signal-card,\s*\.step-card/);
     expect(cssContent).toContain("break-inside: avoid");
-    expect(cssContent).toContain("page-break-inside: avoid");
+
+    // large containers allow breaks to prevent empty pages
+    expect(cssContent).toContain("break-inside: auto !important");
+  });
+
+  it("prevents orphaned headings using break-after: avoid (§8)", () => {
+    expect(cssContent).toMatch(/h1,\s*h2,\s*h3,\s*h4/);
+    expect(cssContent).toContain("break-after: avoid !important");
+  });
+
+  it("resets container min-height and eliminates gray background in print mode (§8)", () => {
+    expect(cssContent).toContain("min-height: 0 !important");
+    expect(cssContent).toContain("background: white !important");
   });
 
   it("ensures no visible report section prints empty for the Nexora test fixture", () => {
@@ -205,6 +225,8 @@ describe("Print / PDF Export Verification (Change E8)", () => {
       textOnlyConfidence: null,
       durationMs: 42,
       disclaimer: "Jaanch supports informed decisions; it never proves an opportunity is genuine or fraudulent.",
+      paymentAlert: false,
+      inputNotices: [],
       createdAt: new Date().toISOString(),
     };
 

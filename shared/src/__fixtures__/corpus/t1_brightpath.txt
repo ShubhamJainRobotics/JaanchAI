@@ -1,0 +1,13 @@
+# expected: HIGH_RISK
+# why: Brightpath scam: upfront fee (PAY-001), UPI ID brightpath.hr@okbank (PAY-002), refundable (PAY-003), 100% guaranteed (TGB-004), Aadhaar/bank details (DAT-002), urgency (URG-001, URG-002), Telegram (CHN-002).
+# domain: internship
+
+Dear Student,
+
+Congratulations! You are SELECTED for a Work From Home Internship at Brightpath Global Solutions. Stipend: ₹25,000 per month. No interview required, selection is 100% guaranteed.
+
+To confirm your seat, pay a refundable registration fee of ₹1,499 to UPI ID brightpath.hr@okbank within 2 hours. Seats are limited and the offer will be cancelled after the deadline.
+
+Also send your Aadhaar card photo and bank account details for payroll setup. Join our Telegram group for further instructions.
+
+HR Team, Brightpath Global Solutions

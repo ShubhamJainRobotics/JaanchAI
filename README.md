@@ -241,6 +241,39 @@ npm run build
 - **SSRF Immunity**: The backend strictly rejects private RFC 1918 addresses, loopbacks, link-local, and CGNAT subnets via pinned IP lookups in `safeFetch`. Outbound listing fetching is permitted *only* for registry-allowlisted domains.
 - **Hashed Identifier Privacy**: The `reported_entities` table never contains cleartext phone numbers, emails, or UPI IDs. Identifiers are salted and peppered with `REPORT_HASH_PEPPER`.
 
+### Patch v5 Assumptions: Deterministic Client-Side PDF Engine
+- **Fully Client-Side Generation**: PDFs are compiled directly in the browser via `@react-pdf/renderer` v4.9.0 without any server-side routes or uploads. Guest and authenticated runs produce identical deterministic output from the shared `ReportViewModel`.
+- **Offline Font Bundling (`₹` & Devanagari)**: Bundled SIL OFL local TTF fonts (`NotoSans-Regular`, `Medium`, `Bold`, `Italic` and `NotoSansDevanagari-Regular`, `Bold`) under `/client/public/fonts/` ensure that the Indian Rupee symbol (`₹`) and Hindi/Devanagari quotes render crisp and legible without boxes or CSP/CDN leaks.
+- **Canonical View Model (`buildReportViewModel`)**: Pure functional pipeline deduplicates checks across Part 1 and the Evidence Report into a single sorted list (sender identity → domain/headers → registry → reported records → text rules → completeness), collapses not-run checks into a single concise line, formats quotes at word boundaries without mid-word cuts or splitting abbreviations (`B.E./B.Tech`, `Pvt. Ltd.`), and converts machine reason keys to plain human sentences while omitting raw rule scores.
+- **Privacy by Default**: The original message text is excluded from the PDF by default. If the user explicitly opts in via the export dialog, it is included in an appendix with PII redacted (up to 1,500 characters).
+- **Zero Orphan Headings & Clean Continuous Flow**: Large containers avoid fixed heights and large block-level `wrap={false}`. Section titles wrap together with their immediate first item (`wrap={false}`) with `minPresenceAhead={60}`, mathematically guaranteeing that a section title is never orphaned at the bottom of a page. Offer completeness details are structured into paired rows so they break naturally across pages.
+- **Fixed Print Stylesheet**: `@media print` serves as a clean secondary path with `@page { size: A4; margin: 14mm; }`, drawer expansion, hiding interactive chrome (buttons, inputs, toggles), and omitting empty/contradictory panels.
+
+### Patch v6 Assumptions: Detection, Extraction & Evidence Architecture
+- **Conservative Scored Organization Extraction**:
+  - Organization candidates are scored across pattern strength, sign-off blocks, legal suffixes (`Pvt. Ltd.`, `LLP`, `Inc.`), and known registry brands.
+  - If the top candidate's score is below the medium confidence threshold, the organization safely resolves to `null` with `organizationStatus: "uncertain"` (never guesses).
+  - Unclear organizations display as "the organization" or "Organization unclear" and are treated as `unknown`, preventing premature `MIS-001` firing (which only triggers when candidate count is zero).
+  - Lookalike and registry checks run across all candidates regardless of `needs_team_review`.
+- **Honest Automated Lookups & Identifier Checks**:
+  - The reported-records evidence check states *exactly* which identifiers were checked (`Checked {k} identifiers: ...`).
+  - If zero identifiers are available, the check outcome is strictly `not_run` with the explanation: *"No sender email, phone, UPI ID, domain or link was available to look up."* Blanket statements asserting that absent fields were checked are forbidden.
+  - An explicit "Payment destination" check is emitted whenever a UPI ID or payment handle is detected, providing masked display and safety guidance.
+- **Decoupled 8-Check Independent Coverage Metric**:
+  - The coverage meter evaluates strictly against external sources across a fixed set of 8 independent checks (`sender_domain`, `email_headers`, `domain_age`, `registry_match`, `official_listing`, `reported_entities`, `attest_found_on_official_site`, `attest_recruiter`).
+  - Completed checks count only `pass`, `fail`, `user_attested`, or `reported_entities` with `none_found` where at least one identifier was evaluated. `unknown`, `not_run`, internal rule patterns, and completeness fields never increment the coverage count.
+  - Displayed as `Independent checks completed: {k} of 8` without misleading risk percentage calculations.
+- **Sentence Segmentation & Whole-Word Spanning (`findSpan`)**:
+  - Technical abbreviations (`B.E.`, `B.Tech`, `M.Sc.`, `Pvt. Ltd.`), currencies (`₹2,350`), decimals, times, URLs, and numbered lists are protected from sentence-boundary splits.
+  - All evidence quotes expand to whole-word boundaries within sentence context (max 160 characters with symmetrical ellipsis), guaranteeing quotes never start or end mid-word.
+- **Clause-Scoped Negation Windows**:
+  - Payment and fee rules inspect a ~5-token lookback window bounded by clause boundaries (`[.!?\n;]`) for negative cues (`no`, `not`, `never`, `without`, `free of`, `do not`, `don't`, `nahi`), preventing benign disclaimers from triggering false positives while catching real demands in subsequent clauses.
+- **Payment Alert & Safety Invariants**:
+  - `paymentAlert` is set to `true` whenever any payment rule or AI signal fires, rendering a non-dismissible safety notice across all status levels.
+  - The "I already paid" toggle defaults strictly to `false` (OFF) on every load to prevent premature recovery alerts.
+  - The Safe Reply Draft panel is automatically hidden for `HIGH_RISK` and `CONFIRMED_SCAM` results to prevent contradicting advice to cease replies.
+  - AI signals are identified cleanly with an "AI-observed" badge and category label, omitting internal pseudo-rule codes (`AI-PAY`, `AI-TOO`).
+
 ---
 
 © 2026 Team QuadCore. Digital Trust & Safety Problem Statement.

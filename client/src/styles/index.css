@@ -18,20 +18,56 @@
   }
 }
 
-/* Print styles for verification report (Change E8) */
+/* Print page setup (§8) */
+@page {
+  size: A4;
+  margin: 14mm;
+}
+
+/* Print styles for verification report (§8) */
 @media print {
+  /* Hide navigation, headers, footers, buttons, and all interactive controls */
   header, footer, nav, button, input, textarea, select, .no-print, .print\:hidden {
     display: none !important;
   }
 
-  body {
+  /* Reset container backgrounds, remove fixed/min heights, eliminate gray background */
+  html, body, #root, main, div, section, article {
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
     background: white !important;
-    color: black !important;
-    font-size: 11pt !important;
-    line-height: 1.4 !important;
+    background-color: white !important;
+    color: #0f172a !important;
   }
 
-  .print-only, .print\:block {
+  body {
+    font-size: 10pt !important;
+    line-height: 1.4 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Headings must never sit orphaned at the bottom of a page */
+  h1, h2, h3, h4 {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  /* Avoid page breaks ONLY inside small cards, table rows, and list items */
+  tr, .signal-card, .step-card, li, .detail-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Large containers MUST allow page breaks to prevent blank gaps */
+  div, section, article, main, .rounded-2xl {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Force-expand accordions and drawers */
+  .hidden.print\:block, .print\:block {
     display: block !important;
   }
 
@@ -39,26 +75,24 @@
     display: none !important;
   }
 
-  /* Expand every accordion and drawer */
-  .hidden.print\:block {
-    display: block !important;
-  }
-
-  /* Avoid page breaks inside rows and cards */
-  div, section, article, tr, li {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-
+  /* Drop box shadows and normalize borders */
   .shadow-2xs, .shadow-xs, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
     box-shadow: none !important;
     border: 1px solid #cbd5e1 !important;
   }
 
-  /* Force background colors to print */
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+  /* Hide interactive inline forms */
+  form, [role="button"]:not([aria-expanded]), .inline-edit-form {
+    display: none !important;
+  }
+
+  /* Attribution footnote for print */
+  .print-attribution {
+    display: block !important;
+    font-size: 8pt !important;
+    color: #64748b !important;
+    text-align: center !important;
+    margin-top: 16px !important;
   }
 }
 

@@ -1,0 +1,10 @@
+# expected: HIGH_RISK
+# why: Microsoft impersonation: mandatory software kit for ₹3,000 (PAY-008), laptop dispatched after payment (PAY-007), lookalike domain (SND-002).
+# domain: internship
+# sender_email: careers@microsoft-hiring-india.invalid
+
+Hello,
+
+We are pleased to offer you a Software Intern role at Microsoft India. To begin onboarding, please purchase the mandatory software kit for ₹3,000 and reply with the payment receipt. Your laptop will be dispatched after payment.
+
+Microsoft Recruitment Desk

@@ -1,4 +1,4 @@
-import { Signal, Severity } from "shared";
+import { Signal, Severity, formatQuote } from "shared";
 import { Quote } from "lucide-react";
 
 interface SignalCardProps {
@@ -36,19 +36,43 @@ const SEVERITY_STYLES: Record<
   },
 };
 
+const CATEGORY_NAMES: Record<string, string> = {
+  payment: "Payment",
+  urgency: "Urgency",
+  data_request: "Data Request",
+  missing_details: "Missing Details",
+  channel: "Channel",
+  too_good_to_be_true: "Unrealistic Claim",
+  link: "Link",
+  sender_identity: "Sender Identity",
+  source_authenticity: "Source Authenticity",
+  reported_record: "Reported Record",
+  content_quality: "Content Quality",
+};
+
 export function SignalCard({ signal }: SignalCardProps) {
   const sev = SEVERITY_STYLES[signal.severity];
+  const isAi = signal.source === "ai" || (signal.ruleId && signal.ruleId.startsWith("AI-"));
+  const formattedQuote = formatQuote(signal.evidenceQuote);
 
   return (
     <div
-      className={`bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-3 ${sev.border}`}
+      className={`signal-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 sm:p-5 shadow-xs space-y-3 ${sev.border}`}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h4 className="text-sm font-bold text-slate-900">{signal.title}</h4>
+        <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+          {signal.title}
+        </h4>
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-mono text-slate-400 uppercase">
-            {signal.ruleId}
-          </span>
+          {isAi ? (
+            <span className="inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+              AI-observed · {CATEGORY_NAMES[signal.category] || signal.category}
+            </span>
+          ) : (
+            <span className="inline-flex items-center text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+              {signal.ruleId}
+            </span>
+          )}
           <span
             className={`text-xs px-2.5 py-0.5 rounded-full border font-semibold ${sev.badge}`}
           >
@@ -57,22 +81,22 @@ export function SignalCard({ signal }: SignalCardProps) {
         </div>
       </div>
 
-      {/* Exact Evidence Quote */}
-      {signal.evidenceQuote && (
-        <div className="flex items-start gap-2.5 p-3 rounded-lg bg-slate-50 border border-slate-200/80 font-mono text-xs text-slate-800">
+      {/* Clean Evidence Quote (§7) */}
+      {formattedQuote && (
+        <div className="flex items-start gap-2.5 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 font-sans text-xs text-slate-800 dark:text-slate-200">
           <Quote className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
           <span className="italic break-words select-all">
-            "{signal.evidenceQuote}"
+            "{formattedQuote}"
           </span>
         </div>
       )}
 
       {/* Why It Matters */}
       <div>
-        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-0.5">
           Why it matters
         </span>
-        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
           {signal.whyItMatters}
         </p>
       </div>

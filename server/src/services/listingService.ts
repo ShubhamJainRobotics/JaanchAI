@@ -45,11 +45,13 @@ export class ListingService {
       }
 
       for (const row of rows) {
-        // Exact name or normalized name
-        if (
+        const rowNorm = normalizeOrgName(row.name);
+        const matchesMain =
           row.name.toLowerCase() === cleanInput.toLowerCase() ||
-          normalizeOrgName(row.name) === normInput
-        ) {
+          rowNorm === normInput ||
+          (rowNorm.length >= 4 && (normInput.startsWith(rowNorm) || rowNorm.startsWith(normInput)));
+
+        if (matchesMain) {
           return {
             id: row.id,
             name: row.name,
@@ -67,10 +69,13 @@ export class ListingService {
         // Check aliases
         if (Array.isArray(row.aliases)) {
           for (const alias of row.aliases) {
-            if (
+            const aliasNorm = normalizeOrgName(alias);
+            const matchesAlias =
               alias.toLowerCase() === cleanInput.toLowerCase() ||
-              normalizeOrgName(alias) === normInput
-            ) {
+              aliasNorm === normInput ||
+              (aliasNorm.length >= 4 && (normInput.startsWith(aliasNorm) || aliasNorm.startsWith(normInput)));
+
+            if (matchesAlias) {
               return {
                 id: row.id,
                 name: row.name,

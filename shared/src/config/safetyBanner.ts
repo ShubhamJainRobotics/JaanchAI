@@ -26,7 +26,7 @@ export function getSafetyBannerRules(ctx?: SafetyBannerContext): string[] {
     rules.push(SAFETY_BANNER_RULES.MINIMUM_PERSONAL_DETAILS);
   }
 
-  if (signals.some((s) => s.ruleId === "URG-004" || s.ruleId === "URG-001")) {
+  if (signals.some((s) => s.ruleId && s.ruleId.startsWith("URG-"))) {
     rules.push(SAFETY_BANNER_RULES.DONT_BE_RUSHED);
   }
 

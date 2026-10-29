@@ -3,19 +3,34 @@ import { extractQuote } from "./normalize.js";
 import { isFreeMailDomain } from "../config/freeMail.js";
 import { checkLookalikeDomain } from "../links/lookalike.js";
 import { PLAUSIBILITY_LIMITS } from "../config/plausibility.js";
+import { extractOrganizationCandidates } from "../extraction/organization.js";
 
 function testRegex(regex: RegExp, text: string): boolean {
   return regex.test(text);
 }
 
 /**
- * Check if a matched term is negated (e.g. "no fee required", "free of cost", "without any fee", "fee waiver")
+ * Checks if a matched term is negated within the same clause (up to ~5-6 tokens before the match).
+ * Cues: no, not, never, without, free of, do not, don't, dont, neither, nahi, fee waiver, waived.
+ * Stops looking if crossing clause boundaries (., !, ?, \n, ;).
  */
-function isNegated(text: string, matchIndex: number): boolean {
-  const windowStart = Math.max(0, matchIndex - 30);
-  const preceding = text.slice(windowStart, matchIndex).toLowerCase();
-  return /(?:no|without|zero|neither|not\s+(?:require|pay|charge)|free\s+of|waiver)\s*$/i.test(
-    preceding
+export function isClauseNegated(text: string, matchIndex: number): boolean {
+  if (matchIndex <= 0) return false;
+  let clauseStart = matchIndex - 1;
+  while (clauseStart >= 0 && !/[.!?\n;]/.test(text[clauseStart])) {
+    clauseStart--;
+  }
+  const clausePrefix = text.slice(clauseStart + 1, matchIndex).trim();
+  const tokens = clausePrefix.split(/\s+/).filter(Boolean);
+  const windowTokens = tokens.slice(-6).join(" ").toLowerCase();
+
+  return (
+    /\b(?:no|not|never|without|neither|nahi|waived|waiver|not\s+(?:required?|pay|charge|ask)|do\s+not\s+(?:share|pay|send)|don't\s+(?:share|pay|send)|dont\s+(?:share|pay|send)|free\s+of)\b/i.test(
+      windowTokens
+    ) ||
+    /no\s+fees?\s+is\s+charged/i.test(clausePrefix) ||
+    /please\s+do\s+not\s+share\s+any\s+payment/i.test(clausePrefix) ||
+    /this\s+is\s+not\s+a\s+paid\s+internship/i.test(clausePrefix)
   );
 }
 
@@ -30,7 +45,7 @@ export const rulePay001: RuleDefinition = (ctx) => {
 
   const match = ctx.normalizedText.match(regex);
   if (match && match.index !== undefined) {
-    if (!isNegated(ctx.normalizedText, match.index)) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
       const quote = extractQuote(ctx.rawText, regex);
       hits.push({
         ruleId: "PAY-001",
@@ -56,54 +71,63 @@ export const rulePay001: RuleDefinition = (ctx) => {
 
 /**
  * PAY-002: Direct payment via UPI, QR code, gift cards, crypto, wallet, wire transfer (Hard Disqualifier)
+ * UPI ID: token name@handle where handle has NO dot (e.g. brightpath.hr@okbank, x@ybl, x@okicici)
  */
 export const rulePay002: RuleDefinition = (ctx) => {
   const hits: RuleHit[] = [];
   const regex =
-    /(?:(?:pay|send|transfer|gpay|phonepe|paytm|upi|wire\s*transfer)\s*(?:to|via|on|at)?\s*(?:[6-9]\d{9}|[\w.-]+@(?:ok[a-z]+|okhdfcbank|okaxis|oksbi|paytm|ybl|ibl|upi)))|(?:scan\s*(?:the)?\s*qr\s*(?:code)?(?:\s*to\s*pay)?)|(?:send\s*via\s*(?:gpay|phonepe|paytm|upi|wire\s*transfer|wallet))|(?:pay\s*first[,\s]+receive\s*offer\s*later)/i;
+    /(?:(?:pay|send|transfer|gpay|phonepe|paytm|upi|wire\s*transfer)\s*(?:(?:₹|rs\.?|inr)?\s*\d+[\d,]*)?\s*(?:to|via|on|at|id)?\s*(?:[6-9]\d{9}|[a-zA-Z0-9.\-_]{2,64}@(?!example|invalid|test|localhost)([a-zA-Z0-9_-]{2,32}))\b(?!\.))|(?:\b(?:upi\s*id\s*[:\-]?\s*)[a-zA-Z0-9.\-_]{2,64}@(?!example|invalid|test|localhost)([a-zA-Z0-9_-]{2,32})\b(?!\.))|(?:scan\s*(?:the)?\s*qr\s*(?:code)?(?:\s*to\s*pay)?)|(?:send\s*via\s*(?:gpay|phonepe|paytm|upi|wire\s*transfer|wallet))|(?:pay\s*first[,\s]+receive\s*offer\s*later)/i;
 
-  if (testRegex(regex, ctx.normalizedText)) {
-    const quote = extractQuote(ctx.rawText, regex);
-    hits.push({
-      ruleId: "PAY-002",
-      category: "payment",
-      severity: "critical",
-      hardDisqualifier: true,
-      title: "Payment requested via UPI, QR, wallet, wire transfer, or unverified channel",
-      whyItMatters:
-        "Payments directed to personal UPI, QR codes, wallet apps, or wire transfers lack corporate escrow, invoice tracking, or fraud dispute recourse.",
-      evidenceQuote: quote,
-      unknowns: [
-        {
-          item: "Recipient bank account & corporate registration",
-          howToVerify:
-            "Ask for official corporate banking details and cross-check company status on the MCA portal.",
-        },
-      ],
-    });
+  const match = ctx.normalizedText.match(regex);
+  if (match && match.index !== undefined) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
+      const quote = extractQuote(ctx.rawText, regex);
+      hits.push({
+        ruleId: "PAY-002",
+        category: "payment",
+        severity: "critical",
+        hardDisqualifier: true,
+        title: "Payment requested via UPI, QR, wallet, wire transfer, or unverified channel",
+        whyItMatters:
+          "Payments directed to personal UPI, QR codes, wallet apps, or wire transfers lack corporate escrow, invoice tracking, or fraud dispute recourse.",
+        evidenceQuote: quote,
+        unknowns: [
+          {
+            item: "Recipient bank account & corporate registration",
+            howToVerify:
+              "Ask for official corporate banking details and cross-check company status on the MCA portal.",
+          },
+        ],
+      });
+    }
   }
   return hits;
 };
 
 /**
  * PAY-003: Refundable deposit promise
+ * refundable, fully refundable, will be refunded, returned after completion/training attached to any payment
  */
 export const rulePay003: RuleDefinition = (ctx) => {
   const hits: RuleHit[] = [];
   const regex =
-    /(?:refundable(?:\s*security)?\s*deposit|100%\s*refundable|will\s*be\s*(?:refunded|returned)|refund\s*after\s*(?:training|first\s*month|joining|completion))/i;
+    /(?:refundable(?:\s*security)?\s*(?:deposit|registration|fee|charges?|amount)?|100%\s*refundable|will\s*be\s*(?:refunded|returned)|(?:returned|refunded)\s*after\s*(?:training|first\s*month|joining|completion))/i;
 
-  if (testRegex(regex, ctx.normalizedText)) {
-    const quote = extractQuote(ctx.rawText, regex);
-    hits.push({
-      ruleId: "PAY-003",
-      category: "payment",
-      severity: "high",
-      title: "'Refundable' deposit promise",
-      whyItMatters:
-        "Scammers frequently promise fees will be '100% refunded with your first stipend' to lower user hesitation.",
-      evidenceQuote: quote,
-    });
+  const match = ctx.normalizedText.match(regex);
+  if (match && match.index !== undefined) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
+      const quote = extractQuote(ctx.rawText, regex);
+      hits.push({
+        ruleId: "PAY-003",
+        category: "payment",
+        severity: "high",
+        hardDisqualifier: false,
+        title: "'Refundable' deposit promise",
+        whyItMatters:
+          "Scammers frequently promise fees will be '100% refunded with your first stipend' to lower user hesitation.",
+        evidenceQuote: quote,
+      });
+    }
   }
   return hits;
 };
@@ -116,40 +140,50 @@ export const rulePay004: RuleDefinition = (ctx) => {
   const regex =
     /(?:must\s*purchase|mandatory\s*to\s*(?:buy|purchase)|pay\s*for\s*(?:laptop|software|kit|id\s*card|study\s*material|uniform|training\s*module)|buy\s*from\s*(?:our|recommended|partner)\s*vendor)/i;
 
-  if (testRegex(regex, ctx.normalizedText)) {
-    const quote = extractQuote(ctx.rawText, regex);
-    hits.push({
-      ruleId: "PAY-004",
-      category: "payment",
-      severity: "high",
-      title: "Mandatory equipment, kit, or software purchase",
-      whyItMatters:
-        "Legitimate employers provide required work tools or specify software requirements without forcing purchases through designated unverified vendors.",
-      evidenceQuote: quote,
-    });
+  const match = ctx.normalizedText.match(regex);
+  if (match && match.index !== undefined) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
+      const quote = extractQuote(ctx.rawText, regex);
+      hits.push({
+        ruleId: "PAY-004",
+        category: "payment",
+        severity: "high",
+        hardDisqualifier: false,
+        title: "Mandatory equipment, kit, or software purchase",
+        whyItMatters:
+          "Legitimate employers provide required work tools or specify software requirements without forcing purchases through designated unverified vendors.",
+        evidenceQuote: quote,
+      });
+    }
   }
   return hits;
 };
 
 /**
- * PAY-005: Pay money to unlock funds (advance fee)
+ * PAY-005: Pay money to unlock funds (advance fee, GST/tax release charges) (Hard Disqualifier)
+ * pay GST/tax/processing/clearance/customs/release/unlock/handling charges (of ₹X) to release/receive/claim/unlock ₹Y
+ * scholarship amount will be released after payment
  */
 export const rulePay005: RuleDefinition = (ctx) => {
   const hits: RuleHit[] = [];
   const regex =
-    /(?:pay\s*(?:₹|rs\.?|inr)?\s*\d+\s*(?:to\s*unlock|to\s*release|to\s*receive)|pay\s*(?:tax|gst|courier|clearance|conversion)\s*(?:fee|charges?)?\s*(?:to\s*claim|to\s*receive|for\s*scholarship)|deposit\s*(?:before|to)\s*disburs(?:e|ement))/i;
+    /(?:(?:to\s*release\s*(?:the\s*)?(?:amount|funds?|scholarship)[,\s]+)?pay\s*(?:(?:₹|rs\.?|inr)?\s*\d+[\d,]*\s*(?:as|for)?\s*)?(?:gst|tax|processing|courier|clearance|customs|release|unlock|handling)?\s*(?:and\s*processing)?\s*(?:charges?|fees?)[\s\S]{0,50}?(?:to\s*release|to\s*receive|to\s*claim|to\s*unlock))|(?:pay\s*(?:(?:₹|rs\.?|inr)?\s*\d+[\d,]*\s*(?:as|for)?\s*)?(?:gst|tax|processing|courier|clearance|customs|release|unlock|handling)\s*(?:and\s*processing)?\s*(?:charges?|fees?)\s*(?:of\s*(?:₹|rs\.?|inr)?\s*\d[\d,]*)?)|(?:pay\s*(?:₹|rs\.?|inr)?\s*\d+\s*(?:to\s*unlock|to\s*release|to\s*receive))|(?:pay\s*(?:tax|gst|courier|clearance|conversion)\s*(?:fee|charges?)?\s*(?:to\s*claim|to\s*receive|for\s*scholarship))|(?:scholarship\s*amount\s*will\s*be\s*released\s*after\s*payment)|(?:deposit\s*(?:(?:₹|rs\.?|inr)?\s*\d+[\d,]*\s*)?(?:before|to)\s*disburs(?:e|ement))/i;
 
-  if (testRegex(regex, ctx.normalizedText)) {
-    const quote = extractQuote(ctx.rawText, regex);
-    hits.push({
-      ruleId: "PAY-005",
-      category: "payment",
-      severity: "critical",
-      title: "Pay money to unlock or receive funds",
-      whyItMatters:
-        "Advance-fee fraud requires paying 'taxes', 'GST', or 'release fees' before receiving prizes, loans, or scholarships.",
-      evidenceQuote: quote,
-    });
+  const match = ctx.normalizedText.match(regex);
+  if (match && match.index !== undefined) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
+      const quote = extractQuote(ctx.rawText, regex);
+      hits.push({
+        ruleId: "PAY-005",
+        category: "payment",
+        severity: "critical",
+        hardDisqualifier: true,
+        title: "Pay money to unlock or receive funds (GST / processing fee)",
+        whyItMatters:
+          "Advance-fee fraud requires paying 'taxes', 'GST', or 'release fees' before receiving prizes, loans, or scholarships.",
+        evidenceQuote: quote,
+      });
+    }
   }
   return hits;
 };
@@ -162,66 +196,80 @@ export const rulePay006: RuleDefinition = (ctx) => {
   const regex =
     /(?:(?:pay|send|purchase|buy)\s*(?:with|via|in|a|an)?\s*(?:bitcoin|btc|usdt|eth|crypto(?:currency)?|google\s*play\s*(?:card|code|voucher)|amazon\s*(?:gift\s*card|voucher)|steam\s*card|apple\s*gift\s*card))|(?:google\s*play\s*(?:card|code|voucher)|amazon\s*(?:gift\s*card|voucher)|steam\s*(?:gift\s*)?card)/i;
 
-  if (testRegex(regex, ctx.normalizedText)) {
-    const quote = extractQuote(ctx.rawText, regex);
-    hits.push({
-      ruleId: "PAY-006",
-      category: "payment",
-      severity: "critical",
-      hardDisqualifier: true,
-      title: "Payment via gift cards or cryptocurrency requested",
-      whyItMatters:
-        "Gift cards and cryptocurrencies are irreversible payment rails universally exploited by scammers to launder fraudulent funds.",
-      evidenceQuote: quote,
-    });
+  const match = ctx.normalizedText.match(regex);
+  if (match && match.index !== undefined) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
+      const quote = extractQuote(ctx.rawText, regex);
+      hits.push({
+        ruleId: "PAY-006",
+        category: "payment",
+        severity: "critical",
+        hardDisqualifier: true,
+        title: "Payment via gift cards or cryptocurrency requested",
+        whyItMatters:
+          "Gift cards and cryptocurrencies are irreversible payment rails universally exploited by scammers to launder fraudulent funds.",
+        evidenceQuote: quote,
+      });
+    }
   }
   return hits;
 };
 
 /**
- * PAY-007: 'Pay first, receive offer later' sequencing (Hard Disqualifier)
+ * PAY-007: Laptop dispatched after payment / Pay-first onboarding sequencing (Hard Disqualifier)
+ * 'Your laptop will be dispatched after payment', 'after payment', 'once payment is received/confirmed',
+ * 'reply with the payment receipt/screenshot/UTR/transaction ID', 'send payment proof'
  */
 export const rulePay007: RuleDefinition = (ctx) => {
   const hits: RuleHit[] = [];
   const regex =
-    /(?:pay\s*(?:first|upfront|advance)[,\s]+(?:and\s+then|then|and|before)\s*(?:receive|get|generate|send|issue)\s*(?:the\s*)?(?:offer|letter|appointment|confirmation)|make\s*payment\s*to\s*issue\s*(?:your\s*)?offer)/i;
+    /(?:(?:laptop|equipment|device|kit)\s*(?:will\s*be)?\s*dispatched\s*after\s*payment)|(?:(?:after|once)\s*payment\s*is\s*(?:received|confirmed|made|done))|(?:reply\s*with\s*(?:the\s*)?payment\s*(?:receipt|screenshot|utr|transaction\s*id))|(?:send\s*payment\s*proof)|(?:pay\s*(?:first|upfront|advance)[,\s]+(?:(?:and\s+then|then|and|before)\s*)?(?:receive|get|generate|send|issue)\s*(?:the\s*)?(?:offer|letter|appointment|confirmation|laptop|equipment))/i;
 
-  if (testRegex(regex, ctx.normalizedText)) {
-    const quote = extractQuote(ctx.rawText, regex);
-    hits.push({
-      ruleId: "PAY-007",
-      category: "payment",
-      severity: "critical",
-      hardDisqualifier: true,
-      title: "'Pay first, receive offer later' condition",
-      whyItMatters:
-        "Demanding money as a prerequisite to issuing an offer letter is a hallmark of employment scam syndicates.",
-      evidenceQuote: quote,
-    });
+  const match = ctx.normalizedText.match(regex);
+  if (match && match.index !== undefined) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
+      const quote = extractQuote(ctx.rawText, regex);
+      hits.push({
+        ruleId: "PAY-007",
+        category: "payment",
+        severity: "critical",
+        hardDisqualifier: true,
+        title: "Laptop dispatch or onboarding conditioned on prior payment",
+        whyItMatters:
+          "Legitimate employers never demand payment receipts or condition equipment dispatch on upfront transfers.",
+        evidenceQuote: quote,
+      });
+    }
   }
   return hits;
 };
 
 /**
- * PAY-008: Interview, offer-letter, background verification, software, or visa/travel fee (Hard Disqualifier)
+ * PAY-008: Mandatory software kit, equipment deposit, uniform, interview fee, or vendor purchase (Hard Disqualifier)
+ * 'purchase the mandatory software kit for ₹3,000', 'buy the laptop/software/licence/tools from our vendor',
+ * 'welcome kit', 'ID card charges', 'uniform fee', 'training material fee', 'course purchase', 'equipment deposit',
+ * 'interview fee', 'offer-letter fee', 'background-verification fee'
  */
 export const rulePay008: RuleDefinition = (ctx) => {
   const hits: RuleHit[] = [];
   const regex =
-    /(?:interview\s*fee|offer-?letter\s*fee|background-?verification\s*fee|software\s*fee|laptop\s*fee|visa\s*advance|travel\s*advance|accommodation\s*advance|visa\s*processing\s*fee)/i;
+    /(?:(?:purchase|buy|pay\s*for)\s*(?:the\s*)?mandatory\s*(?:software|hardware|laptop|tool|kit|course|training)(?:\s*kit)?(?:\s*for\s*(?:₹|rs\.?|inr)?\s*\d+)?)|(?:buy\s*(?:the\s*)?[a-zA-Z\s]{0,40}?(?:laptop|software|licen[cs]e|tools?)\s*from\s*(?:our|a|the)?\s*vendor)|(?:welcome\s*kit\s*(?:fee|charges?))|(?:id\s*card\s*charges?)|(?:uniform\s*fee)|(?:training\s*material\s*fee)|(?:course\s*purchase)|(?:equipment\s*deposit)|(?:mandatory\s*software\s*kit)|(?:(?:mandatory\s*)?interview\s*fee)|(?:offer-?letter\s*fee)|(?:background-?verification\s*fee)|(?:software\s*fee)|(?:laptop\s*fee)|(?:visa\s*advance)|(?:travel\s*advance)|(?:accommodation\s*advance)|(?:visa\s*processing\s*fee)/i;
 
-  if (testRegex(regex, ctx.normalizedText)) {
-    const quote = extractQuote(ctx.rawText, regex);
-    hits.push({
-      ruleId: "PAY-008",
-      category: "payment",
-      severity: "critical",
-      hardDisqualifier: true,
-      title: "Interview, background check, visa, or equipment advance fee",
-      whyItMatters:
-        "Legitimate employers never charge candidates for scheduling interviews, running background checks, or issuing offer letters.",
-      evidenceQuote: quote,
-    });
+  const match = ctx.normalizedText.match(regex);
+  if (match && match.index !== undefined) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
+      const quote = extractQuote(ctx.rawText, regex);
+      hits.push({
+        ruleId: "PAY-008",
+        category: "payment",
+        severity: "critical",
+        hardDisqualifier: true,
+        title: "Mandatory software kit, equipment purchase, or vendor fee requested",
+        whyItMatters:
+          "Legitimate corporate employers supply work software and tools directly and do not force candidates to purchase kits or licenses from designated vendors.",
+        evidenceQuote: quote,
+      });
+    }
   }
   return hits;
 };
@@ -481,24 +529,28 @@ export const ruleTgb003: RuleDefinition = (ctx) => {
 
 /**
  * TGB-004: Guaranteed selection, job, scholarship, or absurd income (Hard Disqualifier)
+ * '100% guaranteed', 'guaranteed selection/placement/job', 'no interview required/needed', 'assured selection', 'sure-shot'
  */
 export const ruleTgb004: RuleDefinition = (ctx) => {
   const hits: RuleHit[] = [];
   const regex =
-    /(?:guaranteed\s*(?:job|selection|scholarship|income)|100%\s*selection\s*guaranteed|guaranteed\s*hiring\s*with\s*no\s*interview|earn\s*(?:₹|rs\.?|inr)?\s*\d+\s*(?:lakh|k)?\s*(?:without|with\s*no)\s*(?:effort|skills?|experience))/i;
+    /(?:100%\s*(?:selection\s*)?guaranteed|selection\s*(?:is\s*)?100%\s*guaranteed|guaranteed\s*(?:selection|placement|job|internship|scholarship|income)|no\s*interview\s*(?:required|needed)|assured\s*selection|sure-?shot|earn\s*(?:₹|rs\.?|inr)?\s*\d+\s*(?:lakh|k)?\s*(?:without|with\s*no)\s*(?:effort|skills?|experience))/i;
 
-  if (testRegex(regex, ctx.normalizedText)) {
-    const quote = extractQuote(ctx.rawText, regex);
-    hits.push({
-      ruleId: "TGB-004",
-      category: "too_good_to_be_true",
-      severity: "critical",
-      hardDisqualifier: true,
-      title: "Guaranteed selection or impossible income for no effort",
-      whyItMatters:
-        "Guarantees of selection or high salaries without merit-based evaluation are fraudulent lures designed to attract vulnerable students.",
-      evidenceQuote: quote,
-    });
+  const match = ctx.normalizedText.match(regex);
+  if (match && match.index !== undefined) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
+      const quote = extractQuote(ctx.rawText, regex);
+      hits.push({
+        ruleId: "TGB-004",
+        category: "too_good_to_be_true",
+        severity: "critical",
+        hardDisqualifier: true,
+        title: "Guaranteed selection or offer without interview",
+        whyItMatters:
+          "Legitimate employers conduct interviews or assessments before selection. Claims of '100% guaranteed' selection or 'no interview required' are predatory lures.",
+        evidenceQuote: quote,
+      });
+    }
   }
   return hits;
 };
@@ -511,52 +563,50 @@ export const ruleRec001: RuleDefinition = (ctx) => {
   const regex =
     /(?:recruit\s*(?:\d+|other|more|friends?|peers?)\s*(?:students?|friends?|peers?|candidates?|members?)?|refer\s*(?:\d+|friends?|peers?)\s*(?:to|for)\s*(?:unlock|get\s*your|activate)|buy\s*(?:our|a)\s*course\s*(?:to\s*get|before\s*getting)|complete\s*paid\s*tasks?\s*before\s*(?:receiving|getting))/i;
 
-  if (testRegex(regex, ctx.normalizedText)) {
-    const quote = extractQuote(ctx.rawText, regex);
-    hits.push({
-      ruleId: "REC-001",
-      category: "payment",
-      severity: "critical",
-      hardDisqualifier: true,
-      title: "Requirement to recruit students, purchase courses, or pay for tasks",
-      whyItMatters:
-        "Pyramid schemes, multi-level marketing, and fake placement drives condition employment on recruiting peers or buying expensive training materials.",
-      evidenceQuote: quote,
-    });
+  const match = ctx.normalizedText.match(regex);
+  if (match && match.index !== undefined) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
+      const quote = extractQuote(ctx.rawText, regex);
+      hits.push({
+        ruleId: "REC-001",
+        category: "payment",
+        severity: "critical",
+        hardDisqualifier: true,
+        title: "Requirement to recruit students, purchase courses, or pay for tasks",
+        whyItMatters:
+          "Pyramid schemes, multi-level marketing, and fake placement drives condition employment on recruiting peers or buying expensive training materials.",
+        evidenceQuote: quote,
+      });
+    }
   }
   return hits;
 };
 
 /**
  * GOV-001: Government scheme claim on non-government domain OR requesting payment (Hard Disqualifier)
+ * Government of India, government scholarship/benefit/scheme + non-gov domain or payment
  */
 export const ruleGov001: RuleDefinition = (ctx) => {
   const hits: RuleHit[] = [];
-  const claimsGov =
-    /(?:pm\s*(?:yojana|scheme|internship)|pradhan\s*mantri|ministry\s*of|national\s*scholarship\s*portal|nsp\s*scholarship|government\s*(?:scholarship|benefit|grant|internship))/i.test(
-      ctx.normalizedText
-    );
+  const govRegex =
+    /(?:pm\s*(?:yojana|scheme|internship)|pradhan\s*mantri|ministry\s*of|national\s*scholarship\s*portal|nsp\s*scholarship|government\s*(?:of\s*india|scholarship|benefit|grant|internship|scheme)|central\s*merit\s*scholarship)/i;
 
-  if (claimsGov) {
+  const match = ctx.normalizedText.match(govRegex);
+  if (match && match.index !== undefined) {
     // Check if sender or links are non-government or if payment is requested
     const requestsPayment =
-      /(?:fee|pay|deposit|charge|amount|rs\.?|₹|inr)\s*\d+/i.test(
-        ctx.normalizedText
-      );
+      /(?:fee|pay|deposit|charge|amount|rs\.?|₹|inr)\s*\d+/i.test(ctx.normalizedText) ||
+      /(?:pay\s*(?:gst|tax|processing|charge|fee))/i.test(ctx.normalizedText) ||
+      /(?:complete\s*payment)/i.test(ctx.normalizedText);
 
     // Look for non-gov domain in text or links
-    const linkMatches = ctx.normalizedText.match(/https?:\/\/([^\s/]+)/gi) || [];
+    const linkMatches = ctx.rawText.match(/(?:https?:\/\/)?([a-zA-Z0-9-]+\.)+(?:com|org|net|in|co\.in|io|invalid|test|example|tech|xyz)(?:\/[^\s]*)?/gi) || [];
     let hasNonGovDomain = false;
-    for (const rawUrl of linkMatches) {
-      try {
-        const u = new URL(rawUrl);
-        const host = u.hostname.toLowerCase();
-        if (!host.endsWith(".gov.in") && !host.endsWith(".nic.in")) {
-          hasNonGovDomain = true;
-          break;
-        }
-      } catch {
-        // ignore
+    for (const raw of linkMatches) {
+      const clean = raw.replace(/^https?:\/\//i, "").split("/")[0].toLowerCase();
+      if (!clean.endsWith(".gov.in") && !clean.endsWith(".nic.in")) {
+        hasNonGovDomain = true;
+        break;
       }
     }
 
@@ -568,12 +618,7 @@ export const ruleGov001: RuleDefinition = (ctx) => {
     }
 
     if (requestsPayment || hasNonGovDomain) {
-      const quote =
-        extractQuote(
-          ctx.rawText,
-          /(?:pm\s*(?:yojana|scheme|internship)|pradhan\s*mantri|ministry\s*of|national\s*scholarship\s*portal|nsp\s*scholarship|government\s*(?:scholarship|benefit|grant|internship))/i
-        ) || ctx.rawText.slice(0, 60);
-
+      const quote = extractQuote(ctx.rawText, govRegex);
       hits.push({
         ruleId: "GOV-001",
         category: "source_authenticity",
@@ -590,24 +635,27 @@ export const ruleGov001: RuleDefinition = (ctx) => {
 };
 
 /**
- * URG-001: Tight countdown pressure, pay within 1 hour (High)
+ * URG-001: Tight countdown pressure, pay within 1 hour, Complete payment today (High)
  */
 export const ruleUrg001: RuleDefinition = (ctx) => {
   const hits: RuleHit[] = [];
   const regex =
-    /(?:within\s*(?:2|two|1|one|3|three|24)\s*hours?|pay\s*within\s*(?:1|one|2|two)\s*hours?|today\s*only|expires\s*(?:tonight|today|in\s*\d+\s*hours?)|confirm\s*immediately\s*or\s*lose\s*(?:the\s*)?offer|last\s*slot|immediately|urgent\s*confirmation\s*required)/i;
+    /(?:within\s*(?:2|two|1|one|3|three|24)\s*hours?|pay\s*within\s*(?:1|one|2|two)\s*hours?|today\s*only|expires\s*(?:tonight|today|in\s*\d+\s*hours?)|confirm\s*immediately\s*or\s*lose\s*(?:the\s*)?offer|last\s*slot|immediately|urgent\s*confirmation\s*required|complete\s*payment\s*today|pay\s*today|confirm\s*today)/i;
 
-  if (testRegex(regex, ctx.normalizedText)) {
-    const quote = extractQuote(ctx.rawText, regex);
-    hits.push({
-      ruleId: "URG-001",
-      category: "urgency",
-      severity: "high",
-      title: "Artificial urgency or immediate deadline pressure",
-      whyItMatters:
-        "Creating intense time pressure prevents students from consulting parents, placement cells, or conducting background checks.",
-      evidenceQuote: quote,
-    });
+  const match = ctx.normalizedText.match(regex);
+  if (match && match.index !== undefined) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
+      const quote = extractQuote(ctx.rawText, regex);
+      hits.push({
+        ruleId: "URG-001",
+        category: "urgency",
+        severity: "high",
+        title: "Artificial urgency or immediate deadline pressure",
+        whyItMatters:
+          "Creating intense time pressure prevents students from consulting parents, placement cells, or conducting background checks.",
+        evidenceQuote: quote,
+      });
+    }
   }
   return hits;
 };
@@ -743,11 +791,9 @@ export const ruleMis001: RuleDefinition = (ctx) => {
   const hits: RuleHit[] = [];
   const hasClaimedOrg = !!ctx.claimedOrg && ctx.claimedOrg.trim().length > 1;
 
-  const orgIndicators =
-    /(?:pvt\.?\s*ltd\.?|limited|technologies|solutions|corporation|foundation|university|institute|inc\.?|llc|org)/i;
-  const hasOrgInText = orgIndicators.test(ctx.normalizedText);
-
-  if (!hasClaimedOrg && !hasOrgInText) {
+  // Fix C (§5): MIS-001 fires ONLY when there is no organization candidate at all
+  const candidates = extractOrganizationCandidates(ctx.rawText);
+  if (!hasClaimedOrg && candidates.length === 0) {
     hits.push({
       ruleId: "MIS-001",
       category: "missing_details",
@@ -755,7 +801,7 @@ export const ruleMis001: RuleDefinition = (ctx) => {
       title: "No identifiable organization or company details",
       whyItMatters:
         "The message does not name an established corporate entity, CIN, LLPIN, or verifiable institutional sponsor.",
-      evidenceQuote: ctx.rawText.slice(0, Math.min(ctx.rawText.length, 60)),
+      evidenceQuote: extractQuote(ctx.rawText, /^[^\n.]+/),
       unknowns: [
         {
           item: "Organization legal name and registration",
@@ -942,7 +988,7 @@ export const ruleMis007: RuleDefinition = (ctx) => {
 
   const match = ctx.normalizedText.match(regex);
   if (match && match.index !== undefined) {
-    if (!isNegated(ctx.normalizedText, match.index)) {
+    if (!isClauseNegated(ctx.normalizedText, match.index)) {
       const quote = extractQuote(ctx.rawText, regex);
       hits.push({
         ruleId: "MIS-007",
@@ -1084,8 +1130,27 @@ export const ruleSnd001: RuleDefinition = (ctx) => {
  */
 export const ruleSnd002: RuleDefinition = (ctx) => {
   const hits: RuleHit[] = [];
-  const domain = ctx.senderDomain;
-  if (domain) {
+  const domainsToCheck = new Set<string>();
+  if (ctx.senderDomain) domainsToCheck.add(ctx.senderDomain.toLowerCase());
+  if (ctx.senderEmail) {
+    const d = ctx.senderEmail.split("@")[1];
+    if (d) domainsToCheck.add(d.toLowerCase());
+  }
+
+  // Also check email domains and URLs found in message body
+  const emailRegex = /\b[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b/g;
+  let emMatch;
+  while ((emMatch = emailRegex.exec(ctx.rawText)) !== null) {
+    domainsToCheck.add(emMatch[1].toLowerCase());
+  }
+
+  const urlRegex = /\bhttps?:\/\/([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b/g;
+  let urlMatch;
+  while ((urlMatch = urlRegex.exec(ctx.rawText)) !== null) {
+    domainsToCheck.add(urlMatch[1].toLowerCase());
+  }
+
+  for (const domain of domainsToCheck) {
     const res = checkLookalikeDomain(domain);
     if (res.isLookalike) {
       hits.push({

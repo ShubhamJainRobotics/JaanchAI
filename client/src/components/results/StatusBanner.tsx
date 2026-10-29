@@ -1,4 +1,4 @@
-import { VerificationStatus, CheckRow, STATUS_COPY } from "shared";
+import { VerificationStatus, CheckRow, STATUS_COPY, computeIndependentCoverage } from "shared";
 import {
   ShieldCheck,
   Info,
@@ -68,15 +68,8 @@ export function StatusBanner({
 
   const theme = getTheme();
 
-  // Verification coverage calculation
-  const applicableChecks = checks.length;
-  const completedChecks = checks.filter((c) =>
-    ["pass", "fail", "user_attested", "none_found"].includes(c.outcome)
-  ).length;
-  const coveragePercent =
-    applicableChecks > 0
-      ? Math.round((completedChecks / applicableChecks) * 100)
-      : 0;
+  // Verification coverage calculation (Fix H)
+  const coverage = computeIndependentCoverage(checks);
 
   return (
     <section
@@ -126,29 +119,27 @@ export function StatusBanner({
       </div>
 
       {/* Verification coverage meter */}
-      {applicableChecks > 0 && (
-        <div className="pt-3 border-t border-current/15 space-y-1.5">
-          <div className="flex items-center justify-between text-xs font-semibold">
-            <span>
-              Verification coverage: {completedChecks} of {applicableChecks} checks completed
-            </span>
-            <span className="font-mono">{coveragePercent}%</span>
-          </div>
-          <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-1.5 overflow-hidden">
-            <div
-              className="bg-current h-1.5 rounded-full transition-all duration-300"
-              style={{ width: `${coveragePercent}%` }}
-              role="progressbar"
-              aria-valuenow={coveragePercent}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            />
-          </div>
-          <p className="text-[11px] opacity-75">
-            More completed checks = stronger evidence. It is not a risk percentage.
-          </p>
+      <div className="pt-3 border-t border-current/15 space-y-1.5">
+        <div className="flex items-center justify-between text-xs font-semibold">
+          <span>{coverage.label}</span>
+          <span className="font-mono text-xs opacity-80">
+            {coverage.completed} / {coverage.total}
+          </span>
         </div>
-      )}
+        <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-1.5 overflow-hidden">
+          <div
+            className="bg-current h-1.5 rounded-full transition-all duration-300"
+            style={{ width: `${(coverage.completed / coverage.total) * 100}%` }}
+            role="progressbar"
+            aria-valuenow={coverage.completed}
+            aria-valuemin={0}
+            aria-valuemax={coverage.total}
+          />
+        </div>
+        <p className="text-[11px] opacity-75">
+          {coverage.caption}
+        </p>
+      </div>
     </section>
   );
 }

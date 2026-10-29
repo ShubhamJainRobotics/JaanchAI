@@ -522,6 +522,8 @@ export const AnalysisResultSchema = z.object({
   listingComparison: ListingComparisonSchema.nullable().optional(),
   reportedMatches: z.array(ReportedMatchSchema).default([]),
   matchedOrganization: OrganizationSchema.nullable().optional(),
+  paymentAlert: z.boolean().default(false),
+  inputNotices: z.array(z.string()).default([]),
   patternInsight: PatternInsightSchema.nullable().optional(),
   unknowns: z.array(UnknownSchema).min(1),
   checklist: z.array(ChecklistItemSchema).min(1),

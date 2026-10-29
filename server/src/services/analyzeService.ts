@@ -26,6 +26,9 @@ import {
   extractEntities,
   detectPatternInsight,
   buildNextSteps,
+  routeFields,
+  extractOrganizationDecision,
+  findSpan,
 } from "shared";
 import dns from "node:dns/promises";
 import { User, SupabaseClient } from "@supabase/supabase-js";
@@ -94,21 +97,37 @@ export class AnalyzeService {
   ): Promise<AnalysisResult> {
     const startTime = Date.now();
 
+    // 0. Input Routing & Normalization (Fix A)
+    const routed = routeFields(request);
+    request = routed.request;
+    const inputNotices = routed.notices;
+    if (inputNotices.length > 0) {
+      logger.info({ notices: inputNotices }, "Input fields routed");
+    }
+
     // 1. Text Normalization
     const rawText = request.text;
     const normalizedText = normalizeText(rawText);
     const inputHash = sha256(normalizedText);
 
-    // 2. Extract Entities from Body (Change A)
+    // 2. Extract Entities & Organization Decision from Body (Fix C)
     const extractedEntities = extractEntities(rawText);
+    const orgDecision = extractOrganizationDecision(rawText);
 
     // Resolve claimed organization candidate
     let effectiveClaimedOrg = request.claimedOrg?.trim() || "";
     let orgSource: "user_provided" | "extracted_from_text" = "user_provided";
-    const topOrgCandidate = extractedEntities.organizationCandidates[0];
+    const topOrgCandidate = orgDecision.organization
+      ? {
+          name: orgDecision.organization,
+          confidence: orgDecision.confidence,
+          evidenceQuote: orgDecision.allCandidates[0]?.evidenceQuote || orgDecision.organization,
+          count: orgDecision.allCandidates[0]?.count || 1,
+        }
+      : extractedEntities.organizationCandidates[0];
 
-    if (!effectiveClaimedOrg && topOrgCandidate) {
-      effectiveClaimedOrg = topOrgCandidate.name;
+    if (!effectiveClaimedOrg && orgDecision.organization) {
+      effectiveClaimedOrg = orgDecision.organization;
       orgSource = "extracted_from_text";
     }
 
@@ -252,6 +271,25 @@ export class AnalyzeService {
         title: "Claimed organization conflicts with name found in message text",
         whyItMatters: `You specified '${request.claimedOrg}', but the message body indicates '${topOrgCandidate.name}'. Discrepancies between claimed sender and text indicate spoofing or forwarding.`,
         evidenceQuote: topOrgCandidate.evidenceQuote,
+        hardDisqualifier: false,
+      });
+    }
+
+    // Check sender email conflict (SND-001): if user specified sender email and it differs from email found in text
+    if (
+      request.sender?.email &&
+      extractedEntities.emails.length > 0 &&
+      extractedEntities.emails[0].value.toLowerCase().trim() !==
+        request.sender.email.toLowerCase().trim()
+    ) {
+      signals.push({
+        ruleId: "SND-001",
+        category: "sender_identity",
+        severity: "medium",
+        source: "rule",
+        title: "Sender email field conflicts with address found in message text",
+        whyItMatters: `You specified '${request.sender.email}', but the message body contained '${extractedEntities.emails[0].value}'. Discrepancies between claimed sender and text indicate forwarding or spoofing.`,
+        evidenceQuote: `${request.sender.email} vs ${extractedEntities.emails[0].value}`,
         hardDisqualifier: false,
       });
     }
@@ -450,6 +488,33 @@ export class AnalyzeService {
         // Grounded AI signals (capped at 5)
         signals.push(...aiRes.signals);
 
+        // Dev-only rule-gap diagnostics
+        if (process.env.DEV_RULE_GAP_REPORT === "true") {
+          const gapCategories = new Set([
+            "payment",
+            "data_request",
+            "too_good_to_be_true",
+            "urgency",
+          ]);
+          for (const sig of aiRes.signals) {
+            if (gapCategories.has(sig.category)) {
+              const hasRuleMatch = dedupedHits.some(
+                (h) => h.category === sig.category
+              );
+              if (!hasRuleMatch) {
+                logger.info(
+                  {
+                    category: sig.category,
+                    severity: sig.severity,
+                    ruleIdsFired: dedupedHits.map((h) => h.ruleId),
+                  },
+                  "DEV_RULE_GAP_REPORT: AI signal without overlapping rule"
+                );
+              }
+            }
+          }
+        }
+
         // Grounded AI unknowns
         for (const u of aiRes.unknowns) {
           if (!unknownsMap.has(u.item)) {
@@ -608,20 +673,69 @@ export class AnalyzeService {
       source: "rule",
     });
 
-    // Check: Reported Records
+    // Check: Reported Records (Fix F)
     const hasConfirmedReport = reportedMatches.some((r) => r.status === "confirmed");
     const hasReportedRecord = reportedMatches.some((r) => r.status === "reported");
-    checks.push({
-      checkKey: "reported_records",
-      label: "Reported Fraud Database Check",
-      outcome: hasConfirmedReport || hasReportedRecord ? "fail" : "none_found",
-      detail: hasConfirmedReport
-        ? "Confirmed fraudulent by a moderator"
-        : hasReportedRecord
-        ? `Reported by ${reportedMatches[0].reportCount} user(s) (not yet confirmed)`
-        : "No match found in community fraud database. This does not confirm the offer is genuine.",
-      source: "reported_db",
-    });
+
+    const checkedTypeLabels: string[] = [];
+    if (candidateEntities.some((c) => c.type === "email" || c.type === "email_domain")) {
+      checkedTypeLabels.push("email");
+    }
+    if (candidateEntities.some((c) => c.type === "upi")) {
+      checkedTypeLabels.push("UPI ID");
+    }
+    if (candidateEntities.some((c) => c.type === "phone")) {
+      checkedTypeLabels.push("phone");
+    }
+    if (candidateEntities.some((c) => c.type === "domain")) {
+      checkedTypeLabels.push("domain");
+    }
+    if (candidateEntities.some((c) => c.type === "url")) {
+      checkedTypeLabels.push("link");
+    }
+
+    const uniqueIdentifierCount = checkedTypeLabels.length;
+
+    if (uniqueIdentifierCount === 0) {
+      checks.push({
+        checkKey: "reported_records",
+        label: "Reported Fraud Database Check",
+        outcome: "not_run",
+        detail: "No sender email, phone, UPI ID, domain or link was available to look up.",
+        source: "reported_db",
+      });
+    } else {
+      const idPlural = uniqueIdentifierCount === 1 ? "identifier" : "identifiers";
+      const prefix = `Checked ${uniqueIdentifierCount} ${idPlural}: ${checkedTypeLabels.join(", ")}`;
+      checks.push({
+        checkKey: "reported_records",
+        label: "Reported Fraud Database Check",
+        outcome: hasConfirmedReport || hasReportedRecord ? "fail" : "none_found",
+        detail: hasConfirmedReport
+          ? `${prefix}. Confirmed fraudulent record matched.`
+          : hasReportedRecord
+          ? `${prefix}. Reported by ${reportedMatches[0].reportCount} user(s) (not yet confirmed).`
+          : `${prefix}. No previous reports were found.`,
+        source: "reported_db",
+      });
+    }
+
+    // Check: Payment Destination
+    const upiEntity =
+      extractedEntities.upiIds[0] ||
+      (request.sender?.upiId ? { value: request.sender.upiId, evidenceQuote: request.sender.upiId } : null);
+    if (upiEntity) {
+      const upiReported = reportedMatches.find((r) => r.entityType === "upi");
+      checks.push({
+        checkKey: "payment_destination",
+        label: "Payment Destination Check",
+        outcome: upiReported ? "fail" : "none_found",
+        detail: `UPI ID '${upiEntity.value}' was checked against reported accounts (${
+          upiReported ? "reported suspicious" : "no previous reports"
+        }). Never pay an individual UPI ID or phone number for an opportunity.`,
+        source: "reported_db",
+      });
+    }
 
     // Append completeness field checks
     checks.push(...completenessChecks);
@@ -702,6 +816,10 @@ export class AnalyzeService {
     const summary = statusCopy.meaning;
     const durationMs = Date.now() - startTime;
 
+    const paymentAlert = signals.some(
+      (s) => s.category === "payment" || (s.ruleId && s.ruleId.startsWith("PAY-"))
+    );
+
     const resultPayload: AnalysisResult = {
       id: null,
       saved: false,
@@ -722,6 +840,8 @@ export class AnalyzeService {
       listingComparison: listingResult.comparison,
       reportedMatches,
       matchedOrganization: matchedOrg,
+      paymentAlert,
+      inputNotices,
       unknowns,
       checklist,
       nextSteps,

@@ -212,6 +212,8 @@ describe("Nexora End-to-End Acceptance Fixture (§7)", () => {
     textOnlyConfidence: null,
     durationMs: 42,
     disclaimer: "Jaanch supports informed decisions; it never proves an opportunity is genuine or fraudulent.",
+    paymentAlert: false,
+    inputNotices: [],
     createdAt: new Date().toISOString(),
   };
 

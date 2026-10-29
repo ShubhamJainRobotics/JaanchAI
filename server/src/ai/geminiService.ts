@@ -14,6 +14,7 @@ import {
   buildSafeReplyTemplate,
   SafeReplyOutputSchema,
   SAFE_REPLY_JSON_SCHEMA,
+  findSpan,
 } from "shared";
 import { generateStructured, getGemini } from "../lib/gemini.js";
 import { JAANCH_SYSTEM_PROMPT } from "./prompts/system.js";
@@ -120,8 +121,15 @@ export class GeminiService {
 
     // Filter signals: must be evidence-grounded and severity capped at high
     const groundedSignals: Signal[] = [];
+    const normRedacted = params.redactedText.normalize("NFKC");
+
     for (const sig of output.additionalSignals) {
-      if (params.redactedText.includes(sig.evidenceQuote)) {
+      if (!sig.evidenceQuote) continue;
+      const normQuote = sig.evidenceQuote.normalize("NFKC").trim();
+      const matchIdx = normRedacted.toLowerCase().indexOf(normQuote.toLowerCase());
+
+      if (matchIdx !== -1) {
+        const span = findSpan(params.redactedText, matchIdx, normQuote.length);
         groundedSignals.push({
           ruleId: `AI-${sig.category.toUpperCase().slice(0, 3)}`,
           category: sig.category,
@@ -129,7 +137,7 @@ export class GeminiService {
           source: "ai",
           title: sig.title,
           whyItMatters: sig.whyItMatters,
-          evidenceQuote: sig.evidenceQuote,
+          evidenceQuote: span.quote,
           hardDisqualifier: false, // AI signals MAY NEVER be hard disqualifiers
         });
       }

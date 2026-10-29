@@ -77,6 +77,26 @@ export const PATTERN_CATALOGUE: PatternDefinition[] = [
     },
   },
   {
+    id: "payment_first_onboarding",
+    heading: "Payment-First Onboarding & Equipment Fee Pattern",
+    description:
+      "In similar offers, candidates are asked to pay for software kits, onboarding materials, or equipment before receiving equipment or commencing work. Legitimate employers provide necessary equipment and work tools without requiring upfront payments or purchases through designated vendors.",
+    dontSendYet: [
+      "Payment for software kits or equipment",
+      "Payment receipts or transaction screenshots",
+      "Bank account or card details",
+    ],
+    matches: (ctx: PatternContext) => {
+      const hasPayOnboarding = ctx.signals.some(
+        (s) => s.ruleId === "PAY-007" || s.ruleId === "PAY-008"
+      );
+      const hasBrandImpersonation = ctx.signals.some(
+        (s) => s.ruleId === "SND-002" || s.ruleId === "SND-004"
+      );
+      return hasPayOnboarding && !hasBrandImpersonation;
+    },
+  },
+  {
     id: "brand_impersonation",
     heading: "Brand Impersonation & Lookalike Domain Pattern",
     description:

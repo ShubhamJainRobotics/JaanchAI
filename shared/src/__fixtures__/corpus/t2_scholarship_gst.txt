@@ -1,0 +1,13 @@
+# expected: HIGH_RISK
+# why: Scholarship GST lure: pay GST to release ₹50,000 (PAY-005, PAY-001), Government of India on non-gov domain (GOV-001), urgency (URG-001, URG-003).
+# domain: scholarship
+
+Subject: Central Merit Scholarship 2026 – ₹50,000 Approved
+
+Dear Applicant,
+
+Your name has been approved for a Government of India Merit Scholarship worth ₹50,000. To release the amount, pay GST and processing charges of ₹2,350 at www.merit-scholarship-india.invalid/pay.
+
+Limited-time government benefit. Complete payment today.
+
+Scholarship Disbursement Cell

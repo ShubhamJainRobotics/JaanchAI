@@ -74,6 +74,8 @@ function runEval() {
 
     let expected: VerificationStatus = "NEEDS_REVIEW";
     let whyExpected = "";
+    let domain: OpportunityDomain = "internship";
+    let senderEmailFromHeader: string | undefined = undefined;
 
     const lines = content.split("\n");
     const bodyLines: string[] = [];
@@ -83,6 +85,10 @@ function runEval() {
         expected = line.replace("# expected:", "").trim() as VerificationStatus;
       } else if (line.startsWith("# why:")) {
         whyExpected = line.replace("# why:", "").trim();
+      } else if (line.startsWith("# domain:")) {
+        domain = line.replace("# domain:", "").trim() as OpportunityDomain;
+      } else if (line.startsWith("# sender_email:")) {
+        senderEmailFromHeader = line.replace("# sender_email:", "").trim();
       } else {
         bodyLines.push(line);
       }
@@ -98,7 +104,7 @@ function runEval() {
     const { completeness } = checkCompleteness(extractedFields);
 
     // 2. Sender parsing
-    const senderEmail = entities.emails[0]?.value;
+    const senderEmail = senderEmailFromHeader || entities.emails[0]?.value;
     const senderIdentity = analyzeSenderEmail(senderEmail, {
       claimedOrg: topOrg,
     });
@@ -107,7 +113,7 @@ function runEval() {
     const ruleHits = runRules({
       rawText,
       normalizedText,
-      domain: "internship",
+      domain,
       channel: "email",
       claimedOrg: topOrg,
       senderEmail,

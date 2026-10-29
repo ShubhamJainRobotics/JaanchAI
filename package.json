@@ -17,9 +17,11 @@
     "eval": "npm run eval -w shared",
     "lint": "npm run check:no-secrets && npm run check:banned-phrases && npm run typecheck",
     "check:no-secrets": "node scripts/check-no-secrets.cjs",
-    "check:banned-phrases": "vitest run shared/src/config/__tests__/bannedPhrases.test.ts"
+    "check:banned-phrases": "vitest run shared/src/config/__tests__/bannedPhrases.test.ts",
+    "pdf:preview": "vite-node scripts/preview-pdf.ts"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.9",
     "concurrently": "^9.1.2"
   }
 }

@@ -306,10 +306,17 @@ export const PROTECT_STEP_CATALOG: readonly CatalogStepItem[] = [
     howToVerifyTemplate:
       "If you already paid, call 1930 and your bank right away and share the transaction details.",
     appliesWhen: (ctx) => {
-      const paymentRequested = Boolean(
-        ctx.signals?.some((s) => s.category === "payment")
+      const textSaysPaid = Boolean(
+        ctx.rawText &&
+          /(?:you\s+(?:have\s+)?paid|payment\s+(?:was\s+)?received|amount\s+deducted|funds\s+transferred|payment\s+successful|already\s+paid)/i.test(
+            ctx.rawText
+          )
       );
-      return paymentRequested || Boolean(ctx.alreadyPaid);
+      const hasOverpayment = Boolean(ctx.signals?.some((s) => s.ruleId === "PAY-009"));
+      if (ctx.alreadyPaid === true) return true;
+      if (textSaysPaid || hasOverpayment) return true;
+      if (ctx.alreadyPaid === false) return false;
+      return Boolean(ctx.signals?.some((s) => s.category === "payment"));
     },
     getActions: () => [
       {

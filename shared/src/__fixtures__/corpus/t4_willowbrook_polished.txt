@@ -1,0 +1,16 @@
+# expected: NEEDS_REVIEW
+# why: Polished, complete, unverified offer: no scam indicators, 10/10 completeness, but unverified sender (insufficient_evidence).
+# domain: internship
+
+Dear Ananya,
+
+Thank you for applying through our careers page for the Data Analyst Intern position at Willowbrook Analytics Pvt. Ltd., Bengaluru.
+
+Eligibility: Final-year B.E./B.Tech students in CSE/IT with a minimum 7.0 CGPA; basic SQL and Python required.
+Duration: 6 months, hybrid (3 days onsite). Stipend: ₹20,000 per month.
+Selection process: an online assessment on 12 November 2026 followed by a technical interview. Apply by 8 November 2026 at careers.willowbrook-analytics.invalid.
+
+Please do not share any payment or sensitive documents with anyone claiming to represent us. Official queries: talent@willowbrook-analytics.invalid.
+
+Regards,
+Talent Acquisition, Willowbrook Analytics

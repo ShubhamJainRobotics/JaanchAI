@@ -8,6 +8,7 @@ interface NextStepCardProps {
   onToggleSubCheck?: (attestationKey: string, currentCompleted: boolean) => void;
   onOpenSafeReply?: () => void;
   isBusy?: boolean;
+  variant?: "standard" | "protect";
 }
 
 export function NextStepCard({
@@ -17,12 +18,13 @@ export function NextStepCard({
   onToggleSubCheck,
   onOpenSafeReply,
   isBusy = false,
+  variant = "standard",
 }: NextStepCardProps) {
   const checkboxId = `step-check-${step.stepKey}`;
 
   return (
     <div
-      className={`p-4 rounded-xl border transition-all duration-200 space-y-3 ${
+      className={`step-card p-4 rounded-xl border transition-all duration-200 space-y-3 ${
         completed
           ? "bg-emerald-50/50 border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-900/40"
           : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-2xs"
@@ -54,18 +56,38 @@ export function NextStepCard({
             {step.title}
           </label>
 
-          {step.whyItMatters && (
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
-              {step.whyItMatters}
-            </p>
-          )}
+          {variant === "protect" ? (
+            step.whyItMatters ? (
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                {step.whyItMatters}
+              </p>
+            ) : step.howToVerify &&
+              step.howToVerify.toLowerCase().trim() !==
+                step.title.toLowerCase().trim() ? (
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                {step.howToVerify}
+              </p>
+            ) : null
+          ) : (
+            <>
+              {step.whyItMatters && (
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
+                  {step.whyItMatters}
+                </p>
+              )}
 
-          <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed pt-0.5">
-            <strong className="font-semibold text-slate-800 dark:text-slate-200">
-              How to verify:{" "}
-            </strong>
-            {step.howToVerify}
-          </p>
+              {step.howToVerify &&
+                step.howToVerify.toLowerCase().trim() !==
+                  step.title.toLowerCase().trim() && (
+                  <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed pt-0.5">
+                    <strong className="font-semibold text-slate-800 dark:text-slate-200">
+                      How to verify:{" "}
+                    </strong>
+                    {step.howToVerify}
+                  </p>
+                )}
+            </>
+          )}
 
           {/* Action buttons */}
           {step.actions && step.actions.length > 0 && (

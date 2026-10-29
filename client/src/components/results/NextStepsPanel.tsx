@@ -30,11 +30,8 @@ export function NextStepsPanel({
   onTriggerInput,
   onOpenSafeReply,
 }: NextStepsPanelProps) {
-  // 1. "I already paid" toggle state (auto-enabled if payment signals fired)
-  const hasPaymentSignal = Boolean(
-    result.signals?.some((s) => s.category === "payment")
-  );
-  const [alreadyPaid, setAlreadyPaid] = useState<boolean>(hasPaymentSignal);
+  // 1. "I already paid" toggle state (Fix I item 5: defaults to OFF on every load)
+  const [alreadyPaid, setAlreadyPaid] = useState<boolean>(false);
 
   // 2. Step completions state (sessionStorage for guest, checklist_items for saved)
   const [completedMap, setCompletedMap] = useState<Record<string, boolean>>(() => {

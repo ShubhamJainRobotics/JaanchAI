@@ -1,0 +1,9 @@
+# expected: NEEDS_REVIEW
+# why: Poorly written but benign informal startup offer: no scam indicators, selection process present, no fees (negation guard).
+# domain: internship
+
+Dear student,
+
+We are hiring intern for content writting in our company Sunrise Media, Pune. Work is remote, 2 month, stipend 5000 rupees per month. Please send your resume to our email and we will call for a interview next week. No fees is charged to any student. Thank you.
+
+Sunrise Media HR

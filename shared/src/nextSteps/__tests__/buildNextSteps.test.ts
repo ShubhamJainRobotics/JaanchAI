@@ -73,6 +73,8 @@ describe("buildNextSteps - Redesigned Three-Part Next Steps System", () => {
     durationMs: 40,
     disclaimer: "Disclaimer",
     createdAt: new Date().toISOString(),
+    paymentAlert: false,
+    inputNotices: [],
     ...overrides,
   });
 

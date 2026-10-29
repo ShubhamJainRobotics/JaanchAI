@@ -407,11 +407,14 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                 <CheckRow
                   label="Offer Content Completeness"
                   outcome={
-                    result.completeness.missing.length >= 4
-                      ? "fail"
-                      : result.completeness.missing.length === 0
+                    result.completeness.missing.length === 0
                       ? "pass"
                       : "unknown"
+                  }
+                  outcomeLabel={
+                    result.completeness.missing.length === 0
+                      ? undefined
+                      : "Incomplete"
                   }
                   detail={`${result.completeness.present.length} of 10 essential details present. ${
                     result.completeness.missing.length > 0
