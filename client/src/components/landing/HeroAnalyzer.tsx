@@ -47,8 +47,8 @@ export function HeroAnalyzer() {
   };
 
   return (
-    <div className="bg-surface border border-border rounded-lg shadow-md p-5 sm:p-6 text-left">
-      <form onSubmit={handleAnalyze} className="space-y-4">
+    <div className="bg-surface border border-border rounded-lg shadow-md p-4 sm:p-5 text-left">
+      <form onSubmit={handleAnalyze} className="space-y-3.5">
         {/* Label and textarea */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
@@ -61,7 +61,7 @@ export function HeroAnalyzer() {
           </div>
           <textarea
             id="hero-offer-text"
-            rows={4}
+            rows={3}
             value={text}
             onChange={(e) => {
               setText(e.target.value);

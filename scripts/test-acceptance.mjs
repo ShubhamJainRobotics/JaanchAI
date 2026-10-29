@@ -1,5 +1,7 @@
 import { spawn } from "node:child_process";
 import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
 
 const CHROME_PATH = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const PORT = 9223;
@@ -7,6 +9,18 @@ const APP_BASE = "http://localhost:4173";
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+async function waitForServer(url, timeoutMs = 15000) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    try {
+      const res = await fetch(url);
+      if (res.ok || res.status === 404) return true;
+    } catch {}
+    await sleep(250);
+  }
+  throw new Error(`Server at ${url} did not become available in ${timeoutMs}ms`);
 }
 
 async function getWsUrl() {
@@ -70,7 +84,10 @@ async function run() {
     shell: true,
   });
 
-  await sleep(1500);
+  await waitForServer(APP_BASE);
+
+  const profileDir = path.join(os.tmpdir(), "chrome-acceptance-profile");
+  fs.mkdirSync(profileDir, { recursive: true });
 
   // Start Chrome with remote debugging
   const chrome = spawn(
@@ -81,6 +98,9 @@ async function run() {
       "--no-sandbox",
       "--disable-gpu",
       "--disable-dev-shm-usage",
+      "--remote-allow-origins=*",
+      "--disable-web-security",
+      `--user-data-dir=${profileDir}`,
       "about:blank",
     ],
     { stdio: "ignore" }
@@ -123,12 +143,72 @@ async function run() {
       const sample = document.querySelector('[aria-label=\"Example report preview\"]');
       sample ? sample.querySelectorAll('button, a, input, [tabindex=\"0\"]').length : -1
     `);
-    const iconTileCount = await cdp.eval("document.querySelectorAll('.rounded-md.bg-primary\\\\/10.text-primary').length");
+    const iconTileCount = await cdp.eval("document.querySelectorAll('.rounded-md.bg-primary\\\\/10.text-primary, .bg-primary-tint.text-primary').length");
 
     results.push({
       criterion: "Landing structure (single h1, hero analyzer, sample label, sample inert, 4 icon tiles)",
       pass: h1Count === 1 && hasHeroAnalyzer && sampleLabel && sampleFocusable === 0 && iconTileCount >= 4,
       details: `h1Count=${h1Count}, hasHeroAnalyzer=${hasHeroAnalyzer}, sampleLabel=${sampleLabel}, sampleFocusable=${sampleFocusable}, iconTiles=${iconTileCount}`,
+    });
+
+    // Round 3: Above-the-fold contract at 1440x900 and 1366x768
+    console.log("Checking Round 3: Landing above-the-fold contract at desktop...");
+    let aboveTheFoldPassed = true;
+    let aboveTheFoldDetails = "";
+    for (const [w, h] of [[1440, 900], [1366, 768]]) {
+      await cdp.send("Emulation.setDeviceMetricsOverride", {
+        width: w,
+        height: h,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      await sleep(200);
+      const btnMetrics = await cdp.eval(`
+        (() => {
+          const btn = document.querySelector('button[type="submit"]');
+          if (!btn) return { found: false };
+          const rect = btn.getBoundingClientRect();
+          return {
+            found: true,
+            bottom: Math.round(rect.bottom),
+            viewportHeight: window.innerHeight,
+            isAboveFold: rect.bottom <= window.innerHeight
+          };
+        })()
+      `);
+      if (!btnMetrics.found || !btnMetrics.isAboveFold) {
+        aboveTheFoldPassed = false;
+      }
+      aboveTheFoldDetails += `${w}x${h}: bottom=${btnMetrics.bottom}px <= ${btnMetrics.viewportHeight}px (${btnMetrics.isAboveFold}); `;
+    }
+    results.push({
+      criterion: "Landing Above-The-Fold: Analyze button visible without scrolling at 1440x900 & 1366x768 (§3.1, §5.1)",
+      pass: aboveTheFoldPassed,
+      details: aboveTheFoldDetails,
+    });
+
+    // Round 3: Offer-Type Chips Single-Row check
+    console.log("Checking Round 3: Offer-type chips single-row layout...");
+    await cdp.send("Emulation.setDeviceMetricsOverride", {
+      width: 1280,
+      height: 800,
+      deviceScaleFactor: 1,
+      mobile: false,
+    });
+    await sleep(200);
+    const chipsSingleRow = await cdp.eval(`
+      (() => {
+        const chips = Array.from(document.querySelectorAll('#hero-offer-type button, [aria-labelledby="hero-offer-type-label"] button'));
+        if (chips.length < 7) return { count: chips.length, singleRow: false };
+        const tops = chips.map(c => Math.round(c.getBoundingClientRect().top));
+        const allSameTop = tops.every(t => Math.abs(t - tops[0]) <= 2);
+        return { count: chips.length, allSameTop, tops };
+      })()
+    `);
+    results.push({
+      criterion: "Offer-Type Chips Single-Row: All 7 chips on a single row at desktop without orphan wrapping (§3.3, §5.2)",
+      pass: chipsSingleRow.allSameTop && chipsSingleRow.count === 7,
+      details: JSON.stringify(chipsSingleRow),
     });
 
     // 2. H1 text wrap across viewports

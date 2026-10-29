@@ -3,7 +3,7 @@ import { HeroAnalyzer } from "./HeroAnalyzer";
 
 export function Hero() {
   return (
-    <section className="relative pt-10 pb-14 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-24 overflow-hidden">
+    <section className="relative pt-6 pb-12 sm:pt-8 sm:pb-16 lg:pt-10 lg:pb-16 overflow-hidden">
       {/* Static CSS-only ambient backdrop decoration (§5.1) */}
       <div
         className="absolute inset-0 pointer-events-none -z-10 overflow-hidden forced-colors:hidden print:hidden"
@@ -16,8 +16,8 @@ export function Hero() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Main centered headline & subcopy container (max-w-3xl) */}
-        <div className="max-w-3xl mx-auto mb-8 sm:mb-10">
-          <h1 className="font-extrabold text-foreground tracking-tight [text-wrap:balance] text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.12]">
+        <div className="max-w-3xl mx-auto mb-6 sm:mb-8">
+          <h1 className="font-extrabold text-foreground tracking-tight [text-wrap:balance] text-[clamp(2rem,4.5vw,3.25rem)] leading-[1.12]">
             <span>Verify Indian Internships & Jobs</span>{" "}
             <span className="block mt-1 sm:mt-1.5">
               <span className="relative inline-block whitespace-nowrap">
@@ -35,7 +35,7 @@ export function Hero() {
             </span>
           </h1>
 
-          <p className="mt-4 sm:mt-5 text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl mx-auto [text-wrap:balance]">
+          <p className="mt-3 sm:mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl mx-auto [text-wrap:balance]">
             Instant, browser-side checks for security deposits, fake offers, unverified recruiters, and scam domains. Free, private, and built for students.
           </p>
         </div>

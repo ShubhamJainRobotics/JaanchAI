@@ -328,23 +328,105 @@ This document tracks all visual and interaction restyle batches, design system o
 
 ---
 
-## Round 2 — Batch 6: Polish, Accessibility & Quality Gate Enforcement
-- **Automated Structural Acceptance Test Suite:**
-  - Created `scripts/test-acceptance.mjs` verifying all 8 structural criteria via Chrome CDP against the production preview build.
-  - **Criterion 1 (Landing Structure):** Single `h1`, `HeroAnalyzer` present, sample preview labelled as fictional and inert, 4 benefit cards use identical `IconTile` styling. **[PASS]**
-  - **Criterion 2 (H1 Text Wrap):** Fluid balanced text wrap with zero orphan words across 320, 375, 390, 768, 1280, 1440 px. **[PASS]**
-  - **Criterion 3 (Mobile Nav Drawer):** Menu button opens drawer dialog, focus is trapped, Esc closes and returns focus, all links ≥ 44px. **[PASS]**
-  - **Criterion 4 (Analyze Progressive Disclosure):** Details and privacy disclosures collapsed by default with live summaries, keyboard-safe sticky action bar. **[PASS]**
-  - **Criterion 5 (Results Above-The-Fold Contract at 375×667):** Top section with status banner, payment alert, meter, why-this-status rationale, and primary next-steps action button fit within the mobile viewport. **[PASS]**
-  - **Criterion 6 (Desktop Two-Column Architecture at 1280×800):** Sticky sidebar stays visible during scroll, jump navigation active. **[PASS]**
-  - **Criterion 7 (High-Risk Safety Controls):** Safe Reply panel hidden, *"Stop and Protect Yourself"* block prominent, 1930 / cybercrime.gov.in actions front and center. **[PASS]**
-  - **Criterion 8 (Responsive Viewport Boundary):** Zero horizontal scroll across all routes (`/`, `/analyze`, `/results/:id`, `/history`, `/resources`, `/about`, `/login`) at 320, 375, 390, 768, 1024, 1280, 1440 px. **[PASS]**
+## Round 3 — UI Restyle: Hero Recomposition & Electric Indigo Palette
+
+### Overview
+Round 3 delivered an airy, centered, high-contrast hero composition, migrated brand accents to a vivid **Electric Indigo** palette (`#5B3DF5`), eradicated monospace font leakage from UI labels, and brought the primary "Analyze offer" action completely above the fold on all standard viewports.
+
+---
+
+### Batch 1: Palette Tokens & Contrast Tests (§4 & §7)
+- **Token Redefinition (`client/src/styles/tokens.css`):**
+  - Light theme:
+    - `--color-primary`: `#5B3DF5` (hover `#4B2FE0`, pressed `#3F26C4`, foreground `#FFFFFF`, tint `#F1EEFF`, tint-border `#D9D2FF`)
+    - `--color-background`: `#FAFAFF`, `--color-surface`: `#FFFFFF`, `--color-surface-raised`: `#FFFFFF`
+    - `--color-foreground`: `#12102B`, `--color-muted-foreground`: `#5B5878`, `--color-border`: `#E3DFF7`
+    - `--color-ring`: `#8F7BFF`, `--color-highlight`: `#FFD43B`
+    - `--color-gradient-accent-from`: `#5B3DF5`, `--color-gradient-accent-to`: `#8B5CF6`
+  - Dark theme:
+    - `--color-background`: `#0F0D24`, `--color-surface`: `#17143A`, `--color-surface-raised`: `#201C4D`
+    - `--color-foreground`: `#F3F1FF`, `--color-muted-foreground`: `#B9B4DE`, `--color-border`: `#2D2960`
+    - `--color-primary`: `#8F7BFF` (hover `#A594FF`, pressed `#7C66FF`, foreground `#0F0D24`, tint `#2A2570`, tint-border `#3D368A`)
+    - `--color-ring`: `#B7A8FF`, `--color-highlight`: `#FFD43B`
+  - Status, outcome, and severity tokens remained strictly isolated and intact.
+- **Tailwind Mapping (`client/tailwind.config.ts`):**
+  - Extended theme with `highlight`, `primary.tint`, `primary['tint-border']`, `primary.pressed`, `gradient-accent-from`, `gradient-accent-to`.
+- **Contrast & Hue Separation Unit Tests (`client/src/__tests__/tokensContrast.test.ts`):**
+  - Light mode body contrast `#12102B` on `#FAFAFF` = 17.0:1 (WCAG AA ≥ 4.5:1 passed).
+  - Light mode primary button `#FFFFFF` on `#5B3DF5` = 6.10:1 (WCAG AA ≥ 4.5:1 passed).
+  - Dark mode body contrast `#F3F1FF` on `#0F0D24` = 15.9:1 (WCAG AA ≥ 4.5:1 passed).
+  - Focus ring contrast ≥ 3:1 in both themes.
+  - Added Hue Decoupling Test: Brand primary (`#5B3DF5`, hue ≈ 250°) maintains minimum 30° hue distance from all five status colors (verified emerald: 87°, likely genuine teal: 61°, needs review amber: 136°, high risk red: 110°, confirmed scam rose: 93°).
+  - Highlight `#FFD43B` contrast against dark text = 11.77:1 (≥ 4.5:1 passed).
+- **Design System Overrides:** Documented Round 3 palette overrides in `design-system/jaanch/MASTER.md`.
+- **Screenshots:** 24 screenshots saved in `/docs/ui-shots/r3-after/batch-1/`.
+
+---
+
+### Batch 2: Global Polish & Monospace Cleanup (§5.6 & §6)
+- **Monospace Leakage Containment:**
+  - Audited all occurrences of `font-mono` across `client/src`.
+  - Removed `font-mono` from UI labels, character counter helper text ("WhatsApp / Telegram / Email"), section headers, timestamps, badges, and fictional example labels across `ClaimedOrgInput`, `ConsentToggles`, `DetectedLinksList`, `ExtractedTextEditor`, `ImageUploadPanel`, `OrganizationAutocomplete`, `PdfUploadPanel`, `ExampleWalkthrough`, `FiveStepFlow`, `HeroAnalyzer`, `HowItWorks`, `SampleReportPreview`, `ChallengeEmailPanel`, `CheckRow`, `CompletenessCard`, `EvidenceReport`, `ExportReportDialog`, `LinkInspectorCard`, `ReportedRecordsCard`, `ResultsSidebar`, `RiskBanner`, `StatusBanner`, `StudentSafetyRules`, `Analyze`, `History`, `Login`, `Resources`, `Results`, `Settings`, `Signup`.
+  - Retained `font-mono` exclusively in quoted scam message text, raw OCR text inputs, code tokens, rule IDs (`PAY-001`), and URLs.
+  - Added automated test in `tokensContrast.test.ts` prohibiting `font-mono` on headings, buttons, and UI labels.
+- **Button & UI Polish:**
+  - Standardized solid primary button states with `hover:bg-primary-hover active:bg-primary-pressed shadow-xs`.
+  - Updated logo tile with Hindi "जाँच" badge in `bg-primary-tint text-primary border-primary-tint-border`.
+  - Updated selected chip states in `DomainSelect` to `bg-primary-tint text-primary border-primary font-bold`.
+- **Screenshots:** 24 screenshots saved in `/docs/ui-shots/r3-after/batch-2/`.
+
+---
+
+### Batch 3: Landing Page Recomposition (§5)
+- **Single-Column Centered Hero (`client/src/components/landing/Hero.tsx`):**
+  - Recomposed layout into a single-column, centered architecture (`max-w-3xl` content, `max-w-6xl` section).
+  - Fluid H1: First clause `foreground`, second clause gradient accent (`from-gradient-accent-from to-gradient-accent-to`), with warm highlight underline marker behind *"Before You Pay"* using `bg-highlight` (`#FFD43B`). Balanced with `[text-wrap:balance]`.
+  - Sub-copy shortened to ≤ 2 lines at desktop.
+  - Static CSS-only ambient backdrop decoration: two soft radial tints of `primary-tint` (≤ 12% opacity) + faint token-driven dot grid, hidden under `forced-colors` and print.
+- **Centered Inline Analyzer Card (`client/src/components/landing/HeroAnalyzer.tsx`):**
+  - Placed directly centered under sub-copy in `max-w-2xl mx-auto`.
+  - Labelled textarea (3 rows), character counter in standard sans `tabular-nums`.
+  - Single-row offer-type selector (`OfferTypeSelect.tsx`): 7 chips in a single horizontal row at ≥ 640px without awkward wrapping; smooth horizontal scroll-snap on mobile. Selected state: `bg-primary-tint text-primary border-primary font-bold` with `Check` icon.
+  - Prominent "Analyze offer →" button in `bg-primary hover:bg-primary-hover active:bg-primary-pressed text-primary-foreground`.
+  - Quiet secondary links: *Upload a screenshot or PDF*, *Inspect a link*.
+  - Truthful privacy guarantee: *"Analysis runs in your browser. Pasted text is never stored for guests."*
+- **Trust Row:** 3 verified truth pills under card (*100% Free & Open Source*, *Private · Zero tracking for guests*, *Deterministic 8-point rule engine*).
+- **"See what a report looks like" & "How it works" (`HowItWorks.tsx`):**
+  - Moved below hero into a dedicated section with 2 columns on desktop (≥ 1024px), stacked on mobile.
+  - Left column: 4-step verification flow with `IconTile`.
+  - Right column: Simplified `SampleReportPreview`:
+    - Neutral card borders (`border-border`)
+    - 1 red status banner ("High Risk" on Apex Systems Labs)
+    - 1 neutral "Do not pay" line (neutral background, eliminating competing stacked red boxes)
+    - 1 evidence row with monospace quote
+    - 1 next step
+    - "2 of 8 independent checks completed" meter
+    - Fictional example label, fully inert (0 focusable buttons)
+- **Benefits Grid & Closing CTA:**
+  - Added subtle motion-safe hover lift to benefits cards.
+  - Recomposed closing CTA into a full-width high-contrast `bg-primary text-primary-foreground` band with high-contrast white button.
+- **Screenshots:** 24 screenshots saved in `/docs/ui-shots/r3-after/batch-3/`.
+
+---
+
+### Batch 4: Verification, Quality Gates & Acceptance (§8 & §9)
 - **Quality Gates Verification:**
   - `npm run lint` PASSED (0 hardcoded color literals, 0 banned phrases, 0 secret leaks, typecheck passed).
-  - `npm run test` PASSED (338/338 tests passed across shared, server, client).
+  - `npm run test` PASSED (342/342 tests passed across shared: 267, server: 38, client: 37).
   - `npm run eval -w shared` PASSED (25/25 corpus test cases passed: 100% precision & recall).
-  - Contrast tests: All token pairs exceed WCAG 2.2 AA (≥ 4.5:1 body, ≥ 7:1 status).
-  - 50 final screenshots captured in `/docs/ui-shots/r2-after/final/`.
+  - Automated Acceptance Suite (`scripts/test-acceptance.mjs`) PASSED all 10 criteria via Chrome CDP against preview server:
+    - Landing structure: PASS
+    - Landing Above-The-Fold (1440×900: 682px <= 900px, 1366×768: 682px <= 768px): PASS
+    - Offer-type chips single-row layout (`tops: [561, 561, 561, 561, 561, 561, 561]`): PASS
+    - H1 balanced text wrap without orphans: PASS
+    - Mobile nav drawer: PASS
+    - Analyze progressive disclosures: PASS
+    - Results 375×667 above-the-fold contract: PASS
+    - Desktop 1280×800 sticky sidebar: PASS
+    - High-risk safety controls: PASS
+    - Zero horizontal scroll across all viewports (320-1440px): PASS
+- **Final Screenshots:** 24 screenshots captured in `/docs/ui-shots/r3-after/final/`.
+
 
 
 
@@ -488,23 +570,105 @@ This document tracks all visual and interaction restyle batches, design system o
 
 ---
 
-## Round 2 — Batch 6: Polish, Accessibility & Quality Gate Enforcement
-- **Automated Structural Acceptance Test Suite:**
-  - Created `scripts/test-acceptance.mjs` verifying all 8 structural criteria via Chrome CDP against the production preview build.
-  - **Criterion 1 (Landing Structure):** Single `h1`, `HeroAnalyzer` present, sample preview labelled as fictional and inert, 4 benefit cards use identical `IconTile` styling. **[PASS]**
-  - **Criterion 2 (H1 Text Wrap):** Fluid balanced text wrap with zero orphan words across 320, 375, 390, 768, 1280, 1440 px. **[PASS]**
-  - **Criterion 3 (Mobile Nav Drawer):** Menu button opens drawer dialog, focus is trapped, Esc closes and returns focus, all links ≥ 44px. **[PASS]**
-  - **Criterion 4 (Analyze Progressive Disclosure):** Details and privacy disclosures collapsed by default with live summaries, keyboard-safe sticky action bar. **[PASS]**
-  - **Criterion 5 (Results Above-The-Fold Contract at 375×667):** Top section with status banner, payment alert, meter, why-this-status rationale, and primary next-steps action button fit within the mobile viewport. **[PASS]**
-  - **Criterion 6 (Desktop Two-Column Architecture at 1280×800):** Sticky sidebar stays visible during scroll, jump navigation active. **[PASS]**
-  - **Criterion 7 (High-Risk Safety Controls):** Safe Reply panel hidden, *"Stop and Protect Yourself"* block prominent, 1930 / cybercrime.gov.in actions front and center. **[PASS]**
-  - **Criterion 8 (Responsive Viewport Boundary):** Zero horizontal scroll across all routes (`/`, `/analyze`, `/results/:id`, `/history`, `/resources`, `/about`, `/login`) at 320, 375, 390, 768, 1024, 1280, 1440 px. **[PASS]**
+## Round 3 — UI Restyle: Hero Recomposition & Electric Indigo Palette
+
+### Overview
+Round 3 delivered an airy, centered, high-contrast hero composition, migrated brand accents to a vivid **Electric Indigo** palette (`#5B3DF5`), eradicated monospace font leakage from UI labels, and brought the primary "Analyze offer" action completely above the fold on all standard viewports.
+
+---
+
+### Batch 1: Palette Tokens & Contrast Tests (§4 & §7)
+- **Token Redefinition (`client/src/styles/tokens.css`):**
+  - Light theme:
+    - `--color-primary`: `#5B3DF5` (hover `#4B2FE0`, pressed `#3F26C4`, foreground `#FFFFFF`, tint `#F1EEFF`, tint-border `#D9D2FF`)
+    - `--color-background`: `#FAFAFF`, `--color-surface`: `#FFFFFF`, `--color-surface-raised`: `#FFFFFF`
+    - `--color-foreground`: `#12102B`, `--color-muted-foreground`: `#5B5878`, `--color-border`: `#E3DFF7`
+    - `--color-ring`: `#8F7BFF`, `--color-highlight`: `#FFD43B`
+    - `--color-gradient-accent-from`: `#5B3DF5`, `--color-gradient-accent-to`: `#8B5CF6`
+  - Dark theme:
+    - `--color-background`: `#0F0D24`, `--color-surface`: `#17143A`, `--color-surface-raised`: `#201C4D`
+    - `--color-foreground`: `#F3F1FF`, `--color-muted-foreground`: `#B9B4DE`, `--color-border`: `#2D2960`
+    - `--color-primary`: `#8F7BFF` (hover `#A594FF`, pressed `#7C66FF`, foreground `#0F0D24`, tint `#2A2570`, tint-border `#3D368A`)
+    - `--color-ring`: `#B7A8FF`, `--color-highlight`: `#FFD43B`
+  - Status, outcome, and severity tokens remained strictly isolated and intact.
+- **Tailwind Mapping (`client/tailwind.config.ts`):**
+  - Extended theme with `highlight`, `primary.tint`, `primary['tint-border']`, `primary.pressed`, `gradient-accent-from`, `gradient-accent-to`.
+- **Contrast & Hue Separation Unit Tests (`client/src/__tests__/tokensContrast.test.ts`):**
+  - Light mode body contrast `#12102B` on `#FAFAFF` = 17.0:1 (WCAG AA ≥ 4.5:1 passed).
+  - Light mode primary button `#FFFFFF` on `#5B3DF5` = 6.10:1 (WCAG AA ≥ 4.5:1 passed).
+  - Dark mode body contrast `#F3F1FF` on `#0F0D24` = 15.9:1 (WCAG AA ≥ 4.5:1 passed).
+  - Focus ring contrast ≥ 3:1 in both themes.
+  - Added Hue Decoupling Test: Brand primary (`#5B3DF5`, hue ≈ 250°) maintains minimum 30° hue distance from all five status colors (verified emerald: 87°, likely genuine teal: 61°, needs review amber: 136°, high risk red: 110°, confirmed scam rose: 93°).
+  - Highlight `#FFD43B` contrast against dark text = 11.77:1 (≥ 4.5:1 passed).
+- **Design System Overrides:** Documented Round 3 palette overrides in `design-system/jaanch/MASTER.md`.
+- **Screenshots:** 24 screenshots saved in `/docs/ui-shots/r3-after/batch-1/`.
+
+---
+
+### Batch 2: Global Polish & Monospace Cleanup (§5.6 & §6)
+- **Monospace Leakage Containment:**
+  - Audited all occurrences of `font-mono` across `client/src`.
+  - Removed `font-mono` from UI labels, character counter helper text ("WhatsApp / Telegram / Email"), section headers, timestamps, badges, and fictional example labels across `ClaimedOrgInput`, `ConsentToggles`, `DetectedLinksList`, `ExtractedTextEditor`, `ImageUploadPanel`, `OrganizationAutocomplete`, `PdfUploadPanel`, `ExampleWalkthrough`, `FiveStepFlow`, `HeroAnalyzer`, `HowItWorks`, `SampleReportPreview`, `ChallengeEmailPanel`, `CheckRow`, `CompletenessCard`, `EvidenceReport`, `ExportReportDialog`, `LinkInspectorCard`, `ReportedRecordsCard`, `ResultsSidebar`, `RiskBanner`, `StatusBanner`, `StudentSafetyRules`, `Analyze`, `History`, `Login`, `Resources`, `Results`, `Settings`, `Signup`.
+  - Retained `font-mono` exclusively in quoted scam message text, raw OCR text inputs, code tokens, rule IDs (`PAY-001`), and URLs.
+  - Added automated test in `tokensContrast.test.ts` prohibiting `font-mono` on headings, buttons, and UI labels.
+- **Button & UI Polish:**
+  - Standardized solid primary button states with `hover:bg-primary-hover active:bg-primary-pressed shadow-xs`.
+  - Updated logo tile with Hindi "जाँच" badge in `bg-primary-tint text-primary border-primary-tint-border`.
+  - Updated selected chip states in `DomainSelect` to `bg-primary-tint text-primary border-primary font-bold`.
+- **Screenshots:** 24 screenshots saved in `/docs/ui-shots/r3-after/batch-2/`.
+
+---
+
+### Batch 3: Landing Page Recomposition (§5)
+- **Single-Column Centered Hero (`client/src/components/landing/Hero.tsx`):**
+  - Recomposed layout into a single-column, centered architecture (`max-w-3xl` content, `max-w-6xl` section).
+  - Fluid H1: First clause `foreground`, second clause gradient accent (`from-gradient-accent-from to-gradient-accent-to`), with warm highlight underline marker behind *"Before You Pay"* using `bg-highlight` (`#FFD43B`). Balanced with `[text-wrap:balance]`.
+  - Sub-copy shortened to ≤ 2 lines at desktop.
+  - Static CSS-only ambient backdrop decoration: two soft radial tints of `primary-tint` (≤ 12% opacity) + faint token-driven dot grid, hidden under `forced-colors` and print.
+- **Centered Inline Analyzer Card (`client/src/components/landing/HeroAnalyzer.tsx`):**
+  - Placed directly centered under sub-copy in `max-w-2xl mx-auto`.
+  - Labelled textarea (3 rows), character counter in standard sans `tabular-nums`.
+  - Single-row offer-type selector (`OfferTypeSelect.tsx`): 7 chips in a single horizontal row at ≥ 640px without awkward wrapping; smooth horizontal scroll-snap on mobile. Selected state: `bg-primary-tint text-primary border-primary font-bold` with `Check` icon.
+  - Prominent "Analyze offer →" button in `bg-primary hover:bg-primary-hover active:bg-primary-pressed text-primary-foreground`.
+  - Quiet secondary links: *Upload a screenshot or PDF*, *Inspect a link*.
+  - Truthful privacy guarantee: *"Analysis runs in your browser. Pasted text is never stored for guests."*
+- **Trust Row:** 3 verified truth pills under card (*100% Free & Open Source*, *Private · Zero tracking for guests*, *Deterministic 8-point rule engine*).
+- **"See what a report looks like" & "How it works" (`HowItWorks.tsx`):**
+  - Moved below hero into a dedicated section with 2 columns on desktop (≥ 1024px), stacked on mobile.
+  - Left column: 4-step verification flow with `IconTile`.
+  - Right column: Simplified `SampleReportPreview`:
+    - Neutral card borders (`border-border`)
+    - 1 red status banner ("High Risk" on Apex Systems Labs)
+    - 1 neutral "Do not pay" line (neutral background, eliminating competing stacked red boxes)
+    - 1 evidence row with monospace quote
+    - 1 next step
+    - "2 of 8 independent checks completed" meter
+    - Fictional example label, fully inert (0 focusable buttons)
+- **Benefits Grid & Closing CTA:**
+  - Added subtle motion-safe hover lift to benefits cards.
+  - Recomposed closing CTA into a full-width high-contrast `bg-primary text-primary-foreground` band with high-contrast white button.
+- **Screenshots:** 24 screenshots saved in `/docs/ui-shots/r3-after/batch-3/`.
+
+---
+
+### Batch 4: Verification, Quality Gates & Acceptance (§8 & §9)
 - **Quality Gates Verification:**
   - `npm run lint` PASSED (0 hardcoded color literals, 0 banned phrases, 0 secret leaks, typecheck passed).
-  - `npm run test` PASSED (338/338 tests passed across shared, server, client).
+  - `npm run test` PASSED (342/342 tests passed across shared: 267, server: 38, client: 37).
   - `npm run eval -w shared` PASSED (25/25 corpus test cases passed: 100% precision & recall).
-  - Contrast tests: All token pairs exceed WCAG 2.2 AA (≥ 4.5:1 body, ≥ 7:1 status).
-  - 50 final screenshots captured in `/docs/ui-shots/r2-after/final/`.
+  - Automated Acceptance Suite (`scripts/test-acceptance.mjs`) PASSED all 10 criteria via Chrome CDP against preview server:
+    - Landing structure: PASS
+    - Landing Above-The-Fold (1440×900: 682px <= 900px, 1366×768: 682px <= 768px): PASS
+    - Offer-type chips single-row layout (`tops: [561, 561, 561, 561, 561, 561, 561]`): PASS
+    - H1 balanced text wrap without orphans: PASS
+    - Mobile nav drawer: PASS
+    - Analyze progressive disclosures: PASS
+    - Results 375×667 above-the-fold contract: PASS
+    - Desktop 1280×800 sticky sidebar: PASS
+    - High-risk safety controls: PASS
+    - Zero horizontal scroll across all viewports (320-1440px): PASS
+- **Final Screenshots:** 24 screenshots captured in `/docs/ui-shots/r3-after/final/`.
+
 
 
 
