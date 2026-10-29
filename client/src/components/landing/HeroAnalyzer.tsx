@@ -47,7 +47,7 @@ export function HeroAnalyzer() {
   };
 
   return (
-    <div className="bg-surface border border-border rounded-lg shadow-elevation-1 p-5 sm:p-6 text-left">
+    <div className="bg-surface border border-border rounded-lg shadow-md p-5 sm:p-6 text-left">
       <form onSubmit={handleAnalyze} className="space-y-4">
         {/* Label and textarea */}
         <div>
@@ -98,7 +98,7 @@ export function HeroAnalyzer() {
         <div>
           <button
             type="submit"
-            className="w-full min-h-[48px] px-6 py-3 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="w-full min-h-[48px] px-6 py-3 rounded-md bg-primary hover:bg-primary-hover active:bg-primary-pressed text-primary-foreground font-semibold text-base shadow-sm transition-colors flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <ShieldCheck className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
             <span>Analyze Offer</span>
@@ -130,7 +130,7 @@ export function HeroAnalyzer() {
       {/* Accurate Privacy Line (§2.4 / §4.1) */}
       <div className="mt-3.5 pt-3 border-t border-border/60 text-center sm:text-left">
         <p className="text-xs text-muted-foreground leading-relaxed">
-          Screenshots and PDFs are read in your browser and never uploaded. Guest checks are not saved to any database.
+          Analysis runs in your browser. Pasted text is never stored for guests.
         </p>
       </div>
     </div>

@@ -10,7 +10,7 @@ export interface IconTileProps {
 }
 
 const variantStyles: Record<string, string> = {
-  primary: "bg-primary/10 text-primary border-primary/20",
+  primary: "bg-primary-tint text-primary border-primary-tint-border",
   warning: "bg-warning/15 text-warning border-warning/30",
   verified: "bg-status-verified-bg text-status-verified-fg border-status-verified-border",
   "high-risk": "bg-status-high-risk-bg text-status-high-risk-fg border-status-high-risk-border",

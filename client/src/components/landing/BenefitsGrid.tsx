@@ -45,7 +45,7 @@ export function BenefitsGrid() {
           {benefits.map((b) => (
             <div
               key={b.title}
-              className="bg-surface border border-border rounded-lg p-5 shadow-xs flex flex-col"
+              className="bg-surface border border-border rounded-lg p-5 shadow-xs flex flex-col transition-all duration-200 motion-safe:hover:-translate-y-0.5 hover:shadow-sm hover:border-primary-tint-border"
             >
               <div className="mb-3.5">
                 <IconTile icon={b.icon} variant={b.variant} size="md" />

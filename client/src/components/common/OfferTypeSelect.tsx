@@ -1,4 +1,5 @@
 import { OpportunityDomain } from "shared";
+import { Check } from "lucide-react";
 
 interface OfferTypeOption {
   value: OpportunityDomain;
@@ -60,7 +61,7 @@ export function OfferTypeSelect({
       <div
         role="radiogroup"
         aria-labelledby={`${id}-label`}
-        className="flex flex-wrap gap-1.5"
+        className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none flex-nowrap sm:justify-start"
       >
         {OFFER_TYPE_OPTIONS.map((opt) => {
           const isSelected = value === opt.value;
@@ -71,13 +72,16 @@ export function OfferTypeSelect({
               role="radio"
               aria-checked={isSelected}
               onClick={() => onChange(opt.value)}
-              className={`min-h-[44px] px-3.5 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors cursor-pointer border flex items-center justify-center ${
+              className={`min-h-[44px] px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors cursor-pointer border flex items-center justify-center shrink-0 whitespace-nowrap ${
                 isSelected
-                  ? "bg-primary text-primary-foreground border-primary font-semibold shadow-xs"
-                  : "bg-surface text-muted-foreground border-border hover:bg-surface-raised hover:text-foreground"
+                  ? "bg-primary-tint text-primary border-primary font-bold shadow-xs ring-1 ring-primary"
+                  : "bg-surface text-foreground border-border hover:bg-surface-raised hover:text-foreground"
               } focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`}
             >
-              {opt.label}
+              {isSelected && (
+                <Check className="w-3.5 h-3.5 mr-1 text-primary shrink-0" strokeWidth={2.5} aria-hidden="true" />
+              )}
+              <span>{opt.label}</span>
             </button>
           );
         })}

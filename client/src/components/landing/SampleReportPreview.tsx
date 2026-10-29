@@ -10,7 +10,7 @@ export function SampleReportPreview() {
     <div
       role="region"
       aria-label="Example report preview"
-      className="bg-surface border border-border rounded-lg shadow-elevation-1 p-5 text-left select-none pointer-events-none"
+      className="bg-surface border border-border rounded-lg shadow-sm p-5 text-left select-none pointer-events-none"
     >
       {/* Label indicating this is a fictional example */}
       <div className="flex items-center justify-between pb-3 border-b border-border mb-3.5">
@@ -42,29 +42,29 @@ export function SampleReportPreview() {
         </div>
       </div>
 
-      {/* Payment Alert Line (§4.2) */}
-      <div className="mt-3 p-3 rounded-md bg-status-high-risk-bg/60 border border-status-high-risk-border text-xs text-status-high-risk-fg">
-        <strong className="font-bold flex items-center gap-1.5 mb-0.5">
+      {/* Neutral "Do not pay" Alert Line (§3.2, §5.4) */}
+      <div className="mt-3 p-3 rounded-md bg-surface-raised border border-border text-xs text-foreground">
+        <strong className="font-bold flex items-center gap-1.5 mb-0.5 text-status-high-risk-fg">
           <AlertTriangle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
           Do not pay:
         </strong>
-        <span>
+        <span className="text-muted-foreground">
           Legitimate employers and scholarship bodies never ask candidates to pay for training, security deposits, or interview kits.
         </span>
       </div>
 
-      {/* Evidence Rows (2 short quotes + why it matters) */}
+      {/* Evidence Row (1 short quote + why it matters) */}
       <div className="mt-3.5 space-y-2">
         <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-          Observed Warning Signs
+          Observed Warning Sign
         </div>
-        {data.signals.slice(0, 2).map((sig) => (
+        {data.signals.slice(0, 1).map((sig) => (
           <div
             key={sig.ruleId}
             className="p-2.5 rounded-md bg-surface-raised border border-border text-xs space-y-1"
           >
             <div className="flex items-center gap-1.5 font-semibold text-foreground">
-              <span className="w-1.5 h-1.5 rounded-full bg-status-high-risk-fg" aria-hidden="true" />
+              <span className="w-1.5 h-1.5 rounded-full bg-status-high-risk-icon" aria-hidden="true" />
               <span>{sig.title}</span>
             </div>
             <p className="font-mono text-xs text-muted-foreground italic bg-surface p-1.5 rounded-sm border border-border/60">
@@ -77,15 +77,15 @@ export function SampleReportPreview() {
         ))}
       </div>
 
-      {/* Next Steps (2 steps) */}
+      {/* Next Step (1 step) */}
       <div className="mt-3.5 space-y-1.5">
         <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-          Recommended Next Steps
+          Recommended Next Step
         </div>
-        {data.nextSteps?.yourTurn?.slice(0, 2).map((step, idx) => (
+        {data.nextSteps?.yourTurn?.slice(0, 1).map((step, idx) => (
           <div
             key={step.id || idx}
-            className="flex items-start gap-2 p-2 rounded-md bg-surface-raised/60 border border-border text-xs"
+            className="flex items-start gap-2 p-2.5 rounded-md bg-surface-raised border border-border text-xs"
           >
             <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" strokeWidth={1.75} aria-hidden="true" />
             <div className="flex-1">
@@ -96,7 +96,7 @@ export function SampleReportPreview() {
         ))}
       </div>
 
-      {/* Independent Checks Completed Meter (§4.2: 2 of 8) */}
+      {/* Independent Checks Completed Meter (§5.4: 2 of 8) */}
       <div className="mt-4 pt-3 border-t border-border space-y-1.5">
         <div className="flex items-center justify-between text-xs font-medium text-foreground">
           <span>Independent checks completed</span>
