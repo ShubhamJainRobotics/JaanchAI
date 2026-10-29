@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { OpportunityDomain, Channel, INPUT_LIMITS, routeFields } from "shared";
 import { InputTabs, InputMode } from "../components/analyze/InputTabs";
 import { ImageUploadPanel } from "../components/analyze/ImageUploadPanel";
@@ -44,6 +45,42 @@ export function Analyze() {
     officialListingText: "",
     runThirdPartyChecks: false,
   });
+
+  const location = useLocation();
+
+  useEffect(() => {
+    let prefill: { text?: string; domain?: OpportunityDomain } | null = null;
+    const state = location.state as { prefill?: { text?: string; domain?: OpportunityDomain }; tab?: InputMode } | null;
+
+    if (state?.tab) {
+      setActiveTab(state.tab);
+    }
+
+    if (state?.prefill) {
+      prefill = state.prefill;
+    } else {
+      try {
+        const stored = sessionStorage.getItem("jaanch_prefill_offer");
+        if (stored) {
+          prefill = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.warn("Could not read prefill from sessionStorage:", e);
+      }
+    }
+
+    if (prefill?.text) {
+      setText(prefill.text);
+      if (prefill.domain) {
+        setDomain(prefill.domain);
+      }
+    }
+
+    // Clear stored value after reading (§4.1)
+    try {
+      sessionStorage.removeItem("jaanch_prefill_offer");
+    } catch (e) {}
+  }, [location.state]);
 
   const handleSelectSample = (sample: DemoSample) => {
     setText(sample.text);

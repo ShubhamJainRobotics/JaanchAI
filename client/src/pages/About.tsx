@@ -6,7 +6,7 @@ export function About() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       <div>
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-3">
-          Problem Statement: "Fake or Real" (Digital Trust & Safety)
+          Built for the "Fake or Real" (Digital Trust & Safety) problem statement
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
           About Jaanch ("जाँच")

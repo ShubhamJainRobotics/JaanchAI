@@ -228,16 +228,33 @@ This document tracks all visual and interaction restyle batches, design system o
 - **Stylesheet Token Unification:**
   - Replaced legacy print CSS hex codes in `client/src/styles/index.css` with semantic CSS variables (`var(--color-foreground)`, `var(--color-border)`, `var(--color-muted-foreground)`).
   - Production CSS bundle size reduced from 67.67 kB to 58.80 kB (gzip 10.65 kB), removing unused arbitrary color utilities.
-- **Final Capture:**
-  - Captured complete 20-screenshot final set at 1440px and 375px viewports in `/docs/ui-shots/after/final/`.
-- **Full Test Suite & Regression Verification:**
-  - `npm run lint` PASSED (secrets check, banned phrases check, typecheck, no-hardcoded-colors check).
-  - `npm run typecheck` PASSED across all workspaces (`client`, `server`, `shared`).
-  - `npm run test` PASSED (329/329 tests across all test suites, including contrast assertions).
-  - `npm run eval -w shared` PASSED (25/25 corpus test cases passed with 100% precision & recall).
-  - 0 occurrences of `% risk` or numeric risk percentages.
-  - Verbatim preservation of non-negotiable safety copy (1930, cybercrime.gov.in, status definitions).
-  - `ReportDocument.tsx` remains completely untouched.
+---
+
+## Round 2 — Batch 2: Landing Page Restructure
+- **Hero & Fluid Balanced Typography:**
+  - Removed problem statement eyebrow pill from Hero and relocated to About page.
+  - Fluid H1 with `[text-wrap:balance]` and fluid clamp scaling (`clamp(1.875rem,4vw,3.25rem)`).
+  - Ensured no orphan words on narrow viewports by grouping the last words (`Private&nbsp;Data`).
+- **HeroAnalyzer Component:**
+  - Interactive inline analyzer card in left column with labelled textarea, offer type segmented control (`OfferTypeSelect`), min 20 character validation, and quiet alternative routes.
+  - Seamless navigation to `/analyze` with input prefilled via `sessionStorage` and router state (never in URL), auto-cleared on read.
+  - Accurate privacy claim under the analyzer card.
+- **SampleReportPreview Component:**
+  - Compact static preview card in right column labelled *"Example — fictional offer"*.
+  - Strict adherence to `AnalysisResult` schema in `client/src/content/sampleReport.ts`.
+  - Non-interactive (`aria-label="Example report preview"`), unfocusable, never displaying numeric risk %.
+  - Shows compact High Risk status banner, payment alert warning, 2 evidence rows with quotes, 2 next steps, and "2 of 8 checks" progress meter.
+- **Section Progression & Accessibility:**
+  - `HowItWorks`: 4-step horizontal (desktop) / vertical (mobile) workflow.
+  - `BenefitsGrid`: 4 plain-language student trust cards with unified `IconTile` component.
+  - `LimitsStrip`: "What Jaanch can't do" honest scope callout.
+  - `ClosingCta`: Clear call to action with primary & secondary buttons.
+  - Single `h1`, proper heading hierarchy (h1 -> h2 -> h3).
+- **Verification:**
+  - `npm run lint` PASSED.
+  - `npm run test -w client` PASSED.
+  - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-2/`.
+
 
 ---
 
@@ -277,16 +294,33 @@ This document tracks all visual and interaction restyle batches, design system o
   - Production client build passed (Vite + TypeScript).
   - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-1/`.
 
-- **Final Capture:**
-  - Captured complete 20-screenshot final set at 1440px and 375px viewports in `/docs/ui-shots/after/final/`.
-- **Full Test Suite & Regression Verification:**
-  - `npm run lint` PASSED (secrets check, banned phrases check, typecheck, no-hardcoded-colors check).
-  - `npm run typecheck` PASSED across all workspaces (`client`, `server`, `shared`).
-  - `npm run test` PASSED (329/329 tests across all test suites, including contrast assertions).
-  - `npm run eval -w shared` PASSED (25/25 corpus test cases passed with 100% precision & recall).
-  - 0 occurrences of `% risk` or numeric risk percentages.
-  - Verbatim preservation of non-negotiable safety copy (1930, cybercrime.gov.in, status definitions).
-  - `ReportDocument.tsx` remains completely untouched.
+---
+
+## Round 2 — Batch 2: Landing Page Restructure
+- **Hero & Fluid Balanced Typography:**
+  - Removed problem statement eyebrow pill from Hero and relocated to About page.
+  - Fluid H1 with `[text-wrap:balance]` and fluid clamp scaling (`clamp(1.875rem,4vw,3.25rem)`).
+  - Ensured no orphan words on narrow viewports by grouping the last words (`Private&nbsp;Data`).
+- **HeroAnalyzer Component:**
+  - Interactive inline analyzer card in left column with labelled textarea, offer type segmented control (`OfferTypeSelect`), min 20 character validation, and quiet alternative routes.
+  - Seamless navigation to `/analyze` with input prefilled via `sessionStorage` and router state (never in URL), auto-cleared on read.
+  - Accurate privacy claim under the analyzer card.
+- **SampleReportPreview Component:**
+  - Compact static preview card in right column labelled *"Example — fictional offer"*.
+  - Strict adherence to `AnalysisResult` schema in `client/src/content/sampleReport.ts`.
+  - Non-interactive (`aria-label="Example report preview"`), unfocusable, never displaying numeric risk %.
+  - Shows compact High Risk status banner, payment alert warning, 2 evidence rows with quotes, 2 next steps, and "2 of 8 checks" progress meter.
+- **Section Progression & Accessibility:**
+  - `HowItWorks`: 4-step horizontal (desktop) / vertical (mobile) workflow.
+  - `BenefitsGrid`: 4 plain-language student trust cards with unified `IconTile` component.
+  - `LimitsStrip`: "What Jaanch can't do" honest scope callout.
+  - `ClosingCta`: Clear call to action with primary & secondary buttons.
+  - Single `h1`, proper heading hierarchy (h1 -> h2 -> h3).
+- **Verification:**
+  - `npm run lint` PASSED.
+  - `npm run test -w client` PASSED.
+  - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-2/`.
+
 
 
 
