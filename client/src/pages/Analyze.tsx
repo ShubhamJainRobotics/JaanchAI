@@ -5,21 +5,21 @@ import { InputTabs, InputMode } from "../components/analyze/InputTabs";
 import { ImageUploadPanel } from "../components/analyze/ImageUploadPanel";
 import { PdfUploadPanel } from "../components/analyze/PdfUploadPanel";
 import { ExtractedTextEditor } from "../components/analyze/ExtractedTextEditor";
-import { DomainSelect } from "../components/analyze/DomainSelect";
+import { OfferTypeSelect } from "../components/common/OfferTypeSelect";
 import { ChannelSelect } from "../components/analyze/ChannelSelect";
-import { ClaimedOrgInput } from "../components/analyze/ClaimedOrgInput";
 import { DetectedLinksList } from "../components/analyze/DetectedLinksList";
 import { ConsentToggles } from "../components/analyze/ConsentToggles";
+import { SenderDetailsSection, SenderDetailsState } from "../components/analyze/SenderDetailsSection";
+import { AnalysisProgress } from "../components/analyze/AnalysisProgress";
 import { useAuth } from "../hooks/useAuth";
 import { useAnalyze } from "../hooks/useAnalyze";
 import { DemoSample } from "../demo/samples";
-import { ShieldCheck, Loader2, AlertCircle, Info } from "lucide-react";
-
-import { SenderDetailsSection, SenderDetailsState } from "../components/analyze/SenderDetailsSection";
+import { ShieldCheck, AlertCircle, Info } from "lucide-react";
 
 export function Analyze() {
   const { isAuthenticated } = useAuth();
   const analyzeMutation = useAnalyze();
+  const location = useLocation();
 
   const [activeTab, setActiveTab] = useState<InputMode>("text");
   const [text, setText] = useState("");
@@ -46,11 +46,13 @@ export function Analyze() {
     runThirdPartyChecks: false,
   });
 
-  const location = useLocation();
-
+  // Handle prefill from router state or sessionStorage (§4.1 / §5)
   useEffect(() => {
     let prefill: { text?: string; domain?: OpportunityDomain } | null = null;
-    const state = location.state as { prefill?: { text?: string; domain?: OpportunityDomain }; tab?: InputMode } | null;
+    const state = location.state as {
+      prefill?: { text?: string; domain?: OpportunityDomain };
+      tab?: InputMode;
+    } | null;
 
     if (state?.tab) {
       setActiveTab(state.tab);
@@ -76,7 +78,7 @@ export function Analyze() {
       }
     }
 
-    // Clear stored value after reading (§4.1)
+    // Clear stored value after reading
     try {
       sessionStorage.removeItem("jaanch_prefill_offer");
     } catch (e) {}
@@ -100,7 +102,7 @@ export function Analyze() {
       return;
     }
     if (trimmed.length > INPUT_LIMITS.textMax) {
-      setFormError(`Text exceeds maximum allowed length of ${INPUT_LIMITS.textMax} characters.`);
+      setFormError(`Text exceeds maximum allowed length of ${INPUT_LIMITS.textMax.toLocaleString()} characters.`);
       return;
     }
 
@@ -171,178 +173,190 @@ export function Analyze() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-28 sm:pb-12">
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
-          Verify an Offer or Communication
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 pb-28 sm:pb-12 text-left">
+      {/* 1. Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+          Check an offer
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Paste the message text or upload an offer screenshot to run our deterministic rule engine.
+        <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+          Paste the offer message or upload a screenshot to inspect warning signs and check official registries.
         </p>
       </div>
 
-      <div className="bg-surface rounded-lg border border-border shadow-elevation-1 p-6 sm:p-8">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Top Form Error Summary */}
-          {formError && (
-            <div
-              role="alert"
-              className="p-4 rounded-md bg-status-high-risk-bg text-status-high-risk-fg border border-status-high-risk-border flex items-start gap-3 shadow-xs"
-            >
-              <AlertCircle className="w-5 h-5 shrink-0 text-status-high-risk-icon mt-0.5" strokeWidth={2} aria-hidden="true" />
-              <div className="space-y-1 text-sm">
-                <span className="font-bold block">Please address the following error:</span>
-                <a
-                  href="#input-message-text"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById("input-message-text")?.focus();
+      {/* Determinate Progress when pending (§5.8) */}
+      {analyzeMutation.isPending ? (
+        <div className="py-4">
+          <AnalysisProgress onCancel={() => analyzeMutation.reset()} />
+        </div>
+      ) : (
+        <div className="bg-surface rounded-lg border border-border shadow-elevation-1 p-5 sm:p-7">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Top Form Error Summary (§5.7) */}
+            {formError && (
+              <div
+                role="alert"
+                className="p-4 rounded-md bg-status-high-risk-bg text-status-high-risk-fg border border-status-high-risk-border flex items-start gap-3 shadow-xs"
+              >
+                <AlertCircle className="w-5 h-5 shrink-0 text-status-high-risk-icon mt-0.5" strokeWidth={2} aria-hidden="true" />
+                <div className="space-y-1 text-sm">
+                  <span className="font-bold block">Please address the following issue:</span>
+                  <a
+                    href="#input-message-text"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById("input-message-text")?.focus();
+                    }}
+                    className="underline hover:no-underline font-medium block"
+                  >
+                    {formError}
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {/* Step 1 — The Offer */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Step 1 · The Offer
+                </span>
+                <span className="text-xs text-muted-foreground font-mono">
+                  Min {INPUT_LIMITS.textMin} characters
+                </span>
+              </div>
+
+              {/* Input Method Tabs */}
+              <InputTabs activeTab={activeTab} onTabChange={setActiveTab} />
+
+              {/* Upload Panels if active */}
+              {activeTab === "screenshot" && (
+                <ImageUploadPanel
+                  onTextExtracted={(extracted) => {
+                    setText(extracted);
+                    setActiveTab("text");
                   }}
-                  className="underline hover:no-underline font-medium block"
-                >
-                  {formError}
-                </a>
+                />
+              )}
+
+              {activeTab === "pdf" && (
+                <PdfUploadPanel
+                  onTextExtracted={(extracted) => {
+                    setText(extracted);
+                    setActiveTab("text");
+                  }}
+                />
+              )}
+
+              {/* Textarea with live count */}
+              <ExtractedTextEditor
+                value={text}
+                onChange={(val) => {
+                  setText(val);
+                  if (formError) setFormError(null);
+                }}
+                onSelectSample={handleSelectSample}
+              />
+
+              {/* Auto-detected links in text */}
+              <DetectedLinksList text={text} />
+            </div>
+
+            {/* Step 2 — What kind of offer is it? */}
+            <div className="pt-4 border-t border-border space-y-4">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Step 2 · Category & Channel
+              </span>
+
+              <OfferTypeSelect
+                id="analyze-offer-type"
+                value={domain}
+                onChange={setDomain}
+                layout="chips"
+              />
+
+              <div className="pt-1">
+                <ChannelSelect value={channel} onChange={setChannel} />
               </div>
             </div>
-          )}
 
-          {/* Input Method Tabs */}
-          <InputTabs activeTab={activeTab} onTabChange={setActiveTab} />
-
-          {/* Tab content */}
-          {activeTab === "screenshot" && (
-            <ImageUploadPanel
-              onTextExtracted={(extracted) => {
-                setText(extracted);
-                setActiveTab("text");
-              }}
-            />
-          )}
-
-          {activeTab === "pdf" && (
-            <PdfUploadPanel
-              onTextExtracted={(extracted) => {
-                setText(extracted);
-                setActiveTab("text");
-              }}
-            />
-          )}
-
-          {/* Editable text editor always accessible */}
-          <ExtractedTextEditor
-            value={text}
-            onChange={(val) => {
-              setText(val);
-              if (formError) setFormError(null);
-            }}
-            onSelectSample={handleSelectSample}
-          />
-
-          {/* Links auto-detection list */}
-          <DetectedLinksList text={text} />
-
-          {/* Domain & metadata selectors */}
-          <div className="pt-4 border-t border-border space-y-5">
-            <DomainSelect value={domain} onChange={setDomain} />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <ChannelSelect value={channel} onChange={setChannel} />
-              <ClaimedOrgInput value={claimedOrg} onChange={setClaimedOrg} />
+            {/* Step 3 (collapsed by default) — Add details for stronger checks */}
+            <div className="pt-2">
+              <SenderDetailsSection
+                claimedOrg={claimedOrg}
+                onChangeClaimedOrg={setClaimedOrg}
+                senderDetails={senderDetails}
+                onChangeSenderDetails={(patch) =>
+                  setSenderDetails((prev) => ({ ...prev, ...patch }))
+                }
+              />
             </div>
-          </div>
 
-          {/* Verification details: Sender email, headers, registry org, listing */}
-          <div className="pt-2">
-            <SenderDetailsSection
-              claimedOrg={claimedOrg}
-              onChangeClaimedOrg={setClaimedOrg}
-              senderDetails={senderDetails}
-              onChangeSenderDetails={(patch) =>
-                setSenderDetails((prev) => ({ ...prev, ...patch }))
-              }
-            />
-          </div>
+            {/* Step 4 (collapsed by default) — Privacy options */}
+            <div>
+              <ConsentToggles
+                useAi={useAi}
+                onUseAiChange={setUseAi}
+                saveToHistory={saveToHistory}
+                onSaveToHistoryChange={setSaveToHistory}
+                storeRawText={storeRawText}
+                onStoreRawTextChange={setStoreRawText}
+                isAuthenticated={isAuthenticated}
+                runThirdPartyChecks={senderDetails.runThirdPartyChecks}
+                onRunThirdPartyChecksChange={(val) =>
+                  setSenderDetails((prev) => ({ ...prev, runThirdPartyChecks: val }))
+                }
+              />
+            </div>
 
-          {/* Consent Toggles */}
-          <div className="border-t border-border">
-            <ConsentToggles
-              useAi={useAi}
-              onUseAiChange={setUseAi}
-              saveToHistory={saveToHistory}
-              onSaveToHistoryChange={setSaveToHistory}
-              storeRawText={storeRawText}
-              onStoreRawTextChange={setStoreRawText}
-              isAuthenticated={isAuthenticated}
-            />
-          </div>
-
-          {/* Input adjustment notice */}
-          {inputNotices.length > 0 && (
-            <div
-              data-testid="input-adjusted-notice"
-              className="flex items-start gap-3 p-4 rounded-md bg-surface text-foreground text-xs sm:text-sm border border-warning/40 shadow-xs transition-colors"
-            >
-              <Info className="w-4 h-4 text-warning shrink-0 mt-0.5" strokeWidth={2} aria-hidden="true" />
-              <div className="space-y-1.5">
-                <span className="font-bold text-warning">Input adjusted for verification:</span>
-                <ul className="list-disc list-inside space-y-1 text-muted-foreground font-medium">
-                  {inputNotices.map((notice, i) => (
-                    <li key={i}>{notice}</li>
-                  ))}
-                </ul>
+            {/* Input adjustment notice (if routed) */}
+            {inputNotices.length > 0 && (
+              <div
+                data-testid="input-adjusted-notice"
+                className="flex items-start gap-3 p-4 rounded-md bg-surface text-foreground text-xs sm:text-sm border border-warning/40 shadow-xs transition-colors"
+              >
+                <Info className="w-4 h-4 text-warning shrink-0 mt-0.5" strokeWidth={2} aria-hidden="true" />
+                <div className="space-y-1.5">
+                  <span className="font-bold text-warning">Input adjusted for verification:</span>
+                  <ul className="list-disc list-inside space-y-1 text-muted-foreground font-medium">
+                    {inputNotices.map((notice, i) => (
+                      <li key={i}>{notice}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
+            )}
+
+            {/* Primary Action Button (Desktop) */}
+            <div className="pt-2 flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">
+                Checks execute in ~100ms in memory
+              </span>
+
+              <button
+                type="submit"
+                disabled={analyzeMutation.isPending || text.trim().length < INPUT_LIMITS.textMin}
+                className="hidden sm:inline-flex items-center justify-center gap-2 min-h-[48px] px-8 py-3 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm shadow-xs transition-colors disabled:opacity-50 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <ShieldCheck className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
+                <span>Analyze offer</span>
+              </button>
             </div>
-          )}
 
-          {/* Submit Button (Desktop + Tablet) */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span className="text-xs text-muted-foreground font-mono" aria-live="polite">
-              {analyzeMutation.isPending
-                ? "Running deterministic rules and extracting signals..."
-                : "Deterministic rule check runs in ~100ms"}
-            </span>
-
-            <button
-              type="submit"
-              disabled={analyzeMutation.isPending || text.trim().length < INPUT_LIMITS.textMin}
-              className="hidden sm:inline-flex items-center justify-center gap-2 min-h-[44px] px-8 py-3 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm shadow-xs transition-colors disabled:opacity-50 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              {analyzeMutation.isPending ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} aria-hidden="true" />
-                  Analyzing Offer...
-                </>
-              ) : (
-                <>
-                  <ShieldCheck className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
-                  Analyze Opportunity
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* Sticky Bottom CTA Bar on Mobile */}
-          <div className="sm:hidden fixed bottom-0 left-0 right-0 p-3 bg-surface/95 backdrop-blur-sm border-t border-border z-30 shadow-elevation-2">
-            <button
-              type="submit"
-              disabled={analyzeMutation.isPending || text.trim().length < INPUT_LIMITS.textMin}
-              className="w-full min-h-[48px] inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm shadow-xs transition-colors disabled:opacity-50 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              {analyzeMutation.isPending ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} aria-hidden="true" />
-                  Analyzing Offer...
-                </>
-              ) : (
-                <>
-                  <ShieldCheck className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
-                  Analyze Opportunity
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
+            {/* Sticky Bottom Action Bar on Mobile (§5.6) */}
+            <div className="sm:hidden fixed bottom-0 left-0 right-0 p-3 bg-surface border-t border-border z-30 shadow-elevation-2">
+              <button
+                type="submit"
+                disabled={analyzeMutation.isPending || text.trim().length < INPUT_LIMITS.textMin}
+                className="w-full min-h-[48px] inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm shadow-xs transition-colors disabled:opacity-50 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <ShieldCheck className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
+                <span>Analyze offer</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

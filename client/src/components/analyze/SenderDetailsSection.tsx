@@ -50,6 +50,17 @@ export function SenderDetailsSection({
 
   const isFreeMail = senderDetails.email ? isFreeMailDomain(senderDetails.email) : false;
 
+  const detailsCount = [
+    claimedOrg,
+    senderDetails.email,
+    senderDetails.recruiterName,
+    senderDetails.phone,
+    senderDetails.upiId,
+    senderDetails.emailHeaders,
+    senderDetails.officialListingUrl,
+    senderDetails.officialListingText,
+  ].filter((v) => Boolean(v && v.trim())).length;
+
   return (
     <div className="rounded-md border border-border bg-surface shadow-2xs overflow-hidden">
       <button
@@ -63,16 +74,25 @@ export function SenderDetailsSection({
             <ShieldCheck className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-foreground">
-              Add Sender & Authenticity Details (Optional)
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Supply headers, recruiter name, or official listing to unlock higher verification certainty
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-bold text-foreground">
+                Add details for stronger checks (optional)
+              </h3>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                detailsCount > 0
+                  ? "bg-primary/15 text-primary border border-primary/30 font-semibold"
+                  : "bg-surface-raised text-muted-foreground border border-border"
+              }`}>
+                {detailsCount > 0 ? `${detailsCount} added` : "Optional"}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Adding the sender's email and headers lets Jaanch run more independent checks.
             </p>
           </div>
         </div>
 
-        <div className="text-muted-foreground">
+        <div className="text-muted-foreground shrink-0 ml-2">
           {isOpen ? (
             <ChevronUp className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
           ) : (

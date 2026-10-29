@@ -255,6 +255,28 @@ This document tracks all visual and interaction restyle batches, design system o
   - `npm run test -w client` PASSED.
   - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-2/`.
 
+---
+
+## Round 2 — Batch 3: Analyze Page Streamlining
+- **Single-Column Focused Layout:**
+  - Standardized container to `max-w-2xl` without distracting sidebars or duplicate text.
+  - Clear header: *"Check an offer"* + one concise sentence of helper text.
+- **Progressive Disclosure Flow:**
+  - Step 1: Input method tabs (*Paste text · Screenshot · PDF*) with full `tablist` semantics and live character limits.
+  - Step 2: Category & channel selection using unified `OfferTypeSelect` segmented chips.
+  - Step 3: Collapsible disclosure *"Add details for stronger checks (optional)"* with live count badge (`n added`) and helper hint.
+  - Step 4: Collapsible disclosure *"Privacy options"* with live closed summary line (*"AI context: off · Third-party checks: off · Saved to history: on"*).
+- **Determinate Progress Feedback:**
+  - Implemented `client/src/components/analyze/AnalysisProgress.tsx` with animated determinate progression list (*Reading message… Running rule checks… Looking up domain age… Building report*) and skeleton feedback with `aria-live="polite"`.
+- **Keyboard-Safe Mobile Bottom Bar:**
+  - Desktop submit button placed at the end of the form.
+  - Mobile sticky bottom action bar (`fixed bottom-0`) with safe-area spacing and `pb-28 sm:pb-12` container offset ensuring inputs are never covered.
+- **Verification:**
+  - `npm run lint` PASSED (0 color violations).
+  - `npm run test -w client` PASSED.
+  - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-3/`.
+
+
 
 ---
 
@@ -320,6 +342,28 @@ This document tracks all visual and interaction restyle batches, design system o
   - `npm run lint` PASSED.
   - `npm run test -w client` PASSED.
   - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-2/`.
+
+---
+
+## Round 2 — Batch 3: Analyze Page Streamlining
+- **Single-Column Focused Layout:**
+  - Standardized container to `max-w-2xl` without distracting sidebars or duplicate text.
+  - Clear header: *"Check an offer"* + one concise sentence of helper text.
+- **Progressive Disclosure Flow:**
+  - Step 1: Input method tabs (*Paste text · Screenshot · PDF*) with full `tablist` semantics and live character limits.
+  - Step 2: Category & channel selection using unified `OfferTypeSelect` segmented chips.
+  - Step 3: Collapsible disclosure *"Add details for stronger checks (optional)"* with live count badge (`n added`) and helper hint.
+  - Step 4: Collapsible disclosure *"Privacy options"* with live closed summary line (*"AI context: off · Third-party checks: off · Saved to history: on"*).
+- **Determinate Progress Feedback:**
+  - Implemented `client/src/components/analyze/AnalysisProgress.tsx` with animated determinate progression list (*Reading message… Running rule checks… Looking up domain age… Building report*) and skeleton feedback with `aria-live="polite"`.
+- **Keyboard-Safe Mobile Bottom Bar:**
+  - Desktop submit button placed at the end of the form.
+  - Mobile sticky bottom action bar (`fixed bottom-0`) with safe-area spacing and `pb-28 sm:pb-12` container offset ensuring inputs are never covered.
+- **Verification:**
+  - `npm run lint` PASSED (0 color violations).
+  - `npm run test -w client` PASSED.
+  - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-3/`.
+
 
 
 
