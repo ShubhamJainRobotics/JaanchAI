@@ -47,25 +47,25 @@ export function LinkCheck() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
-          <Link2 className="w-8 h-8 text-brand-600" />
+        <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2.5">
+          <Link2 className="w-8 h-8 text-primary" strokeWidth={1.75} aria-hidden="true" />
           Link & Domain Inspector
         </h1>
-        <p className="mt-1 text-sm text-slate-600">
+        <p className="mt-1 text-sm text-muted-foreground">
           Check domain age, lookalike impersonations, and shorteners. We query RDAP registries directly and <strong>never fetch or visit the target website</strong>.
         </p>
       </div>
 
       {/* Input Form */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 sm:p-8">
+      <div className="bg-surface rounded-md border border-border shadow-elevation-1 p-6 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-4">
-          <label htmlFor="url-input" className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+          <label htmlFor="url-input" className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
             Enter URL to Inspect
           </label>
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <Search className="w-4 h-4" />
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted-foreground">
+                <Search className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
               </div>
               <input
                 id="url-input"
@@ -76,22 +76,22 @@ export function LinkCheck() {
                   if (error) setError(null);
                 }}
                 placeholder="https://example.com/apply"
-                className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-sm font-mono text-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                className="w-full min-h-[44px] pl-10 pr-4 py-2.5 bg-surface border border-border rounded-md text-sm font-mono text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
               />
             </div>
             <button
               type="submit"
               disabled={checkMutation.isPending || !url.trim()}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow-xs transition-colors disabled:opacity-50"
+              className="min-h-[44px] inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm rounded-md shadow-xs transition-colors disabled:opacity-50 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {checkMutation.isPending ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} aria-hidden="true" />
                   Inspecting...
                 </>
               ) : (
                 <>
-                  <Search className="w-4 h-4" />
+                  <Search className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
                   Inspect Domain
                 </>
               )}
@@ -99,8 +99,8 @@ export function LinkCheck() {
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 p-3 bg-red-50 text-red-700 text-xs rounded-xl border border-red-200">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
+            <div className="flex items-center gap-2 p-3 bg-status-high-risk-bg text-status-high-risk-fg text-xs rounded-md border border-status-high-risk-border">
+              <AlertTriangle className="w-4 h-4 shrink-0" strokeWidth={2} aria-hidden="true" />
               <span>{error}</span>
             </div>
           )}
@@ -110,7 +110,7 @@ export function LinkCheck() {
       {/* Result Display */}
       {result && (
         <div className="space-y-4">
-          <h2 className="text-lg font-bold text-slate-900 tracking-tight">
+          <h2 className="text-lg font-bold text-foreground tracking-tight">
             Inspection Findings
           </h2>
           <LinkInspectorCard initialLink={result} />

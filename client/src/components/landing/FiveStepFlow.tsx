@@ -35,39 +35,39 @@ export function FiveStepFlow() {
   ];
 
   return (
-    <section className="py-16 bg-white border-y border-slate-200">
+    <section className="py-16 bg-surface border-y border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-brand-600 mb-2">The Jaanch Framework</h2>
-          <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-primary mb-2">The Jaanch Framework</h2>
+          <h3 className="text-3xl font-extrabold text-foreground tracking-tight">
             From Uncertainty to Informed Action
           </h3>
-          <p className="mt-3 text-base text-slate-600">
+          <p className="mt-3 text-base text-muted-foreground">
             A structured workflow designed to safeguard students from advance-fee traps and impersonation scams.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
           {steps.map((step) => {
             const IconComponent = step.icon;
             return (
               <div
                 key={step.num}
-                className="relative bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:border-brand-300 transition-colors"
+                className="relative bg-surface-raised border border-border rounded-md p-6 flex flex-col justify-between transition-colors shadow-xs"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 text-brand-600 flex items-center justify-center shadow-xs">
-                      <IconComponent className="w-5 h-5" />
+                    <div className="w-10 h-10 rounded-md bg-surface border border-border text-primary flex items-center justify-center shadow-xs">
+                      <IconComponent className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
                     </div>
-                    <span className="text-2xl font-black text-slate-300 font-mono">
+                    <span className="text-2xl font-black text-muted-foreground/40 font-mono tabular-nums">
                       {step.num}
                     </span>
                   </div>
-                  <h4 className="text-base font-bold text-slate-900 mb-2">
+                  <h4 className="text-base font-bold text-foreground mb-2">
                     {step.title}
                   </h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
                     {step.desc}
                   </p>
                 </div>

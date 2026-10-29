@@ -29,6 +29,12 @@
   --color-warning: #b45309;
   --color-info: #0369a1;
 
+  /* OAuth Provider Branding */
+  --color-brand-google-blue: #4285f4;
+  --color-brand-google-green: #34a853;
+  --color-brand-google-yellow: #fbbc05;
+  --color-brand-google-red: #ea4335;
+
   /* Status Tokens - Light Theme (all text >= 7:1 against status bg) */
   --status-verified-bg: #ecfdf5;
   --status-verified-border: #a7f3d0;

@@ -150,6 +150,43 @@ This document tracks all visual and interaction restyle batches, design system o
   - Production client build passed (Vite + TypeScript).
   - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-5/`.
 
+---
+
+## Batch 6: Remaining Pages (Landing, History, LinkCheck, Resources, About, Privacy, Auth, Settings, NotFound)
+- **Landing Page & Landing Components:**
+  - Restyled `Hero.tsx`: Removed AI gradient texts and glow blobs; used clear semantic primary text and token cards for trust guarantees.
+  - Restyled `FiveStepFlow.tsx`: Clean token cards with tabular numerals and min 44px icon containers.
+  - Restyled `ExampleWalkthrough.tsx`: Clearly labelled fictional case with status token badges, no fake metrics, stroke 1.75 icons.
+  - Restyled `LimitsCallout.tsx`: High-contrast warning tokens with honest scope presentation.
+  - Restyled `Landing.tsx`: Replaced bottom gradient with clean token surface card; removed translateY hover jitter.
+- **History Page (History.tsx):**
+  - Mapped all 5 statuses in `getStatusBadge` to semantic status tokens (`status-verified`, `status-likely`, `status-review`, `status-high-risk`, `status-confirmed-scam`) with mandatory vector icon + text label pairings.
+  - Filter dropdowns, pagination buttons, and delete actions upgraded to min 44×44px hit targets.
+- **Link & Domain Inspector (LinkCheck.tsx):**
+  - Token input and submit button with min 44px touch height.
+  - Clear error states using status-high-risk tokens.
+- **Resources & Guides (Resources.tsx):**
+  - Verification policy section updated to map 5 status tokens with icon + text label pairings.
+  - Replaced gradient banner with high-contrast calm card preserving 1930 and cybercrime.gov.in helpline guidance.
+  - Domain playbook tabs and official portal cards upgraded with token borders, surfaces, and min 44px links.
+- **About & Privacy (About.tsx, Privacy.tsx):**
+  - Clean readable typography using token variables (`surface`, `border`, `foreground`, `muted-foreground`).
+  - Scope callouts and limitations styled with calm warning tokens.
+  - Zero hardcoded colors.
+- **Authentication & Settings (Login.tsx, Signup.tsx, Settings.tsx):**
+  - Converted third-party Google SVG brand colors to CSS variables in `tokens.css` (`--color-brand-google-blue`, etc.), achieving 0 hardcoded `#hex` colors in all components.
+  - Restyled tabs, form inputs, toggle buttons, and modal dialogs with design tokens.
+  - Added min 44×44px hit areas on show/hide password buttons, submit actions, and navigation links.
+- **NotFound (NotFound.tsx):**
+  - Restyled 404 illustration container and return home button with tokens and min 44px height.
+- **Verification:**
+  - Automated scan confirmed 0 hardcoded `#hex` colors in all `client/src` components.
+  - Client vitest suite passed (33 tests).
+  - Workspace typecheck passed.
+  - Production client build passed (Vite + TypeScript).
+  - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-6/`.
+
+
 
 
 
