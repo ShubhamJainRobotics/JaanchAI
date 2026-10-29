@@ -227,7 +227,7 @@
     max-height: none !important;
     background: white !important;
     background-color: white !important;
-    color: #0f172a !important;
+    color: var(--color-foreground) !important;
   }
 
   body {
@@ -262,7 +262,7 @@
 
   .shadow-2xs, .shadow-xs, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
     box-shadow: none !important;
-    border: 1px solid #cbd5e1 !important;
+    border: 1px solid var(--color-border) !important;
   }
 
   form, [role="button"]:not([aria-expanded]), .inline-edit-form {
@@ -272,7 +272,7 @@
   .print-attribution {
     display: block !important;
     font-size: 8pt !important;
-    color: #64748b !important;
+    color: var(--color-muted-foreground) !important;
     text-align: center !important;
     margin-top: 16px !important;
   }

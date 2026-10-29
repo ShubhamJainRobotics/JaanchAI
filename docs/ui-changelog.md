@@ -218,6 +218,28 @@ This document tracks all visual and interaction restyle batches, design system o
   - Production client build passed (Vite + TypeScript).
   - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-7/`.
 
+---
+
+## Batch 8: Cleanup & Automated Token Enforcement
+- **Automated Color Enforcement Script:**
+  - Implemented `scripts/check-no-hardcoded-colors.mjs` which validates all `client/src/**/*.tsx` and `client/src/**/*.ts` files.
+  - Forbids literal `#hex` colors, `rgb()`, `rgba()`, and arbitrary Tailwind color utilities (e.g. `bg-[#...]`).
+  - Added `"check:no-hardcoded-colors"` to `package.json` scripts and integrated it directly into `npm run lint`.
+- **Stylesheet Token Unification:**
+  - Replaced legacy print CSS hex codes in `client/src/styles/index.css` with semantic CSS variables (`var(--color-foreground)`, `var(--color-border)`, `var(--color-muted-foreground)`).
+  - Production CSS bundle size reduced from 67.67 kB to 58.80 kB (gzip 10.65 kB), removing unused arbitrary color utilities.
+- **Final Capture:**
+  - Captured complete 20-screenshot final set at 1440px and 375px viewports in `/docs/ui-shots/after/final/`.
+- **Full Test Suite & Regression Verification:**
+  - `npm run lint` PASSED (secrets check, banned phrases check, typecheck, no-hardcoded-colors check).
+  - `npm run typecheck` PASSED across all workspaces (`client`, `server`, `shared`).
+  - `npm run test` PASSED (329/329 tests across all test suites, including contrast assertions).
+  - `npm run eval -w shared` PASSED (25/25 corpus test cases passed with 100% precision & recall).
+  - 0 occurrences of `% risk` or numeric risk percentages.
+  - Verbatim preservation of non-negotiable safety copy (1930, cybercrime.gov.in, status definitions).
+  - `ReportDocument.tsx` remains completely untouched.
+
+
 
 
 

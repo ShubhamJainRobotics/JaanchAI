@@ -15,9 +15,10 @@
     "test": "npm run test -w shared && npm run test -w server && npm run test -w client",
     "typecheck": "npm run typecheck -w shared && npm run typecheck -w server && npm run typecheck -w client",
     "eval": "npm run eval -w shared",
-    "lint": "npm run check:no-secrets && npm run check:banned-phrases && npm run typecheck",
+    "lint": "npm run check:no-secrets && npm run check:banned-phrases && npm run check:no-hardcoded-colors && npm run typecheck",
     "check:no-secrets": "node scripts/check-no-secrets.cjs",
     "check:banned-phrases": "vitest run shared/src/config/__tests__/bannedPhrases.test.ts",
+    "check:no-hardcoded-colors": "node scripts/check-no-hardcoded-colors.mjs",
     "pdf:preview": "vite-node scripts/preview-pdf.ts"
   },
   "devDependencies": {

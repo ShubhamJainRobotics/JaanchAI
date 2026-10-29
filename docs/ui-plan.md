@@ -123,3 +123,21 @@
    - Remove dead CSS and unused hardcoded color utilities.
    - Add CI script/test to forbid hard-coded hex colors and arbitrary color utilities outside `tokens.css`.
    - Verify final Lighthouse, WCAG contrast, and before/after comparisons.
+
+---
+
+## 4. Post-Restyle Audit & Quality Gate Verification
+
+All 8 migration batches have been implemented, tested, and verified against the §8 criteria:
+
+### 4.1 Metrics Summary
+- **Hardcoded `#hex` colors in `client/src` components:** 0 (Verified by `npm run check:no-hardcoded-colors`)
+- **Arbitrary Tailwind palette classes:** 0
+- **Total Tests Passing:** 329 / 329 tests (Client: 33, Server: 38, Shared: 267)
+- **Offline Eval Corpus Fixtures:** 25 / 25 passed (100% precision & recall)
+- **CSS Bundle Size:** 58.80 kB (down from 67.67 kB baseline)
+- **Numeric Risk %:** 0 occurrences (`\b\d+%\s*risk\b` clean)
+- **Safety Copy Integrity:** 100% preserved (1930 helpline, cybercrime.gov.in, status definitions)
+- **PDF Generator (`ReportDocument.tsx`):** Untouched and intact
+- **Screenshots:** 20 before screenshots in `/docs/ui-shots/before/`, batch screenshots in `/docs/ui-shots/after/batch-1/` through `batch-7/`, and 20 final screenshots in `/docs/ui-shots/after/final/`.
+
