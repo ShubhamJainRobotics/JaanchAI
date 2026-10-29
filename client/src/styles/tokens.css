@@ -1,0 +1,352 @@
+/* ==========================================================================
+   JAANCH DESIGN TOKENS
+   Single source of truth for all colors, scales, radii, shadows, and states.
+   ========================================================================== */
+
+:root {
+  /* Color Palette - Light Theme */
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-raised: #f1f5f9;
+  --color-foreground: #0f172a;
+  --color-muted-foreground: #475569;
+  --color-border: #cbd5e1;
+  --color-border-subtle: #e2e8f0;
+  --color-ring: #0284c7;
+
+  --color-primary: #0369a1;
+  --color-primary-hover: #075985;
+  --color-primary-foreground: #ffffff;
+
+  --color-link: #0369a1;
+  --color-link-hover: #075985;
+
+  --color-destructive: #dc2626;
+  --color-destructive-hover: #b91c1c;
+  --color-destructive-foreground: #ffffff;
+
+  --color-success: #047857;
+  --color-warning: #b45309;
+  --color-info: #0369a1;
+
+  /* Status Tokens - Light Theme (all text >= 7:1 against status bg) */
+  --status-verified-bg: #ecfdf5;
+  --status-verified-border: #a7f3d0;
+  --status-verified-fg: #065f46;
+  --status-verified-icon: #047857;
+
+  --status-likely-bg: #f0fdfa;
+  --status-likely-border: #99f6e4;
+  --status-likely-fg: #115e59;
+  --status-likely-icon: #0f766e;
+
+  --status-review-bg: #fffbeb;
+  --status-review-border: #fde68a;
+  --status-review-fg: #78350f;
+  --status-review-icon: #b45309;
+
+  --status-high-risk-bg: #fef2f2;
+  --status-high-risk-border: #fecaca;
+  --status-high-risk-fg: #7f1d1d;
+  --status-high-risk-icon: #b91c1c;
+
+  --status-confirmed-scam-bg: #fff1f2;
+  --status-confirmed-scam-border: #fecdd3;
+  --status-confirmed-scam-fg: #881337;
+  --status-confirmed-scam-icon: #be123c;
+
+  /* Outcome Chip Tokens - Light Theme */
+  --outcome-pass-bg: #ecfdf5;
+  --outcome-pass-border: #a7f3d0;
+  --outcome-pass-fg: #065f46;
+
+  --outcome-fail-bg: #fef2f2;
+  --outcome-fail-border: #fecaca;
+  --outcome-fail-fg: #991b1b;
+
+  --outcome-unknown-bg: #fffbeb;
+  --outcome-unknown-border: #fde68a;
+  --outcome-unknown-fg: #92400e;
+
+  --outcome-none-found-bg: #f1f5f9;
+  --outcome-none-found-border: #cbd5e1;
+  --outcome-none-found-fg: #334155; /* Neutral grey, NEVER green */
+
+  --outcome-not-run-bg: #f8fafc;
+  --outcome-not-run-border: #e2e8f0;
+  --outcome-not-run-fg: #475569;
+
+  --outcome-user-attested-bg: #eff6ff;
+  --outcome-user-attested-border: #bfdbfe;
+  --outcome-user-attested-fg: #1d4ed8;
+
+  /* Severity Tokens - Light Theme */
+  --severity-critical-bg: #fef2f2;
+  --severity-critical-border: #fecaca;
+  --severity-critical-fg: #991b1b;
+
+  --severity-high-bg: #fff7ed;
+  --severity-high-border: #fed7aa;
+  --severity-high-fg: #c2410c;
+
+  --severity-medium-bg: #fffbeb;
+  --severity-medium-border: #fde68a;
+  --severity-medium-fg: #b45309;
+
+  --severity-low-bg: #f0f9ff;
+  --severity-low-border: #bae6fd;
+  --severity-low-fg: #0369a1;
+
+  --severity-info-bg: #f8fafc;
+  --severity-info-border: #e2e8f0;
+  --severity-info-fg: #475569;
+
+  /* Typography Scales */
+  --font-sans: 'Noto Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Devanagari', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+
+  --leading-body: 1.5;
+  --leading-heading: 1.25;
+
+  /* Spacing Scale (4-pt base) */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+
+  /* Shadows (Two subtle levels only) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+
+  /* Focus & Motion */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --transition-timing: ease-out;
+  --transition-duration: 180ms;
+
+  /* Minimum touch target */
+  --min-touch-target: 44px;
+}
+
+/* Dark Theme - Prefers Color Scheme */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --color-background: #0b0f19;
+    --color-surface: #111827;
+    --color-surface-raised: #1f2937;
+    --color-foreground: #f8fafc;
+    --color-muted-foreground: #94a3b8;
+    --color-border: #334155;
+    --color-border-subtle: #1e293b;
+    --color-ring: #38bdf8;
+
+    --color-primary: #0284c7;
+    --color-primary-hover: #38bdf8;
+    --color-primary-foreground: #ffffff;
+
+    --color-link: #38bdf8;
+    --color-link-hover: #7dd3fc;
+
+    --color-destructive: #ef4444;
+    --color-destructive-hover: #dc2626;
+    --color-destructive-foreground: #ffffff;
+
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-info: #38bdf8;
+
+    /* Status Tokens - Dark Theme */
+    --status-verified-bg: #06281e;
+    --status-verified-border: #065f46;
+    --status-verified-fg: #6ee7b7;
+    --status-verified-icon: #34d399;
+
+    --status-likely-bg: #042727;
+    --status-likely-border: #115e59;
+    --status-likely-fg: #5eead4;
+    --status-likely-icon: #2dd4bf;
+
+    --status-review-bg: #2b1b04;
+    --status-review-border: #92400e;
+    --status-review-fg: #fcd34d;
+    --status-review-icon: #fbbf24;
+
+    --status-high-risk-bg: #2d0b0b;
+    --status-high-risk-border: #991b1b;
+    --status-high-risk-fg: #fca5a5;
+    --status-high-risk-icon: #f87171;
+
+    --status-confirmed-scam-bg: #2e0b16;
+    --status-confirmed-scam-border: #9f1239;
+    --status-confirmed-scam-fg: #fda4af;
+    --status-confirmed-scam-icon: #fb7185;
+
+    /* Outcome Chip Tokens - Dark Theme */
+    --outcome-pass-bg: #06281e;
+    --outcome-pass-border: #065f46;
+    --outcome-pass-fg: #6ee7b7;
+
+    --outcome-fail-bg: #2d0b0b;
+    --outcome-fail-border: #991b1b;
+    --outcome-fail-fg: #fca5a5;
+
+    --outcome-unknown-bg: #2b1b04;
+    --outcome-unknown-border: #92400e;
+    --outcome-unknown-fg: #fcd34d;
+
+    --outcome-none-found-bg: #1e293b;
+    --outcome-none-found-border: #334155;
+    --outcome-none-found-fg: #94a3b8;
+
+    --outcome-not-run-bg: #0f172a;
+    --outcome-not-run-border: #1e293b;
+    --outcome-not-run-fg: #64748b;
+
+    --outcome-user-attested-bg: #172554;
+    --outcome-user-attested-border: #1e40af;
+    --outcome-user-attested-fg: #93c5fd;
+
+    /* Severity Tokens - Dark Theme */
+    --severity-critical-bg: #2d0b0b;
+    --severity-critical-border: #991b1b;
+    --severity-critical-fg: #fca5a5;
+
+    --severity-high-bg: #2a1205;
+    --severity-high-border: #9a3412;
+    --severity-high-fg: #fdba74;
+
+    --severity-medium-bg: #2b1b04;
+    --severity-medium-border: #92400e;
+    --severity-medium-fg: #fcd34d;
+
+    --severity-low-bg: #082f49;
+    --severity-low-border: #075985;
+    --severity-low-fg: #7dd3fc;
+
+    --severity-info-bg: #0f172a;
+    --severity-info-border: #334155;
+    --severity-info-fg: #94a3b8;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Explicit class-based dark mode override */
+.dark {
+  --color-background: #0b0f19;
+  --color-surface: #111827;
+  --color-surface-raised: #1f2937;
+  --color-foreground: #f8fafc;
+  --color-muted-foreground: #94a3b8;
+  --color-border: #334155;
+  --color-border-subtle: #1e293b;
+  --color-ring: #38bdf8;
+
+  --color-primary: #0284c7;
+  --color-primary-hover: #38bdf8;
+  --color-primary-foreground: #ffffff;
+
+  --color-link: #38bdf8;
+  --color-link-hover: #7dd3fc;
+
+  --color-destructive: #ef4444;
+  --color-destructive-hover: #dc2626;
+  --color-destructive-foreground: #ffffff;
+
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-info: #38bdf8;
+
+  --status-verified-bg: #06281e;
+  --status-verified-border: #065f46;
+  --status-verified-fg: #6ee7b7;
+  --status-verified-icon: #34d399;
+
+  --status-likely-bg: #042727;
+  --status-likely-border: #115e59;
+  --status-likely-fg: #5eead4;
+  --status-likely-icon: #2dd4bf;
+
+  --status-review-bg: #2b1b04;
+  --status-review-border: #92400e;
+  --status-review-fg: #fcd34d;
+  --status-review-icon: #fbbf24;
+
+  --status-high-risk-bg: #2d0b0b;
+  --status-high-risk-border: #991b1b;
+  --status-high-risk-fg: #fca5a5;
+  --status-high-risk-icon: #f87171;
+
+  --status-confirmed-scam-bg: #2e0b16;
+  --status-confirmed-scam-border: #9f1239;
+  --status-confirmed-scam-fg: #fda4af;
+  --status-confirmed-scam-icon: #fb7185;
+
+  --outcome-pass-bg: #06281e;
+  --outcome-pass-border: #065f46;
+  --outcome-pass-fg: #6ee7b7;
+
+  --outcome-fail-bg: #2d0b0b;
+  --outcome-fail-border: #991b1b;
+  --outcome-fail-fg: #fca5a5;
+
+  --outcome-unknown-bg: #2b1b04;
+  --outcome-unknown-border: #92400e;
+  --outcome-unknown-fg: #fcd34d;
+
+  --outcome-none-found-bg: #1e293b;
+  --outcome-none-found-border: #334155;
+  --outcome-none-found-fg: #94a3b8;
+
+  --outcome-not-run-bg: #0f172a;
+  --outcome-not-run-border: #1e293b;
+  --outcome-not-run-fg: #64748b;
+
+  --outcome-user-attested-bg: #172554;
+  --outcome-user-attested-border: #1e40af;
+  --outcome-user-attested-fg: #93c5fd;
+
+  --severity-critical-bg: #2d0b0b;
+  --severity-critical-border: #991b1b;
+  --severity-critical-fg: #fca5a5;
+
+  --severity-high-bg: #2a1205;
+  --severity-high-border: #9a3412;
+  --severity-high-fg: #fdba74;
+
+  --severity-medium-bg: #2b1b04;
+  --severity-medium-border: #92400e;
+  --severity-medium-fg: #fcd34d;
+
+  --severity-low-bg: #082f49;
+  --severity-low-border: #075985;
+  --severity-low-fg: #7dd3fc;
+
+  --severity-info-bg: #0f172a;
+  --severity-info-border: #334155;
+  --severity-info-fg: #94a3b8;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+}

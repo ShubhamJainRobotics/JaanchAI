@@ -1,37 +1,226 @@
+@import './tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   SELF-HOSTED FONTS (§4: CSP forbids CDNs and Google Fonts links)
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/NotoSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/NotoSans-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/NotoSans-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/NotoSans-Italic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Noto Sans Devanagari';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/NotoSansDevanagari-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Noto Sans Devanagari';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/NotoSansDevanagari-Bold.ttf') format('truetype');
+}
+
+/* ==========================================================================
+   BASE STYLES & ACCESSIBILITY
+   ========================================================================== */
+
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-sans);
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 min-h-screen flex flex-col;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-wrap: anywhere;
+    transition: background-color var(--transition-duration) var(--transition-timing),
+                color var(--transition-duration) var(--transition-timing);
   }
 
-  /* Accessibility focus ring */
+  /* Accessible focus ring (WCAG 2.2 AA: >= 3:1 contrast against adjacent colors) */
   *:focus-visible {
-    @apply outline-none ring-2 ring-brand-500 ring-offset-2;
+    outline: none;
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: 0 0 0 var(--focus-ring-width) var(--color-ring);
+  }
+
+  /* Tabular numbers for counts, financial amounts, and timers */
+  .tabular-nums, [data-tabular] {
+    font-variant-numeric: tabular-nums;
   }
 }
 
-/* Print page setup (§8) */
+/* ==========================================================================
+   UTILITY & COMPONENT BASE PRIMITIVES
+   ========================================================================== */
+
+@layer components {
+  /* Surface card with subtle border and low-contrast elevation */
+  .surface-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: border-color var(--transition-duration) var(--transition-timing),
+                box-shadow var(--transition-duration) var(--transition-timing);
+  }
+
+  .surface-card-raised {
+    background-color: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  /* Interactive button primitives */
+  .btn-base {
+    min-height: var(--min-touch-target);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-duration) var(--transition-timing);
+    user-select: none;
+  }
+
+  .btn-base:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+    border: 1px solid transparent;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-secondary {
+    background-color: var(--color-surface);
+    color: var(--color-foreground);
+    border: 1px solid var(--color-border);
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background-color: var(--color-surface-raised);
+  }
+
+  .btn-destructive {
+    background-color: var(--color-destructive);
+    color: var(--color-destructive-foreground);
+    border: 1px solid transparent;
+  }
+
+  .btn-destructive:hover:not(:disabled) {
+    background-color: var(--color-destructive-hover);
+  }
+
+  /* Form input primitives */
+  .input-base {
+    min-height: var(--min-touch-target);
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    font-size: var(--text-base); /* 16px to prevent iOS auto-zoom */
+    background-color: var(--color-surface);
+    color: var(--color-foreground);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: border-color var(--transition-duration) var(--transition-timing),
+                box-shadow var(--transition-duration) var(--transition-timing);
+  }
+
+  .input-base:focus {
+    border-color: var(--color-ring);
+    box-shadow: 0 0 0 var(--focus-ring-width) var(--color-ring);
+    outline: none;
+  }
+
+  /* Chips and badges base */
+  .chip-base {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+
+  /* Interactive chip with accessible touch target */
+  .chip-interactive {
+    min-height: 36px;
+    padding: 0.375rem 0.75rem;
+    cursor: pointer;
+    transition: background-color var(--transition-duration) var(--transition-timing),
+                border-color var(--transition-duration) var(--transition-timing);
+  }
+}
+
+/* ==========================================================================
+   PRINT STYLES FOR VERIFICATION REPORT (§8, §7: Preserved layout)
+   ========================================================================== */
+
 @page {
   size: A4;
   margin: 14mm;
 }
 
-/* Print styles for verification report (§8) */
 @media print {
-  /* Hide navigation, headers, footers, buttons, and all interactive controls */
   header, footer, nav, button, input, textarea, select, .no-print, .print\:hidden {
     display: none !important;
   }
 
-  /* Reset container backgrounds, remove fixed/min heights, eliminate gray background */
   html, body, #root, main, div, section, article {
     min-height: 0 !important;
     height: auto !important;
@@ -48,25 +237,21 @@
     print-color-adjust: exact !important;
   }
 
-  /* Headings must never sit orphaned at the bottom of a page */
   h1, h2, h3, h4 {
     break-after: avoid !important;
     page-break-after: avoid !important;
   }
 
-  /* Avoid page breaks ONLY inside small cards, table rows, and list items */
   tr, .signal-card, .step-card, li, .detail-card {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
 
-  /* Large containers MUST allow page breaks to prevent blank gaps */
   div, section, article, main, .rounded-2xl {
     break-inside: auto !important;
     page-break-inside: auto !important;
   }
 
-  /* Force-expand accordions and drawers */
   .hidden.print\:block, .print\:block {
     display: block !important;
   }
@@ -75,18 +260,15 @@
     display: none !important;
   }
 
-  /* Drop box shadows and normalize borders */
   .shadow-2xs, .shadow-xs, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
     box-shadow: none !important;
     border: 1px solid #cbd5e1 !important;
   }
 
-  /* Hide interactive inline forms */
   form, [role="button"]:not([aria-expanded]), .inline-edit-form {
     display: none !important;
   }
 
-  /* Attribution footnote for print */
   .print-attribution {
     display: block !important;
     font-size: 8pt !important;
