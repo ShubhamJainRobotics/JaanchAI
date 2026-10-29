@@ -86,14 +86,14 @@ export function OrganizationAutocomplete({
 
   return (
     <div className="relative space-y-1" ref={dropdownRef}>
-      <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+      <label className="text-xs font-bold text-foreground flex items-center justify-between">
         <span>Claimed Organization / Entity</span>
-        <span className="text-[11px] font-normal text-slate-500">Official registry lookup</span>
+        <span className="text-[11px] font-normal text-muted-foreground">Official registry lookup</span>
       </label>
 
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-          <Building2 className="w-4 h-4" />
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
+          <Building2 className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
         </div>
 
         <input
@@ -102,18 +102,18 @@ export function OrganizationAutocomplete({
           onChange={handleCustomChange}
           onFocus={() => setIsOpen(true)}
           placeholder="e.g. Tata Consultancy Services, Infosys, AICTE"
-          className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-brand-500"
+          className="w-full min-h-[44px] pl-9 pr-8 py-2 rounded-md border border-border bg-surface text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         />
 
-        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
-          <ChevronDown className="w-4 h-4" />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-muted-foreground">
+          <ChevronDown className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
         </div>
       </div>
 
       {isOpen && (suggestions.length > 0 || loading) && (
-        <div className="absolute z-30 w-full mt-1 max-h-60 overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+        <div className="absolute z-30 w-full mt-1 max-h-60 overflow-y-auto rounded-md border border-border bg-surface shadow-elevation-2 divide-y divide-border text-xs">
           {loading && suggestions.length === 0 && (
-            <div className="p-3 text-slate-400 text-center">Searching registry...</div>
+            <div className="p-3 text-muted-foreground text-center">Searching registry...</div>
           )}
 
           {suggestions.map((org) => {
@@ -121,32 +121,40 @@ export function OrganizationAutocomplete({
             return (
               <div
                 key={org.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => handleSelect(org)}
-                className={`p-3 hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer flex items-center justify-between gap-2 ${
-                  isSelected ? "bg-brand-50/50 dark:bg-brand-950/20" : ""
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleSelect(org);
+                  }
+                }}
+                className={`min-h-[44px] p-3 hover:bg-surface-raised cursor-pointer flex items-center justify-between gap-2 focus:outline-none focus-visible:bg-surface-raised ${
+                  isSelected ? "bg-primary/10" : ""
                 }`}
               >
                 <div className="space-y-0.5 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900 dark:text-slate-100 truncate">
+                    <span className="font-bold text-foreground truncate">
                       {org.name}
                     </span>
-                    <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                    <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded-sm bg-surface-raised text-muted-foreground">
                       {org.kind}
                     </span>
                     {org.isDemo && (
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-sm bg-status-review-bg text-status-review-fg border border-status-review-border">
                         Demo
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                  <p className="text-[11px] text-muted-foreground truncate">
                     Official: {org.officialDomains.join(", ")}
                   </p>
                 </div>
 
                 {isSelected && (
-                  <Check className="w-4 h-4 text-brand-600 shrink-0" />
+                  <Check className="w-4 h-4 text-primary shrink-0" strokeWidth={2} aria-hidden="true" />
                 )}
               </div>
             );

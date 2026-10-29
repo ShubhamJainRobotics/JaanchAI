@@ -23,14 +23,14 @@ export function ExtractedTextEditor({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <label
           htmlFor="input-message-text"
-          className="text-xs font-bold uppercase tracking-wider text-slate-700"
+          className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
         >
           Message / Offer Text
         </label>
 
         <div className="flex items-center gap-2">
-          <Sparkles className="w-3.5 h-3.5 text-brand-600" />
-          <span className="text-xs font-semibold text-slate-600">
+          <Sparkles className="w-3.5 h-3.5 text-primary" strokeWidth={1.75} aria-hidden="true" />
+          <span className="text-xs font-medium text-muted-foreground">
             Load Test Sample:
           </span>
           <select
@@ -39,7 +39,7 @@ export function ExtractedTextEditor({
               if (sample) onSelectSample(sample);
             }}
             defaultValue=""
-            className="text-xs py-1 px-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg text-slate-800 font-medium cursor-pointer focus:ring-1 focus:ring-brand-500"
+            className="text-xs min-h-[38px] py-1.5 px-3 bg-surface hover:bg-surface-raised border border-border rounded-md text-foreground font-medium cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Load demo sample text"
           >
             <option value="" disabled>
@@ -62,10 +62,10 @@ export function ExtractedTextEditor({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Paste the suspicious WhatsApp message, email, offer letter text, or website snippet here (min 20 characters)..."
-          className={`w-full p-4 rounded-xl text-sm font-mono border transition-colors resize-y focus:outline-none focus:ring-2 ${
+          className={`w-full p-4 rounded-md text-sm font-mono border transition-colors resize-y focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
             isTooShort || isTooLong
-              ? "border-red-300 focus:ring-red-400 bg-red-50/10"
-              : "border-slate-300 focus:ring-brand-500 bg-white"
+              ? "border-status-high-risk-border focus-visible:ring-status-high-risk-border bg-status-high-risk-bg/10 text-foreground"
+              : "border-border focus-visible:ring-ring bg-surface text-foreground"
           }`}
           aria-invalid={isTooShort || isTooLong}
           aria-describedby="char-count-msg"
@@ -75,11 +75,11 @@ export function ExtractedTextEditor({
           <button
             type="button"
             onClick={() => onChange("")}
-            className="absolute top-3 right-3 text-slate-400 hover:text-red-500 p-1.5 rounded-md hover:bg-slate-100 transition-colors"
+            className="absolute top-2.5 right-2.5 min-w-[44px] min-h-[44px] inline-flex items-center justify-center text-muted-foreground hover:text-destructive rounded-md hover:bg-surface-raised transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             title="Clear text"
             aria-label="Clear text input"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
           </button>
         )}
       </div>
@@ -87,16 +87,16 @@ export function ExtractedTextEditor({
       {/* Counter bar */}
       <div
         id="char-count-msg"
-        className="flex items-center justify-between text-xs text-slate-500 font-mono"
+        className="flex items-center justify-between text-xs text-muted-foreground font-mono"
       >
         <span>
           {isTooShort && (
-            <span className="text-red-600 font-sans font-medium">
+            <span className="text-destructive font-sans font-medium">
               Minimum {INPUT_LIMITS.textMin} characters required.
             </span>
           )}
           {isTooLong && (
-            <span className="text-red-600 font-sans font-medium">
+            <span className="text-destructive font-sans font-medium">
               Exceeds maximum {INPUT_LIMITS.textMax} character limit.
             </span>
           )}
@@ -105,9 +105,9 @@ export function ExtractedTextEditor({
           )}
         </span>
         <span
-          className={
-            isTooShort || isTooLong ? "text-red-600 font-bold" : "text-slate-500"
-          }
+          className={`tabular-nums ${
+            isTooShort || isTooLong ? "text-destructive font-bold" : "text-muted-foreground"
+          }`}
         >
           {charCount} / {INPUT_LIMITS.textMax}
         </span>

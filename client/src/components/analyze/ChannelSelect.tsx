@@ -20,14 +20,14 @@ export function ChannelSelect({ value, onChange }: ChannelSelectProps) {
 
   return (
     <div className="space-y-1.5">
-      <label htmlFor="channel-select" className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+      <label htmlFor="channel-select" className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
         How did it reach you?
       </label>
       <select
         id="channel-select"
         value={value}
         onChange={(e) => onChange(e.target.value as Channel)}
-        className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-800 font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none"
+        className="w-full min-h-[44px] p-2.5 bg-surface border border-border rounded-md text-sm text-foreground font-medium focus:ring-2 focus:ring-ring focus:outline-none cursor-pointer"
       >
         {channels.map((c) => (
           <option key={c.id} value={c.id}>

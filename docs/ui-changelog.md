@@ -109,6 +109,48 @@ This document tracks all visual and interaction restyle batches, design system o
   - All 33 client tests, 38 server tests, and 267 shared tests passed.
   - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-4/`.
 
+---
+
+## Batch 5: Analyze Page, Forms & Mobile CTA
+- **Analyze Page Layout & Top Error Summary:**
+  - Added top error summary alert box (`role="alert"`) linking directly to the input field `#input-message-text` with keyboard focus management.
+  - Replaced hardcoded borders, shadows, and text colors with design tokens (`surface`, `border`, `foreground`, `muted-foreground`, `shadow-elevation-1`).
+  - Added **sticky bottom CTA bar on mobile** (`sm:hidden fixed bottom-0 left-0 right-0 p-3 bg-surface/95 backdrop-blur-sm border-t border-border z-30 shadow-elevation-2`) with min 48px height for thumb-friendly mobile submission.
+  - Added bottom padding on mobile layout (`pb-28 sm:pb-12`) to prevent content overlap.
+- **Input Method Tabs (InputTabs.tsx):**
+  - Full tablist semantics (`role="tablist"`, `aria-label`, `role="tab"`, `aria-selected`, `aria-controls`, `id`).
+  - Arrow key navigation (Left/Right/Home/End) with automated focus switching.
+  - Minimum 44px touch targets.
+- **Upload Panels (ImageUploadPanel.tsx & PdfUploadPanel.tsx):**
+  - Tabpanel semantics (`role="tabpanel"`, `aria-labelledby`).
+  - Accessible dropzones with keyboard trigger support (Enter/Space).
+  - OCR / PDF extraction progress bars with tokens and `aria-live="polite"` real-time status.
+- **ExtractedTextEditor.tsx:**
+  - Sample preset selector styled with tokens and min 38px height.
+  - Clear text button with minimum 44×44px touch target.
+  - Textarea with semantic token focus states (`focus-visible:ring-2 focus-visible:ring-ring`).
+  - Font-mono character count with `tabular-nums`.
+- **DetectedLinksList.tsx:**
+  - Restyled container with tokens and `overflow-wrap: anywhere break-all` on URLs to prevent overflow.
+  - Safety advisory banner with `warning` tokens.
+- **Metadata Selectors (DomainSelect.tsx, ChannelSelect.tsx, ClaimedOrgInput.tsx):**
+  - DomainSelect: Radiogroup semantics (`role="radiogroup"`, `role="radio"`, `aria-checked`), min 64px card buttons.
+  - ChannelSelect & ClaimedOrgInput: Semantic token selects/inputs with min 44px touch heights.
+- **SenderDetailsSection.tsx & OrganizationAutocomplete.tsx:**
+  - Accordion trigger with min 52px hit area and `aria-expanded`.
+  - Freemail live hint styled with calm warning tokens.
+  - Autocomplete dropdown with min 44px keyboard-accessible options.
+  - Token-styled email headers textarea and official listing cross-check tabs.
+- **ConsentToggles.tsx & HeadersHelpDialog.tsx:**
+  - Plain language consent explanations preserved with min 44px label targets.
+  - Accessible modal dialog with backdrop blur, Esc key close listener, and min 44×44px close target.
+- **Verification:**
+  - All 33 client vitest tests passed.
+  - Full workspace typecheck passed.
+  - Production client build passed (Vite + TypeScript).
+  - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-5/`.
+
+
 
 
 

@@ -134,18 +134,41 @@ export function Analyze() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-28 sm:pb-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
           Verify an Offer or Communication
         </h1>
-        <p className="mt-1 text-sm text-slate-600">
+        <p className="mt-1 text-sm text-muted-foreground">
           Paste the message text or upload an offer screenshot to run our deterministic rule engine.
         </p>
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
+      <div className="bg-surface rounded-lg border border-border shadow-elevation-1 p-6 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Top Form Error Summary */}
+          {formError && (
+            <div
+              role="alert"
+              className="p-4 rounded-md bg-status-high-risk-bg text-status-high-risk-fg border border-status-high-risk-border flex items-start gap-3 shadow-xs"
+            >
+              <AlertCircle className="w-5 h-5 shrink-0 text-status-high-risk-icon mt-0.5" strokeWidth={2} aria-hidden="true" />
+              <div className="space-y-1 text-sm">
+                <span className="font-bold block">Please address the following error:</span>
+                <a
+                  href="#input-message-text"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById("input-message-text")?.focus();
+                  }}
+                  className="underline hover:no-underline font-medium block"
+                >
+                  {formError}
+                </a>
+              </div>
+            </div>
+          )}
+
           {/* Input Method Tabs */}
           <InputTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
@@ -182,7 +205,7 @@ export function Analyze() {
           <DetectedLinksList text={text} />
 
           {/* Domain & metadata selectors */}
-          <div className="pt-4 border-t border-slate-100 space-y-5">
+          <div className="pt-4 border-t border-border space-y-5">
             <DomainSelect value={domain} onChange={setDomain} />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -204,7 +227,7 @@ export function Analyze() {
           </div>
 
           {/* Consent Toggles */}
-          <div className="border-t border-slate-100">
+          <div className="border-t border-border">
             <ConsentToggles
               useAi={useAi}
               onUseAiChange={setUseAi}
@@ -215,14 +238,6 @@ export function Analyze() {
               isAuthenticated={isAuthenticated}
             />
           </div>
-
-          {/* Error notice */}
-          {formError && (
-            <div className="flex items-center gap-2 p-3.5 rounded-xl bg-red-50 text-red-700 text-xs border border-red-200">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{formError}</span>
-            </div>
-          )}
 
           {/* Input adjustment notice */}
           {inputNotices.length > 0 && (
@@ -242,9 +257,9 @@ export function Analyze() {
             </div>
           )}
 
-          {/* Submit Button */}
+          {/* Submit Button (Desktop + Tablet) */}
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span className="text-xs text-slate-500 font-mono" aria-live="polite">
+            <span className="text-xs text-muted-foreground font-mono" aria-live="polite">
               {analyzeMutation.isPending
                 ? "Running deterministic rules and extracting signals..."
                 : "Deterministic rule check runs in ~100ms"}
@@ -253,16 +268,37 @@ export function Analyze() {
             <button
               type="submit"
               disabled={analyzeMutation.isPending || text.trim().length < INPUT_LIMITS.textMin}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md shadow-brand-500/20 transition-all disabled:opacity-50 cursor-pointer"
+              className="hidden sm:inline-flex items-center justify-center gap-2 min-h-[44px] px-8 py-3 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm shadow-xs transition-colors disabled:opacity-50 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {analyzeMutation.isPending ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} aria-hidden="true" />
                   Analyzing Offer...
                 </>
               ) : (
                 <>
-                  <ShieldCheck className="w-4 h-4" />
+                  <ShieldCheck className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
+                  Analyze Opportunity
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Sticky Bottom CTA Bar on Mobile */}
+          <div className="sm:hidden fixed bottom-0 left-0 right-0 p-3 bg-surface/95 backdrop-blur-sm border-t border-border z-30 shadow-elevation-2">
+            <button
+              type="submit"
+              disabled={analyzeMutation.isPending || text.trim().length < INPUT_LIMITS.textMin}
+              className="w-full min-h-[48px] inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm shadow-xs transition-colors disabled:opacity-50 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {analyzeMutation.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} aria-hidden="true" />
+                  Analyzing Offer...
+                </>
+              ) : (
+                <>
+                  <ShieldCheck className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
                   Analyze Opportunity
                 </>
               )}

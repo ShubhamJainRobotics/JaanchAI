@@ -19,10 +19,14 @@ export function DomainSelect({ value, onChange }: DomainSelectProps) {
 
   return (
     <div className="space-y-2">
-      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
         Opportunity Category
       </label>
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+      <div
+        role="radiogroup"
+        aria-label="Opportunity Category"
+        className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2"
+      >
         {options.map((opt) => {
           const Icon = opt.icon;
           const isSelected = value === opt.id;
@@ -30,15 +34,21 @@ export function DomainSelect({ value, onChange }: DomainSelectProps) {
             <button
               key={opt.id}
               type="button"
+              role="radio"
+              aria-checked={isSelected}
               onClick={() => onChange(opt.id)}
-              className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all ${
+              className={`min-h-[64px] flex flex-col items-center justify-center p-2.5 rounded-md border text-center transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 isSelected
-                  ? "border-brand-600 bg-brand-50 text-brand-700 font-bold shadow-xs ring-1 ring-brand-600"
-                  : "border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-medium"
+                  ? "border-primary bg-primary/10 text-primary font-bold shadow-xs ring-1 ring-primary"
+                  : "border-border bg-surface hover:bg-surface-raised text-foreground font-medium"
               }`}
             >
-              <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? "text-brand-600" : "text-slate-500"}`} />
-              <span className="text-xs">{opt.label}</span>
+              <Icon
+                className={`w-5 h-5 mb-1.5 shrink-0 ${isSelected ? "text-primary" : "text-muted-foreground"}`}
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
+              <span className="text-xs leading-tight">{opt.label}</span>
             </button>
           );
         })}

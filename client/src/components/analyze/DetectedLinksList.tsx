@@ -12,30 +12,30 @@ export function DetectedLinksList({ text }: DetectedLinksListProps) {
   if (matches.length === 0) return null;
 
   return (
-    <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-          <Link2 className="w-3.5 h-3.5 text-brand-600" />
+    <div className="p-4 bg-surface-raised border border-border rounded-md space-y-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+          <Link2 className="w-3.5 h-3.5 text-primary shrink-0" strokeWidth={1.75} aria-hidden="true" />
           Detected Link(s) in Text ({matches.length})
         </span>
-        <span className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-medium flex items-center gap-1">
-          <AlertTriangle className="w-3 h-3" />
+        <span className="text-[11px] text-warning bg-warning/10 border border-warning/30 px-2 py-1 rounded-sm font-medium flex items-center gap-1.5">
+          <AlertTriangle className="w-3.5 h-3.5 shrink-0" strokeWidth={2} aria-hidden="true" />
           Links disabled for safety — do not visit unverified links
         </span>
       </div>
 
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         {matches.map((url, idx) => (
           <div
             key={idx}
-            className="flex items-center justify-between p-2 bg-white rounded-lg border border-slate-200 font-mono text-xs"
+            className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 bg-surface rounded-md border border-border font-mono text-xs gap-2"
           >
-            <span className="text-slate-700 truncate max-w-xs sm:max-w-md select-all">
+            <span className="text-foreground select-all break-all overflow-wrap-anywhere">
               {url}
             </span>
             <Link
               to={`/link-check?url=${encodeURIComponent(url)}`}
-              className="ml-2 text-xs font-sans font-semibold text-brand-600 hover:text-brand-800 shrink-0"
+              className="min-h-[44px] inline-flex items-center text-xs font-sans font-semibold text-primary hover:underline shrink-0 self-start sm:self-center"
             >
               Inspect Link →
             </Link>
