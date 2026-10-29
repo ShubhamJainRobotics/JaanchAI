@@ -28,42 +28,44 @@ export function ProtectYourselfList({
 
   return (
     <div
+      data-testid="protect-yourself-list"
       className="space-y-4"
       role="region"
       aria-label="High-risk protection instructions"
     >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-red-200 dark:border-red-950">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-status-high-risk-border">
         <div className="flex items-center gap-2">
-          <div className="p-1 rounded-md bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400">
-            <ShieldAlert className="w-4 h-4" aria-hidden="true" />
+          <div className="p-1.5 rounded-md bg-status-high-risk-bg text-status-high-risk-icon border border-status-high-risk-border">
+            <ShieldAlert className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
           </div>
           <div>
-            <h4 className="text-xs sm:text-sm font-bold text-red-950 dark:text-red-200 uppercase tracking-wider">
+            <h3 className="text-xs sm:text-sm font-bold text-foreground uppercase tracking-wider">
               Part 2 · Protect Yourself (Immediate Actions)
-            </h4>
-            <p className="text-[11px] text-red-700 dark:text-red-300">
-              High-risk indicators observed. Follow these steps immediately to stay safe.
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              High-concern indicators observed. Follow these steps immediately to stay safe.
             </p>
           </div>
         </div>
 
         {/* Progress indicator */}
-        <div className="flex items-center gap-2 self-start sm:self-center">
+        <div className="flex items-center gap-2.5 self-start sm:self-center">
           <span
-            className="text-xs font-semibold text-red-900 dark:text-red-300"
+            className="text-xs font-semibold text-foreground/90 tabular-nums"
             aria-live="polite"
           >
             {doneCount} of {totalCount} completed
           </span>
-          <div className="w-20 bg-red-100 dark:bg-red-950/60 rounded-full h-2 overflow-hidden shrink-0">
+          <div className="w-20 bg-surface-raised rounded-full h-2 overflow-hidden shrink-0 border border-border">
             <div
-              className="bg-red-600 h-2 rounded-full transition-all duration-300"
+              className="bg-destructive h-2 rounded-full transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
               role="progressbar"
               aria-valuenow={progressPercent}
               aria-valuemin={0}
               aria-valuemax={100}
+              aria-label={`Protection progress: ${doneCount} of ${totalCount} steps completed`}
             />
           </div>
         </div>

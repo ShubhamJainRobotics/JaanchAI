@@ -30,10 +30,10 @@ export function NextStepsPanel({
   onTriggerInput,
   onOpenSafeReply,
 }: NextStepsPanelProps) {
-  // 1. "I already paid" toggle state (Fix I item 5: defaults to OFF on every load)
+  // 1. "I already paid" toggle state (defaults to OFF on every load)
   const [alreadyPaid, setAlreadyPaid] = useState<boolean>(false);
 
-  // 2. Step completions state (sessionStorage for guest, checklist_items for saved)
+  // 2. Step completions state
   const [completedMap, setCompletedMap] = useState<Record<string, boolean>>(() => {
     if (!isSavedAnalysis) {
       try {
@@ -68,18 +68,17 @@ export function NextStepsPanel({
     }
   }, [completedMap, isSavedAnalysis]);
 
-  // 3. Compute 3-part model via pure shared function buildNextSteps
+  // Compute 3-part model via pure shared function buildNextSteps
   const nextSteps = buildNextSteps(result, {
     alreadyPaid,
     checklistCompletions: completedMap,
   });
 
-  // 4. Handle plain step toggle (does NOT alter verification coverage meter)
+  // Handle plain step toggle (does NOT alter verification coverage meter)
   const handleToggleStep = async (stepKey: string) => {
     const currentCompleted = Boolean(completedMap[stepKey]);
     const nextCompleted = !currentCompleted;
 
-    // Optimistic local state update
     setCompletedMap((prev) => ({
       ...prev,
       [stepKey]: nextCompleted,
@@ -96,7 +95,6 @@ export function NextStepsPanel({
           completed: nextCompleted,
         });
       } catch (err) {
-        // Rollback on failure
         setCompletedMap((prev) => ({
           ...prev,
           [stepKey]: currentCompleted,
@@ -106,7 +104,7 @@ export function NextStepsPanel({
     }
   };
 
-  // 5. Handle sub-check attestation toggle (updates coverage meter immediately)
+  // Handle sub-check attestation toggle (updates coverage meter immediately)
   const handleToggleSubCheck = async (
     attestationKey: string,
     currentCompleted: boolean
@@ -126,7 +124,6 @@ export function NextStepsPanel({
           onUpdateResult(res.result);
         }
       } else if (result && onUpdateResult) {
-        // Guest mode: update local checks and recompute status
         const updatedChecks = (result.checks || []).map((c) =>
           c.checkKey === attestationKey ? { ...c, outcome: newOutcome as any } : c
         );
@@ -184,21 +181,22 @@ export function NextStepsPanel({
 
   return (
     <section
-      className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs space-y-6"
+      data-testid="next-steps-panel"
+      className="surface-card p-5 sm:p-6 space-y-6 transition-colors"
       role="region"
       aria-label="Do these next verification steps"
     >
       {/* Top Banner Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-400">
-            <ListChecks className="w-5 h-5" aria-hidden="true" />
+          <div className="p-2.5 rounded-md bg-primary text-primary-foreground shadow-xs">
+            <ListChecks className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+            <h2 className="text-base font-bold text-foreground tracking-tight">
               Recommended Next Steps
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            </h2>
+            <p className="text-xs text-muted-foreground">
               Clear distinction between automated evidence, manual steps, and standing student rules
             </p>
           </div>

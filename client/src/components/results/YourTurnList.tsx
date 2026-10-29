@@ -35,42 +35,44 @@ export function YourTurnList({
 
   return (
     <div
+      data-testid="your-turn-list"
       className="space-y-4"
       role="region"
       aria-label="Your turn manual verification steps"
     >
       {/* Header with progress */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border">
         <div className="flex items-center gap-2">
-          <div className="p-1 rounded-md bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-400">
-            <ListChecks className="w-4 h-4" aria-hidden="true" />
+          <div className="p-1 rounded-md bg-surface-raised text-primary">
+            <ListChecks className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
           </div>
           <div>
-            <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+            <h3 className="text-xs sm:text-sm font-bold text-foreground uppercase tracking-wider">
               Part 2 · Your Turn
-            </h4>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            </h3>
+            <p className="text-xs text-muted-foreground">
               Manual actions requiring independent human judgment. Max 6 prioritized steps.
             </p>
           </div>
         </div>
 
         {/* Live progress text & bar */}
-        <div className="flex items-center gap-2 self-start sm:self-center">
+        <div className="flex items-center gap-2.5 self-start sm:self-center">
           <span
-            className="text-xs font-semibold text-slate-700 dark:text-slate-300"
+            className="text-xs font-semibold text-foreground/90 tabular-nums"
             aria-live="polite"
           >
             Your turn · {doneCount} of {totalCount} done
           </span>
-          <div className="w-20 bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden shrink-0">
+          <div className="w-20 bg-surface-raised rounded-full h-2 overflow-hidden shrink-0 border border-border">
             <div
-              className="bg-brand-600 h-2 rounded-full transition-all duration-300"
+              className="bg-primary h-2 rounded-full transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
               role="progressbar"
               aria-valuenow={progressPercent}
               aria-valuemin={0}
               aria-valuemax={100}
+              aria-label={`Progress: ${doneCount} of ${totalCount} steps completed`}
             />
           </div>
         </div>
@@ -96,7 +98,7 @@ export function YourTurnList({
             <button
               type="button"
               onClick={() => setShowMore((prev) => !prev)}
-              className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors print:hidden cursor-pointer"
+              className="w-full min-h-[44px] flex items-center justify-between p-3 rounded-md border border-border bg-surface-raised hover:bg-surface text-xs font-bold text-foreground transition-colors print:hidden cursor-pointer"
             >
               <span>
                 {showMore
@@ -106,9 +108,9 @@ export function YourTurnList({
                     }`}
               </span>
               {showMore ? (
-                <ChevronUp className="w-4 h-4 text-slate-500" aria-hidden="true" />
+                <ChevronUp className="w-4 h-4 text-muted-foreground" strokeWidth={2} aria-hidden="true" />
               ) : (
-                <ChevronDown className="w-4 h-4 text-slate-500" aria-hidden="true" />
+                <ChevronDown className="w-4 h-4 text-muted-foreground" strokeWidth={2} aria-hidden="true" />
               )}
             </button>
 

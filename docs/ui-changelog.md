@@ -83,5 +83,32 @@ This document tracks all visual and interaction restyle batches, design system o
   - All 33 client tests, 38 server tests, and 267 shared tests passed.
   - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-3/`.
 
+---
+
+## Batch 4: Next Steps Panel
+- **NextStepsPanel Restyle:**
+  - Consolidated 3-part layout (Part 1: Jaanch Already Checked; Part 2: Your Turn / Protect Yourself; Part 3: Standing Student Protection Rules).
+  - Added `data-testid="next-steps-panel"`.
+- **AlreadyCheckedList & AlreadyCheckedRow:**
+  - Added `data-testid="already-checked-list"` and `data-testid="already-checked-row"`.
+  - Mapped outcome chips (`pass`, `fail`, `unknown`, `not_run`, `none_found`, `user_attested`) with icon + text label.
+  - Integrated actionable triggers with ≥ 44×44px hit containers and visible focus states.
+- **YourTurnList & ProtectYourselfList:**
+  - Added `data-testid="your-turn-list"` and `data-testid="protect-yourself-list"`.
+  - Styled live progress meter with `tabular-nums` and accessible aria attributes.
+  - Restyled `AlreadyPaidToggle` with `data-testid="already-paid-toggle"`.
+- **NextStepCard:**
+  - Added `data-testid="next-step-card"`.
+  - Accessible checkbox hit area (min 44×44px container), visible keyboard focus ring.
+  - Sub-checks cleanly nested in `surface-card-raised` with user-attestation badge.
+  - Action buttons with min 44px touch targets.
+- **ProtectionBanner:**
+  - Added `data-testid="protection-banner"`.
+  - Restyled using calm warning/safety tokens while strictly preserving all text.
+- **Verification:**
+  - All 33 client tests, 38 server tests, and 267 shared tests passed.
+  - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-4/`.
+
+
 
 
