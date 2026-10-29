@@ -272,9 +272,29 @@ This document tracks all visual and interaction restyle batches, design system o
   - Desktop submit button placed at the end of the form.
   - Mobile sticky bottom action bar (`fixed bottom-0`) with safe-area spacing and `pb-28 sm:pb-12` container offset ensuring inputs are never covered.
 - **Verification:**
-  - `npm run lint` PASSED (0 color violations).
+---
+
+## Round 2 — Batch 4: Results Page Hierarchy & Layout
+- **Mobile Above-The-Fold Contract (375×667 Viewport):**
+  - Guaranteed visual order: Status banner -> Payment alert (if present) -> Independent-checks meter -> "Why this status" (first 2-3 bullets) -> Primary action button *"See what to do next"* (anchored to `#next-steps-section`) and *"More"* export buttons.
+  - Tested to fit within the initial 667px vertical viewport with zero scrolling required to see the primary status and next step CTA.
+- **Two-Column Desktop Architecture (≥ 1024px):**
+  - Left column (8 cols): Why this status -> Pattern insight -> Next steps (`#next-steps-section`) -> Signals (`#signals-section`) -> Evidence report (`#evidence-section`) -> Details (`#details-section`).
+  - Right column (4 cols): Sticky sidebar (`ResultsSidebar`) featuring compact status chip, coverage meter, export actions, and "On this page" scroll-spy jump list.
+- **Mobile Sticky Section Chips:**
+  - Implemented `SectionJumpNav.tsx` providing horizontally scrollable sticky navigation chips (*Next steps · Signals · Evidence · Details*) directly below the nav on mobile.
+- **High-Risk Variant & Safety Controls:**
+  - Integrated `StopAndProtectBlock.tsx` prominently at the top of High Risk / Confirmed Scam results.
+  - Safe Reply panel automatically hidden for high-risk offers; 1930 and cybercrime.gov.in links given primary prominence.
+- **Simplified Evidence & Signals Blocks:**
+  - Flattened `SignalCard` into divider-separated rows with collapsible *"Why it matters"* drill-downs, avoiding boxes-inside-boxes.
+  - Added responsive collapse on `EvidenceReport` with live summary line (*"8 checks · 2 failed · 2 passed · 4 not run"*).
+  - Eliminated all residual hard-coded colors in `Results.tsx`.
+- **Verification:**
+  - `npm run lint` PASSED (0 hardcoded color violations).
   - `npm run test -w client` PASSED.
-  - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-3/`.
+  - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-4/`.
+
 
 
 
@@ -360,9 +380,29 @@ This document tracks all visual and interaction restyle batches, design system o
   - Desktop submit button placed at the end of the form.
   - Mobile sticky bottom action bar (`fixed bottom-0`) with safe-area spacing and `pb-28 sm:pb-12` container offset ensuring inputs are never covered.
 - **Verification:**
-  - `npm run lint` PASSED (0 color violations).
+---
+
+## Round 2 — Batch 4: Results Page Hierarchy & Layout
+- **Mobile Above-The-Fold Contract (375×667 Viewport):**
+  - Guaranteed visual order: Status banner -> Payment alert (if present) -> Independent-checks meter -> "Why this status" (first 2-3 bullets) -> Primary action button *"See what to do next"* (anchored to `#next-steps-section`) and *"More"* export buttons.
+  - Tested to fit within the initial 667px vertical viewport with zero scrolling required to see the primary status and next step CTA.
+- **Two-Column Desktop Architecture (≥ 1024px):**
+  - Left column (8 cols): Why this status -> Pattern insight -> Next steps (`#next-steps-section`) -> Signals (`#signals-section`) -> Evidence report (`#evidence-section`) -> Details (`#details-section`).
+  - Right column (4 cols): Sticky sidebar (`ResultsSidebar`) featuring compact status chip, coverage meter, export actions, and "On this page" scroll-spy jump list.
+- **Mobile Sticky Section Chips:**
+  - Implemented `SectionJumpNav.tsx` providing horizontally scrollable sticky navigation chips (*Next steps · Signals · Evidence · Details*) directly below the nav on mobile.
+- **High-Risk Variant & Safety Controls:**
+  - Integrated `StopAndProtectBlock.tsx` prominently at the top of High Risk / Confirmed Scam results.
+  - Safe Reply panel automatically hidden for high-risk offers; 1930 and cybercrime.gov.in links given primary prominence.
+- **Simplified Evidence & Signals Blocks:**
+  - Flattened `SignalCard` into divider-separated rows with collapsible *"Why it matters"* drill-downs, avoiding boxes-inside-boxes.
+  - Added responsive collapse on `EvidenceReport` with live summary line (*"8 checks · 2 failed · 2 passed · 4 not run"*).
+  - Eliminated all residual hard-coded colors in `Results.tsx`.
+- **Verification:**
+  - `npm run lint` PASSED (0 hardcoded color violations).
   - `npm run test -w client` PASSED.
-  - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-3/`.
+  - 50 screenshots captured in `/docs/ui-shots/r2-after/batch-4/`.
+
 
 
 

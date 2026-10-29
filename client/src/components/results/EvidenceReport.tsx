@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { AnalysisResult, CheckRow as CheckRowType, AnalyzeRequest } from "shared";
 import { CheckRow } from "./CheckRow";
-import { ExportReportButtons } from "./ExportReportButtons";
 import { apiClient } from "../../lib/apiClient";
 import {
   FileText,
@@ -23,6 +22,9 @@ interface EvidenceReportProps {
 }
 
 export function EvidenceReport({ result, onUpdateResult, targetInput }: EvidenceReportProps) {
+  // Mobile collapse state (§6.3)
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
   // Expandable row state for drill-downs
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({
     completeness: false,
@@ -30,6 +32,12 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
     organization: false,
     reported: false,
   });
+
+  const totalChecks = result.checks?.length || 0;
+  const failedChecks = result.checks?.filter((c) => c.outcome === "fail").length || 0;
+  const passedChecks = result.checks?.filter((c) => c.outcome === "pass").length || 0;
+  const notRunChecks = result.checks?.filter((c) => c.outcome === "not_run").length || 0;
+  const summaryLine = `${totalChecks} checks · ${failedChecks} failed · ${passedChecks} passed · ${notRunChecks} not run`;
 
   // Grouped not-run inline input state
   const [inlineEmail, setInlineEmail] = useState("");
@@ -130,28 +138,39 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
       role="region"
       aria-label="Comprehensive offer evidence report"
     >
-      {/* Evidence Report Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 border-b border-border bg-surface-raised">
+      {/* Evidence Report Header with Mobile Collapse Toggle */}
+      <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border bg-surface-raised">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-md bg-primary text-primary-foreground shadow-xs">
+          <div className="p-2 rounded-md bg-primary text-primary-foreground shadow-xs shrink-0">
             <FileText className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-foreground tracking-tight">
+            <h2 className="text-base sm:text-lg font-bold text-foreground tracking-tight">
               Offer Verification Evidence Report
             </h2>
-            <p className="text-xs text-muted-foreground">
-              Evidence-gated audit trail with expandable details and missing checks
+            <p className="text-xs text-muted-foreground font-mono mt-0.5">
+              {summaryLine}
             </p>
           </div>
         </div>
 
-        <div className="print:hidden">
-          <ExportReportButtons result={result} />
-        </div>
+        <button
+          type="button"
+          onClick={() => setIsMobileOpen(!isMobileOpen)}
+          className="sm:hidden min-h-[44px] px-3 py-1.5 rounded-md border border-border bg-surface text-xs font-semibold text-primary flex items-center gap-1 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-expanded={isMobileOpen}
+          aria-label={isMobileOpen ? "Collapse evidence report" : "Expand evidence report"}
+        >
+          <span>{isMobileOpen ? "Hide" : "Show"}</span>
+          {isMobileOpen ? (
+            <ChevronUp className="w-4 h-4" aria-hidden="true" />
+          ) : (
+            <ChevronDown className="w-4 h-4" aria-hidden="true" />
+          )}
+        </button>
       </div>
 
-      <div className="p-5 sm:p-6 space-y-4 font-sans">
+      <div className={`p-4 sm:p-6 space-y-4 font-sans ${isMobileOpen ? "block" : "hidden sm:block"}`}>
         {/* Row 1: Organization Registry Verification */}
         <div className="space-y-2">
           <div

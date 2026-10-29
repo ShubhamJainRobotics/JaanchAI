@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Signal, Severity, formatQuote } from "shared";
 import {
   Quote,
@@ -6,6 +7,8 @@ import {
   AlertCircle,
   Info,
   HelpCircle,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
 interface SignalCardProps {
@@ -16,58 +19,39 @@ const SEVERITY_CONFIG: Record<
   Severity,
   {
     badge: string;
-    border: string;
     label: string;
     icon: React.ReactNode;
   }
 > = {
   critical: {
     badge: "bg-severity-critical-bg text-severity-critical-fg border-severity-critical-border",
-    border: "border-l-4 border-l-destructive",
     label: "Critical",
-    icon: <AlertOctagon className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />,
+    icon: <AlertOctagon className="w-4 h-4 text-status-high-risk-icon shrink-0" strokeWidth={2} aria-hidden="true" />,
   },
   high: {
     badge: "bg-severity-high-bg text-severity-high-fg border-severity-high-border",
-    border: "border-l-4 border-l-warning",
     label: "High",
-    icon: <AlertTriangle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />,
+    icon: <AlertTriangle className="w-4 h-4 text-warning shrink-0" strokeWidth={2} aria-hidden="true" />,
   },
   medium: {
     badge: "bg-severity-medium-bg text-severity-medium-fg border-severity-medium-border",
-    border: "border-l-4 border-l-warning",
     label: "Medium",
-    icon: <AlertCircle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />,
+    icon: <AlertCircle className="w-4 h-4 text-warning shrink-0" strokeWidth={2} aria-hidden="true" />,
   },
   low: {
     badge: "bg-severity-low-bg text-severity-low-fg border-severity-low-border",
-    border: "border-l-4 border-l-info",
     label: "Low",
-    icon: <Info className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />,
+    icon: <Info className="w-4 h-4 text-info shrink-0" strokeWidth={2} aria-hidden="true" />,
   },
   info: {
     badge: "bg-severity-info-bg text-severity-info-fg border-severity-info-border",
-    border: "border-l-4 border-l-border",
     label: "Notice",
-    icon: <HelpCircle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />,
+    icon: <HelpCircle className="w-4 h-4 text-muted-foreground shrink-0" strokeWidth={2} aria-hidden="true" />,
   },
 };
 
-const CATEGORY_NAMES: Record<string, string> = {
-  payment: "Payment",
-  urgency: "Urgency",
-  data_request: "Data Request",
-  missing_details: "Missing Details",
-  channel: "Channel",
-  too_good_to_be_true: "Unrealistic Claim",
-  link: "Link",
-  sender_identity: "Sender Identity",
-  source_authenticity: "Source Authenticity",
-  reported_record: "Reported Record",
-  content_quality: "Content Quality",
-};
-
 export function SignalCard({ signal }: SignalCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const sev = SEVERITY_CONFIG[signal.severity] || SEVERITY_CONFIG.info;
   const isAi = signal.source === "ai" || (signal.ruleId && signal.ruleId.startsWith("AI-"));
   const formattedQuote = formatQuote(signal.evidenceQuote);
@@ -75,50 +59,62 @@ export function SignalCard({ signal }: SignalCardProps) {
   return (
     <article
       data-testid="signal-card"
-      className={`signal-card surface-card p-4 sm:p-5 shadow-xs space-y-3 transition-colors ${sev.border}`}
+      className="py-3.5 border-b border-border last:border-b-0 space-y-2 text-left"
     >
-      <div className="flex flex-wrap items-center justify-between gap-2.5">
-        <h3 className="text-sm font-bold text-foreground leading-snug">
-          {signal.title}
-        </h3>
-        <div className="flex flex-wrap items-center gap-2">
-          {isAi ? (
-            <span className="inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full bg-surface-raised text-primary border border-border">
-              AI-observed · {CATEGORY_NAMES[signal.category] || signal.category}
-            </span>
-          ) : (
-            <span className="inline-flex items-center text-xs font-mono font-semibold px-2 py-0.5 rounded-sm bg-surface-raised text-muted-foreground border border-border">
-              {signal.ruleId}
-            </span>
-          )}
-          <span
-            className={`inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full border font-semibold ${sev.badge}`}
-          >
-            {sev.icon}
-            <span>{sev.label}</span>
-          </span>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-2.5">
+          <div className="mt-0.5">{sev.icon}</div>
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h4 className="text-sm font-bold text-foreground leading-snug">
+                {signal.title}
+              </h4>
+              <span className="text-[11px] px-1.5 py-0.5 rounded-sm bg-surface-raised border border-border text-muted-foreground font-mono">
+                {isAi ? "AI-observed" : `Rule: ${signal.ruleId}`}
+              </span>
+              <span
+                className={`inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-sm border font-semibold ${sev.badge}`}
+              >
+                <span>{sev.label}</span>
+              </span>
+            </div>
+
+            {/* Short Quote */}
+            {formattedQuote && (
+              <p className="font-mono text-xs text-muted-foreground italic flex items-center gap-1.5 pt-0.5 break-all">
+                <Quote className="w-3 h-3 text-muted-foreground/60 shrink-0" aria-hidden="true" />
+                <span>"{formattedQuote}"</span>
+              </p>
+            )}
+          </div>
         </div>
+
+        {/* Expand Trigger for Why It Matters */}
+        <button
+          type="button"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="min-h-[36px] px-2 py-1 text-xs font-semibold text-primary hover:text-primary-hover hover:bg-surface-raised rounded-md transition-colors flex items-center gap-1 shrink-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-expanded={isExpanded}
+          aria-label={isExpanded ? "Collapse why it matters" : "Expand why it matters"}
+        >
+          <span>{isExpanded ? "Less" : "Why"}</span>
+          {isExpanded ? (
+            <ChevronUp className="w-3.5 h-3.5" aria-hidden="true" />
+          ) : (
+            <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
+          )}
+        </button>
       </div>
 
-      {/* Evidence Quote */}
-      {formattedQuote && (
-        <div className="flex items-start gap-2.5 p-3 rounded-md bg-surface-raised border border-border text-xs text-foreground font-sans">
-          <Quote className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" aria-hidden="true" />
-          <span className="italic break-words select-all leading-relaxed">
-            "{formattedQuote}"
-          </span>
+      {/* Expandable Why It Matters Drill-down */}
+      {isExpanded && (
+        <div className="mt-2 pl-6 text-xs text-foreground bg-surface-raised/60 p-3 rounded-md border border-border space-y-1">
+          <strong className="font-bold text-foreground block">Why it matters:</strong>
+          <p className="text-muted-foreground leading-relaxed">
+            {signal.whyItMatters}
+          </p>
         </div>
       )}
-
-      {/* Why It Matters */}
-      <div>
-        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
-          Why it matters
-        </span>
-        <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed font-medium">
-          {signal.whyItMatters}
-        </p>
-      </div>
     </article>
   );
 }
