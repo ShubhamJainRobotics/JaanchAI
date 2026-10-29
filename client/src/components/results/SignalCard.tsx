@@ -1,38 +1,55 @@
 import { Signal, Severity, formatQuote } from "shared";
-import { Quote } from "lucide-react";
+import {
+  Quote,
+  AlertOctagon,
+  AlertTriangle,
+  AlertCircle,
+  Info,
+  HelpCircle,
+} from "lucide-react";
 
 interface SignalCardProps {
   signal: Signal;
 }
 
-const SEVERITY_STYLES: Record<
+const SEVERITY_CONFIG: Record<
   Severity,
-  { badge: string; border: string; label: string }
+  {
+    badge: string;
+    border: string;
+    label: string;
+    icon: React.ReactNode;
+  }
 > = {
   critical: {
-    badge: "bg-red-100 text-red-800 border-red-300",
-    border: "border-l-4 border-l-red-600",
+    badge: "bg-severity-critical-bg text-severity-critical-fg border-severity-critical-border",
+    border: "border-l-4 border-l-destructive",
     label: "Critical",
+    icon: <AlertOctagon className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />,
   },
   high: {
-    badge: "bg-orange-100 text-orange-800 border-orange-300",
-    border: "border-l-4 border-l-orange-500",
+    badge: "bg-severity-high-bg text-severity-high-fg border-severity-high-border",
+    border: "border-l-4 border-l-warning",
     label: "High",
+    icon: <AlertTriangle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />,
   },
   medium: {
-    badge: "bg-amber-100 text-amber-800 border-amber-300",
-    border: "border-l-4 border-l-amber-500",
+    badge: "bg-severity-medium-bg text-severity-medium-fg border-severity-medium-border",
+    border: "border-l-4 border-l-warning",
     label: "Medium",
+    icon: <AlertCircle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />,
   },
   low: {
-    badge: "bg-blue-100 text-blue-800 border-blue-300",
-    border: "border-l-4 border-l-blue-400",
+    badge: "bg-severity-low-bg text-severity-low-fg border-severity-low-border",
+    border: "border-l-4 border-l-info",
     label: "Low",
+    icon: <Info className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />,
   },
   info: {
-    badge: "bg-slate-100 text-slate-700 border-slate-300",
-    border: "border-l-4 border-l-slate-400",
+    badge: "bg-severity-info-bg text-severity-info-fg border-severity-info-border",
+    border: "border-l-4 border-l-border",
     label: "Notice",
+    icon: <HelpCircle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />,
   },
 };
 
@@ -51,41 +68,43 @@ const CATEGORY_NAMES: Record<string, string> = {
 };
 
 export function SignalCard({ signal }: SignalCardProps) {
-  const sev = SEVERITY_STYLES[signal.severity];
+  const sev = SEVERITY_CONFIG[signal.severity] || SEVERITY_CONFIG.info;
   const isAi = signal.source === "ai" || (signal.ruleId && signal.ruleId.startsWith("AI-"));
   const formattedQuote = formatQuote(signal.evidenceQuote);
 
   return (
-    <div
-      className={`signal-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 sm:p-5 shadow-xs space-y-3 ${sev.border}`}
+    <article
+      data-testid="signal-card"
+      className={`signal-card surface-card p-4 sm:p-5 shadow-xs space-y-3 transition-colors ${sev.border}`}
     >
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+      <div className="flex flex-wrap items-center justify-between gap-2.5">
+        <h3 className="text-sm font-bold text-foreground leading-snug">
           {signal.title}
-        </h4>
-        <div className="flex items-center gap-2">
+        </h3>
+        <div className="flex flex-wrap items-center gap-2">
           {isAi ? (
-            <span className="inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+            <span className="inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full bg-surface-raised text-primary border border-border">
               AI-observed · {CATEGORY_NAMES[signal.category] || signal.category}
             </span>
           ) : (
-            <span className="inline-flex items-center text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+            <span className="inline-flex items-center text-xs font-mono font-semibold px-2 py-0.5 rounded-sm bg-surface-raised text-muted-foreground border border-border">
               {signal.ruleId}
             </span>
           )}
           <span
-            className={`text-xs px-2.5 py-0.5 rounded-full border font-semibold ${sev.badge}`}
+            className={`inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full border font-semibold ${sev.badge}`}
           >
-            {sev.label}
+            {sev.icon}
+            <span>{sev.label}</span>
           </span>
         </div>
       </div>
 
-      {/* Clean Evidence Quote (§7) */}
+      {/* Evidence Quote */}
       {formattedQuote && (
-        <div className="flex items-start gap-2.5 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 font-sans text-xs text-slate-800 dark:text-slate-200">
-          <Quote className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-          <span className="italic break-words select-all">
+        <div className="flex items-start gap-2.5 p-3 rounded-md bg-surface-raised border border-border text-xs text-foreground font-sans">
+          <Quote className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" aria-hidden="true" />
+          <span className="italic break-words select-all leading-relaxed">
             "{formattedQuote}"
           </span>
         </div>
@@ -93,13 +112,13 @@ export function SignalCard({ signal }: SignalCardProps) {
 
       {/* Why It Matters */}
       <div>
-        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-0.5">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block mb-0.5">
           Why it matters
         </span>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+        <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed font-medium">
           {signal.whyItMatters}
         </p>
       </div>
-    </div>
+    </article>
   );
 }

@@ -23,7 +23,7 @@ interface EvidenceReportProps {
 }
 
 export function EvidenceReport({ result, onUpdateResult, targetInput }: EvidenceReportProps) {
-  // Expandable row state for drill-downs (Change E5)
+  // Expandable row state for drill-downs
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({
     completeness: false,
     sender_domain: false,
@@ -31,7 +31,7 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
     reported: false,
   });
 
-  // Grouped not-run inline input state (Change E3)
+  // Grouped not-run inline input state
   const [inlineEmail, setInlineEmail] = useState("");
   const [inlineHeaders, setInlineHeaders] = useState("");
   const [inlineListing, setInlineListing] = useState("");
@@ -63,7 +63,6 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
   const guaranteeCheck = findCheck("guarantee_unrealistic");
   const reportedCheck = findCheck("reported_records");
 
-  // Determine which checks are not_run to group into Change E3
   const missingSenderEmail = !result.senderIdentity?.rawEmail;
   const missingHeaders = !result.headerAnalysis;
   const missingListing =
@@ -117,7 +116,6 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
     }
   };
 
-  // Helper for extracted source note
   const isOrgExtracted = Boolean(
     result.extractedFields?.organization?.value &&
     !(result as any).claimedOrg
@@ -125,23 +123,24 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
   const isEmailExtracted = (result.senderIdentity as any)?.candidateSource === "extracted_from_text";
 
   return (
-    <div
+    <section
       id="evidence-report-section"
-      className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs overflow-hidden print:border-none print:shadow-none"
+      data-testid="evidence-report"
+      className="surface-card overflow-hidden print:border-none print:shadow-none transition-colors"
       role="region"
       aria-label="Comprehensive offer evidence report"
     >
       {/* Evidence Report Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-800/30">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 border-b border-border bg-surface-raised">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-brand-600 text-white shadow-2xs">
-            <FileText className="w-5 h-5" aria-hidden="true" />
+          <div className="p-2.5 rounded-md bg-primary text-primary-foreground shadow-xs">
+            <FileText className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+            <h2 className="text-lg font-bold text-foreground tracking-tight">
               Offer Verification Evidence Report
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-muted-foreground">
               Evidence-gated audit trail with expandable details and missing checks
             </p>
           </div>
@@ -161,7 +160,7 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
             role="button"
             tabIndex={0}
             aria-expanded={expandedRows.organization}
-            onKeyDown={(e) => e.key === "Enter" && toggleRow("organization")}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && toggleRow("organization")}
           >
             <div className="relative">
               <CheckRow
@@ -177,43 +176,43 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                 }
                 source="registry"
               />
-              <span className="absolute right-3 top-3 text-slate-400 group-hover:text-slate-600 dark:text-slate-500 transition-colors print:hidden">
+              <span className="absolute right-3.5 top-3.5 text-muted-foreground group-hover:text-foreground transition-colors print:hidden">
                 {expandedRows.organization ? (
-                  <ChevronUp className="w-4 h-4" />
+                  <ChevronUp className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
                 ) : (
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
                 )}
               </span>
             </div>
           </div>
 
-          {/* Drill-down Drawer: Organization Details (Change E5) */}
+          {/* Drill-down Drawer: Organization Details */}
           {(expandedRows.organization || true) && (
-            <div className={`${expandedRows.organization ? "block" : "hidden print:block"} p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-2.5 ml-2`}>
-              <div className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-200">
-                <Building2 className="w-4 h-4 text-brand-600" />
+            <div className={`${expandedRows.organization ? "block" : "hidden print:block"} p-4 bg-surface-raised rounded-md border border-border text-xs space-y-2.5 ml-1 sm:ml-2`}>
+              <div className="flex items-center gap-2 font-bold text-foreground">
+                <Building2 className="w-4 h-4 text-primary shrink-0" strokeWidth={1.75} aria-hidden="true" />
                 <span>Organization Identity Details</span>
               </div>
               {isOrgExtracted && (
-                <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200">
+                <div className="p-2.5 rounded-md bg-severity-medium-bg border border-severity-medium-border text-severity-medium-fg font-medium">
                   <strong>Notice:</strong> Organization name <em>"{result.extractedFields?.organization?.value}"</em> was taken from the message text — confirm if this is the real sender's organization.
                 </div>
               )}
               {result.matchedOrganization ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600 dark:text-slate-300">
-                  <div><strong>Official Name:</strong> {result.matchedOrganization.name}</div>
-                  <div><strong>Kind:</strong> {result.matchedOrganization.kind}</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-muted-foreground font-medium">
+                  <div><strong className="text-foreground">Official Name:</strong> {result.matchedOrganization.name}</div>
+                  <div><strong className="text-foreground">Kind:</strong> {result.matchedOrganization.kind}</div>
                   <div className="sm:col-span-2">
-                    <strong>Official Domains:</strong> {result.matchedOrganization.officialDomains.join(", ")}
+                    <strong className="text-foreground">Official Domains:</strong> {result.matchedOrganization.officialDomains.join(", ")}
                   </div>
                   {result.matchedOrganization.careersUrl && (
                     <div className="sm:col-span-2">
-                      <strong>Careers Portal:</strong> {result.matchedOrganization.careersUrl}
+                      <strong className="text-foreground">Careers Portal:</strong> {result.matchedOrganization.careersUrl}
                     </div>
                   )}
                 </div>
               ) : (
-                <p className="text-slate-500 dark:text-slate-400">
+                <p className="text-muted-foreground font-medium">
                   This organization was not found in our statutory registry database (MCA / AICTE / UGC / verified employers).
                 </p>
               )}
@@ -229,7 +228,7 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
             role="button"
             tabIndex={0}
             aria-expanded={expandedRows.sender_domain}
-            onKeyDown={(e) => e.key === "Enter" && toggleRow("sender_domain")}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && toggleRow("sender_domain")}
           >
             <div className="relative">
               <CheckRow
@@ -238,43 +237,43 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                 detail={senderDomainCheck?.detail || "Sender email address not supplied."}
                 source="rule"
               />
-              <span className="absolute right-3 top-3 text-slate-400 group-hover:text-slate-600 dark:text-slate-500 transition-colors print:hidden">
+              <span className="absolute right-3.5 top-3.5 text-muted-foreground group-hover:text-foreground transition-colors print:hidden">
                 {expandedRows.sender_domain ? (
-                  <ChevronUp className="w-4 h-4" />
+                  <ChevronUp className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
                 ) : (
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
                 )}
               </span>
             </div>
           </div>
 
-          {/* Drill-down Drawer: Sender & Channel Identity (Change E5) */}
+          {/* Drill-down Drawer: Sender & Channel Identity */}
           {(expandedRows.sender_domain || true) && (
-            <div className={`${expandedRows.sender_domain ? "block" : "hidden print:block"} p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-2.5 ml-2`}>
-              <div className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-200">
-                <Mail className="w-4 h-4 text-brand-600" />
+            <div className={`${expandedRows.sender_domain ? "block" : "hidden print:block"} p-4 bg-surface-raised rounded-md border border-border text-xs space-y-2.5 ml-1 sm:ml-2`}>
+              <div className="flex items-center gap-2 font-bold text-foreground">
+                <Mail className="w-4 h-4 text-primary shrink-0" strokeWidth={1.75} aria-hidden="true" />
                 <span>Sender & Contact Channels Audit</span>
               </div>
               {isEmailExtracted && (
-                <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200">
+                <div className="p-2.5 rounded-md bg-severity-medium-bg border border-severity-medium-border text-severity-medium-fg font-medium">
                   <strong>Notice:</strong> Sender email <em>"{result.senderIdentity?.rawEmail}"</em> was taken from the message text — confirm if this is the real sender address.
                 </div>
               )}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600 dark:text-slate-300">
-                <div><strong>Email:</strong> {result.senderIdentity?.rawEmail || "Not provided"}</div>
-                <div><strong>Domain:</strong> {result.senderIdentity?.domain || "Not provided"}</div>
-                <div><strong>Recruiter Name:</strong> {result.senderIdentity?.recruiterName || "Not stated"}</div>
-                <div><strong>Phone / Contact:</strong> {result.senderIdentity?.phone || "Not provided"}</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-muted-foreground font-medium">
+                <div><strong className="text-foreground">Email:</strong> {result.senderIdentity?.rawEmail || "Not provided"}</div>
+                <div><strong className="text-foreground">Domain:</strong> {result.senderIdentity?.domain || "Not provided"}</div>
+                <div><strong className="text-foreground">Recruiter Name:</strong> {result.senderIdentity?.recruiterName || "Not stated"}</div>
+                <div><strong className="text-foreground">Phone / Contact:</strong> {result.senderIdentity?.phone || "Not provided"}</div>
                 {result.senderIdentity?.upiId && (
-                  <div><strong>UPI ID:</strong> {result.senderIdentity.upiId}</div>
+                  <div><strong className="text-foreground">UPI ID:</strong> {result.senderIdentity.upiId}</div>
                 )}
                 {result.senderIdentity?.websiteUrl && (
-                  <div className="sm:col-span-2"><strong>Website:</strong> {result.senderIdentity.websiteUrl}</div>
+                  <div className="sm:col-span-2"><strong className="text-foreground">Website:</strong> {result.senderIdentity.websiteUrl}</div>
                 )}
               </div>
               {result.headerAnalysis && (
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
-                  <strong>Email Cryptographic Auth:</strong> SPF: {result.headerAnalysis.authResults.spf}, DKIM: {result.headerAnalysis.authResults.dkim}, DMARC: {result.headerAnalysis.authResults.dmarc}
+                <div className="pt-2 border-t border-border text-muted-foreground font-medium">
+                  <strong className="text-foreground">Email Cryptographic Auth:</strong> SPF: {result.headerAnalysis.authResults.spf}, DKIM: {result.headerAnalysis.authResults.dkim}, DMARC: {result.headerAnalysis.authResults.dmarc}
                 </div>
               )}
             </div>
@@ -349,7 +348,7 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
             role="button"
             tabIndex={0}
             aria-expanded={expandedRows.reported}
-            onKeyDown={(e) => e.key === "Enter" && toggleRow("reported")}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && toggleRow("reported")}
           >
             <div className="relative">
               <CheckRow
@@ -358,33 +357,33 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                 detail={reportedCheck?.detail || "No match found in community fraud database. This does not confirm the offer is genuine."}
                 source="reported_db"
               />
-              <span className="absolute right-3 top-3 text-slate-400 group-hover:text-slate-600 dark:text-slate-500 transition-colors print:hidden">
+              <span className="absolute right-3.5 top-3.5 text-muted-foreground group-hover:text-foreground transition-colors print:hidden">
                 {expandedRows.reported ? (
-                  <ChevronUp className="w-4 h-4" />
+                  <ChevronUp className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
                 ) : (
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
                 )}
               </span>
             </div>
           </div>
 
-          {/* Drill-down Drawer: Reported Matches (Change E5) */}
+          {/* Drill-down Drawer: Reported Matches */}
           {(expandedRows.reported || true) && (
-            <div className={`${expandedRows.reported ? "block" : "hidden print:block"} p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-2 ml-2`}>
-              <div className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-200">
-                <ShieldAlert className="w-4 h-4 text-brand-600" />
+            <div className={`${expandedRows.reported ? "block" : "hidden print:block"} p-4 bg-surface-raised rounded-md border border-border text-xs space-y-2 ml-1 sm:ml-2`}>
+              <div className="flex items-center gap-2 font-bold text-foreground">
+                <ShieldAlert className="w-4 h-4 text-primary shrink-0" strokeWidth={1.75} aria-hidden="true" />
                 <span>Community Fraud Records Database Details</span>
               </div>
               {result.reportedMatches && result.reportedMatches.length > 0 ? (
                 <div className="space-y-2">
                   {result.reportedMatches.map((m, idx) => (
-                    <div key={idx} className="p-2.5 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-900 dark:text-red-200">
+                    <div key={idx} className="p-2.5 rounded-md bg-status-high-risk-bg border border-status-high-risk-border text-status-high-risk-fg font-medium">
                       <strong>{m.entityType}:</strong> {m.status === "confirmed" ? "Moderator-confirmed scam" : `Reported by ${m.reportCount} user(s)`}
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-slate-600 dark:text-slate-300">
+                <p className="text-muted-foreground font-medium">
                   Sender email, phone, domain, and links were checked against community records. No previous reports were found.
                 </p>
               )}
@@ -401,7 +400,7 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
               role="button"
               tabIndex={0}
               aria-expanded={expandedRows.completeness}
-              onKeyDown={(e) => e.key === "Enter" && toggleRow("completeness")}
+              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && toggleRow("completeness")}
             >
               <div className="relative">
                 <CheckRow
@@ -423,21 +422,21 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                   }`}
                   source="rule"
                 />
-                <span className="absolute right-3 top-3 text-slate-400 group-hover:text-slate-600 dark:text-slate-500 transition-colors print:hidden">
+                <span className="absolute right-3.5 top-3.5 text-muted-foreground group-hover:text-foreground transition-colors print:hidden">
                   {expandedRows.completeness ? (
-                    <ChevronUp className="w-4 h-4" />
+                    <ChevronUp className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
                   ) : (
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
                   )}
                 </span>
               </div>
             </div>
 
-            {/* Drill-down Drawer: 10-Detail Completeness Grid (Change E5) */}
+            {/* Drill-down Drawer: 10-Detail Completeness Grid */}
             {(expandedRows.completeness || true) && (
-              <div className={`${expandedRows.completeness ? "block" : "hidden print:block"} p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-3 ml-2`}>
-                <div className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-200">
-                  <FileCheck className="w-4 h-4 text-brand-600" />
+              <div className={`${expandedRows.completeness ? "block" : "hidden print:block"} p-4 bg-surface-raised rounded-md border border-border text-xs space-y-3 ml-1 sm:ml-2`}>
+                <div className="flex items-center gap-2 font-bold text-foreground">
+                  <FileCheck className="w-4 h-4 text-primary shrink-0" strokeWidth={1.75} aria-hidden="true" />
                   <span>10-Detail Completeness Audit</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -445,28 +444,28 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                     result.completeness.details.map((detail, idx) => (
                       <div
                         key={idx}
-                        className={`p-2.5 rounded-lg border ${
+                        className={`p-2.5 rounded-md border ${
                           detail.present
-                            ? "bg-white dark:bg-slate-900 border-emerald-200 dark:border-emerald-800/50"
-                            : "bg-white dark:bg-slate-900 border-amber-200 dark:border-amber-800/50"
+                            ? "bg-surface border-status-verified-border text-foreground"
+                            : "bg-surface border-status-review-border text-foreground"
                         }`}
                       >
                         <div className="flex items-center gap-1.5 font-bold mb-1">
                           {detail.present ? (
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                            <CheckCircle2 className="w-3.5 h-3.5 text-status-verified-icon shrink-0" strokeWidth={2} aria-hidden="true" />
                           ) : (
-                            <XCircle className="w-3.5 h-3.5 text-amber-600" />
+                            <XCircle className="w-3.5 h-3.5 text-status-review-icon shrink-0" strokeWidth={2} aria-hidden="true" />
                           )}
-                          <span className={detail.present ? "text-emerald-950 dark:text-emerald-200 capitalize" : "text-amber-950 dark:text-amber-200 capitalize"}>
+                          <span className={detail.present ? "text-status-verified-fg capitalize" : "text-status-review-fg capitalize"}>
                             {detail.label || detail.key.replace(/([A-Z])/g, " $1")}
                           </span>
                         </div>
                         {detail.present ? (
-                          <p className="text-[11px] text-slate-600 dark:text-slate-300 italic">
+                          <p className="text-[11px] text-muted-foreground italic leading-relaxed">
                             "{detail.evidenceQuote}"
                           </p>
                         ) : (
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                          <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">
                             {detail.reason || "Not specified in offer text."}
                           </p>
                         )}
@@ -474,13 +473,13 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                     ))
                   ) : (
                     result.completeness.present.map((p, idx) => (
-                      <div key={idx} className="p-2 bg-white dark:bg-slate-900 rounded border border-emerald-200 text-emerald-800">
+                      <div key={idx} className="p-2 bg-surface rounded-md border border-status-verified-border text-status-verified-fg font-medium">
                         ✓ {p}
                       </div>
                     ))
                   )}
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 italic">
+                <p className="text-[11px] text-muted-foreground italic">
                   Genuine offers occasionally omit details; missing details are never proof of fraud, but they require review.
                 </p>
               </div>
@@ -488,16 +487,16 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
           </div>
         )}
 
-        {/* Change E3: Grouped Not-Run Block with Inline Inputs */}
+        {/* Grouped Not-Run Block with Inline Inputs */}
         {notRunCount > 0 && (
-          <div className="mt-6 p-5 rounded-2xl border border-brand-200 dark:border-brand-900/60 bg-brand-50/40 dark:bg-brand-950/20 space-y-3.5 print:hidden">
-            <div className="flex items-center gap-2">
-              <PlusCircle className="w-5 h-5 text-brand-600 dark:text-brand-400" />
+          <div className="mt-6 p-5 rounded-md border border-primary/25 bg-surface-raised space-y-3.5 print:hidden">
+            <div className="flex items-center gap-2.5">
+              <PlusCircle className="w-5 h-5 text-primary shrink-0" strokeWidth={1.75} aria-hidden="true" />
               <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="text-sm font-bold text-foreground">
                   Add these details to run more checks ({notRunCount} missing)
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400">
+                <p className="text-xs text-muted-foreground">
                   Providing additional evidence increases verification coverage and eliminates unknowns.
                 </p>
               </div>
@@ -506,8 +505,8 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
               {/* Add sender email */}
               {missingSenderEmail && (
-                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
-                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
+                <div className="p-3 bg-surface rounded-md border border-border space-y-2">
+                  <span className="text-xs font-bold text-foreground block">
                     Sender Email Address
                   </span>
                   {activeInput === "email" ? (
@@ -517,21 +516,21 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                         placeholder="e.g. hr@company.com"
                         value={inlineEmail}
                         onChange={(e) => setInlineEmail(e.target.value)}
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"
+                        className="w-full text-xs p-2 rounded-md border border-border bg-surface text-foreground"
                       />
                       <div className="flex gap-2">
                         <button
                           type="button"
                           onClick={() => handleAddDetail({ senderEmail: inlineEmail.trim() })}
                           disabled={!inlineEmail.trim() || isRerunning}
-                          className="px-3 py-1 bg-brand-600 text-white rounded text-xs font-semibold hover:bg-brand-700 disabled:opacity-50"
+                          className="px-3 py-1.5 bg-primary text-primary-foreground rounded-md text-xs font-semibold hover:bg-primary-hover disabled:opacity-50 min-h-[36px]"
                         >
                           {isRerunning ? "Checking..." : "Add & Re-check"}
                         </button>
                         <button
                           type="button"
                           onClick={() => setActiveInput(null)}
-                          className="px-2 py-1 text-slate-600 dark:text-slate-400 text-xs"
+                          className="px-2.5 py-1.5 text-muted-foreground hover:text-foreground text-xs min-h-[36px]"
                         >
                           Cancel
                         </button>
@@ -541,7 +540,7 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                     <button
                       type="button"
                       onClick={() => setActiveInput("email")}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-hover min-h-[36px]"
                     >
                       + Add sender email
                     </button>
@@ -551,8 +550,8 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
 
               {/* Paste email headers */}
               {missingHeaders && (
-                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
-                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
+                <div className="p-3 bg-surface rounded-md border border-border space-y-2">
+                  <span className="text-xs font-bold text-foreground block">
                     Email Headers (DKIM / SPF)
                   </span>
                   {activeInput === "headers" ? (
@@ -562,21 +561,21 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                         placeholder="Paste raw email headers from your email client..."
                         value={inlineHeaders}
                         onChange={(e) => setInlineHeaders(e.target.value)}
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono"
+                        className="w-full text-xs p-2 rounded-md border border-border bg-surface text-foreground font-mono"
                       />
                       <div className="flex gap-2">
                         <button
                           type="button"
                           onClick={() => handleAddDetail({ emailHeaders: inlineHeaders.trim() })}
                           disabled={!inlineHeaders.trim() || isRerunning}
-                          className="px-3 py-1 bg-brand-600 text-white rounded text-xs font-semibold hover:bg-brand-700 disabled:opacity-50"
+                          className="px-3 py-1.5 bg-primary text-primary-foreground rounded-md text-xs font-semibold hover:bg-primary-hover disabled:opacity-50 min-h-[36px]"
                         >
                           {isRerunning ? "Checking..." : "Verify Headers"}
                         </button>
                         <button
                           type="button"
                           onClick={() => setActiveInput(null)}
-                          className="px-2 py-1 text-slate-600 dark:text-slate-400 text-xs"
+                          className="px-2.5 py-1.5 text-muted-foreground hover:text-foreground text-xs min-h-[36px]"
                         >
                           Cancel
                         </button>
@@ -586,7 +585,7 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                     <button
                       type="button"
                       onClick={() => setActiveInput("headers")}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-hover min-h-[36px]"
                     >
                       + Paste email headers
                     </button>
@@ -596,8 +595,8 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
 
               {/* Add official listing */}
               {missingListing && (
-                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
-                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
+                <div className="p-3 bg-surface rounded-md border border-border space-y-2">
+                  <span className="text-xs font-bold text-foreground block">
                     Official Opportunity Listing
                   </span>
                   {activeInput === "listing" ? (
@@ -607,7 +606,7 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                         placeholder="Paste careers URL or listing text..."
                         value={inlineListing}
                         onChange={(e) => setInlineListing(e.target.value)}
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"
+                        className="w-full text-xs p-2 rounded-md border border-border bg-surface text-foreground"
                       />
                       <div className="flex gap-2">
                         <button
@@ -620,14 +619,14 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                             })
                           }
                           disabled={!inlineListing.trim() || isRerunning}
-                          className="px-3 py-1 bg-brand-600 text-white rounded text-xs font-semibold hover:bg-brand-700 disabled:opacity-50"
+                          className="px-3 py-1.5 bg-primary text-primary-foreground rounded-md text-xs font-semibold hover:bg-primary-hover disabled:opacity-50 min-h-[36px]"
                         >
                           {isRerunning ? "Checking..." : "Compare Listing"}
                         </button>
                         <button
                           type="button"
                           onClick={() => setActiveInput(null)}
-                          className="px-2 py-1 text-slate-600 dark:text-slate-400 text-xs"
+                          className="px-2.5 py-1.5 text-muted-foreground hover:text-foreground text-xs min-h-[36px]"
                         >
                           Cancel
                         </button>
@@ -637,7 +636,7 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                     <button
                       type="button"
                       onClick={() => setActiveInput("listing")}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-hover min-h-[36px]"
                     >
                       + Add official listing
                     </button>
@@ -647,8 +646,8 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
 
               {/* Search organization registry */}
               {missingOrg && (
-                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
-                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
+                <div className="p-3 bg-surface rounded-md border border-border space-y-2">
+                  <span className="text-xs font-bold text-foreground block">
                     Organization Name
                   </span>
                   {activeInput === "org" ? (
@@ -658,21 +657,21 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                         placeholder="e.g. Tata Consultancy Services"
                         value={inlineOrg}
                         onChange={(e) => setInlineOrg(e.target.value)}
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"
+                        className="w-full text-xs p-2 rounded-md border border-border bg-surface text-foreground"
                       />
                       <div className="flex gap-2">
                         <button
                           type="button"
                           onClick={() => handleAddDetail({ claimedOrg: inlineOrg.trim() })}
                           disabled={!inlineOrg.trim() || isRerunning}
-                          className="px-3 py-1 bg-brand-600 text-white rounded text-xs font-semibold hover:bg-brand-700 disabled:opacity-50"
+                          className="px-3 py-1.5 bg-primary text-primary-foreground rounded-md text-xs font-semibold hover:bg-primary-hover disabled:opacity-50 min-h-[36px]"
                         >
                           {isRerunning ? "Checking..." : "Search Registry"}
                         </button>
                         <button
                           type="button"
                           onClick={() => setActiveInput(null)}
-                          className="px-2 py-1 text-slate-600 dark:text-slate-400 text-xs"
+                          className="px-2.5 py-1.5 text-muted-foreground hover:text-foreground text-xs min-h-[36px]"
                         >
                           Cancel
                         </button>
@@ -682,7 +681,7 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
                     <button
                       type="button"
                       onClick={() => setActiveInput("org")}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-hover min-h-[36px]"
                     >
                       + Search organization registry
                     </button>
@@ -693,6 +692,6 @@ export function EvidenceReport({ result, onUpdateResult, targetInput }: Evidence
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }

@@ -59,4 +59,29 @@ This document tracks all visual and interaction restyle batches, design system o
   - Vitest test suites passed (33 client tests including contrast test assertions).
   - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-2/`.
 
+---
+
+## Batch 3: Evidence Components
+- **CheckRow & Outcome Chips:**
+  - Standardized outcome chips (`pass`, `fail`, `unknown`, `none_found`, `not_run`, `user_attested`) using designated outcome tokens.
+  - Ensured `none_found` uses neutral grey (`bg-outcome-none-found-bg`, `text-outcome-none-found-fg`), never green.
+  - Every chip renders vector icon + text label.
+  - Added `data-testid="check-row"`.
+- **SignalCard & Severity Badges:**
+  - Severity tokens mapped for `critical`, `high`, `medium`, `low`, and `info`.
+  - Icon + text pairing enforced for all severity badges (`AlertOctagon`, `AlertTriangle`, `AlertCircle`, `Info`, `HelpCircle`).
+  - Added `data-testid="signal-card"`, formatted quote display with `overflow-wrap: anywhere break-words`.
+- **SignalList:**
+  - Categorized signal grouping with semantic headers and clean empty state.
+  - Added `data-testid="signals-section"`.
+- **LinkInspectorCard:**
+  - Restyled with semantic tokens, risk badge with icon + text label, accessible touch targets for RDAP live check.
+- **EvidenceReport:**
+  - Clean `surface-card` styling with progressive disclosure drill-downs (`aria-expanded` and keyboard navigation).
+  - Grouped not-run inline input form fields with semantic buttons and accessible touch targets.
+- **Verification:**
+  - All 33 client tests, 38 server tests, and 267 shared tests passed.
+  - Screenshots captured across 1440px and 375px into `/docs/ui-shots/after/batch-3/`.
+
+
 
