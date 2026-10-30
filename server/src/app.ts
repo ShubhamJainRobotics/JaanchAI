@@ -52,6 +52,8 @@ export function createApp(): Express {
         if (
           !origin ||
           env.CLIENT_ORIGINS.includes(origin) ||
+          /^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/.test(origin) ||
+          (Boolean(process.env.VERCEL_URL) && origin.includes(process.env.VERCEL_URL!)) ||
           (env.NODE_ENV === "development" &&
             /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin))
         ) {
