@@ -22,6 +22,8 @@ export default {
         border: {
           DEFAULT: 'var(--color-border)',
           subtle: 'var(--color-border-subtle)',
+          highlight: 'var(--color-border-highlight)',
+          pill: 'var(--color-border-pill)',
         },
         ring: 'var(--color-ring)',
         primary: {
@@ -32,6 +34,12 @@ export default {
           tint: 'var(--color-primary-tint)',
           'tint-border': 'var(--color-primary-tint-border)',
         },
+        terracotta: {
+          DEFAULT: 'var(--color-terracotta)',
+          hover: 'var(--color-terracotta-hover)',
+          tint: 'var(--color-terracotta-tint)',
+        },
+        eyebrow: 'var(--color-muted-subtle)',
         highlight: 'var(--color-highlight)',
         'gradient-accent-from': 'var(--color-gradient-accent-from)',
         'gradient-accent-to': 'var(--color-gradient-accent-to)',
@@ -168,6 +176,7 @@ export default {
       },
       fontFamily: {
         sans: ['var(--font-sans)'],
+        serif: ['var(--font-serif)'],
         mono: ['var(--font-mono)'],
       },
     },

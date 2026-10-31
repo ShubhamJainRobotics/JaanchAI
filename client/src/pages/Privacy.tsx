@@ -4,17 +4,20 @@ export function Privacy() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       <div>
-        <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
+        <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-subtle block mb-1.5 select-none">
+          TRANSPARENCY & DATA MINIMIZATION
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-serif font-normal text-foreground tracking-tight">
           Privacy Policy & Data Handling
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed">
           Plain-language explanation of how Jaanch processes your inputs, protects your identity, and enforces data minimization.
         </p>
       </div>
 
       <div className="space-y-6">
         {/* 1. Client-Side File Extraction */}
-        <div className="bg-surface border border-border rounded-md p-6 shadow-xs space-y-3">
+        <div className="bg-surface border border-border rounded-2xl p-6 sm:p-8 shadow-xs space-y-3">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-md bg-primary/10 text-primary flex items-center justify-center">
               <EyeOff className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />

@@ -146,17 +146,17 @@ export function Login() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-surface border border-border rounded-md p-6 sm:p-8 shadow-elevation-1 space-y-6">
+      <div className="max-w-md w-full bg-surface border border-border rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
         {/* Header Icon & Title */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 bg-primary/10 text-primary rounded-md flex items-center justify-center mx-auto">
+          <div className="w-12 h-12 bg-terracotta-tint text-terracotta rounded-xl flex items-center justify-center mx-auto">
             {otpStep === "enter_otp" ? (
               <KeyRound className="w-6 h-6" strokeWidth={1.75} aria-hidden="true" />
             ) : (
               <ShieldCheck className="w-6 h-6" strokeWidth={1.75} aria-hidden="true" />
             )}
           </div>
-          <h1 className="text-2xl font-extrabold text-foreground tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-serif font-normal text-foreground tracking-tight">
             Log in to Jaanch
           </h1>
           <p className="text-xs text-muted-foreground">

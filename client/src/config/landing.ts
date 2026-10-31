@@ -7,3 +7,4 @@
  * Set to false to hide the badge pill.
  */
 export const SHOW_PROBLEM_STATEMENT_BADGE = true;
+

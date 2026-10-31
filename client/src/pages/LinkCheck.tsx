@@ -47,17 +47,20 @@ export function LinkCheck() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2.5">
-          <Link2 className="w-7 h-7 text-primary" strokeWidth={1.75} aria-hidden="true" />
+        <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-subtle block mb-1.5 select-none">
+          DOMAIN REPUTATION & LOOKALIKE AUDIT
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-serif font-normal text-foreground tracking-tight flex items-center gap-2.5">
+          <Link2 className="w-7 h-7 text-terracotta" strokeWidth={1.75} aria-hidden="true" />
           Link &amp; Domain Inspector
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
           Verify domain age, brand lookalikes, and hidden redirects before opening an unfamiliar link. We check official domain registration records directly and <strong>never visit or download content from the target website</strong>.
         </p>
       </div>
 
       {/* Input Form */}
-      <div className="bg-surface rounded-md border border-border shadow-elevation-1 p-6 sm:p-8 space-y-4">
+      <div className="bg-surface rounded-2xl border border-border shadow-xs p-6 sm:p-8 space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">
           <label htmlFor="url-input" className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
             Enter Web Address to Inspect

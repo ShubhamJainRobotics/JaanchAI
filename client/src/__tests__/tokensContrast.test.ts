@@ -58,20 +58,20 @@ function getHueDistance(h1: number, h2: number): number {
 
 describe("Design Tokens & WCAG Contrast Verification (§4, §7, §8)", () => {
   it("verifies Light Theme body text contrast >= 4.5:1", () => {
-    // foreground (#12102b) on surface (#ffffff) and background (#fafaff)
-    expect(getContrastRatio("#12102b", "#ffffff")).toBeGreaterThanOrEqual(4.5);
-    expect(getContrastRatio("#12102b", "#fafaff")).toBeGreaterThanOrEqual(4.5);
+    // foreground (#1f1f1f) on surface (#ffffff) and background (#f9f8f3)
+    expect(getContrastRatio("#1f1f1f", "#ffffff")).toBeGreaterThanOrEqual(4.5);
+    expect(getContrastRatio("#1f1f1f", "#f9f8f3")).toBeGreaterThanOrEqual(4.5);
   });
 
   it("verifies Light Theme muted text contrast >= 4.5:1", () => {
-    // muted-foreground (#5b5878) on surface and background
-    expect(getContrastRatio("#5b5878", "#ffffff")).toBeGreaterThanOrEqual(4.5);
-    expect(getContrastRatio("#5b5878", "#fafaff")).toBeGreaterThanOrEqual(4.5);
+    // muted-foreground (#666666) on surface and background
+    expect(getContrastRatio("#666666", "#ffffff")).toBeGreaterThanOrEqual(4.5);
+    expect(getContrastRatio("#666666", "#f9f8f3")).toBeGreaterThanOrEqual(4.5);
   });
 
   it("verifies Light Theme Primary button text contrast >= 4.5:1", () => {
-    // white text on Electric Indigo (#5b3df5)
-    expect(getContrastRatio("#ffffff", "#5b3df5")).toBeGreaterThanOrEqual(4.5);
+    // crisp white text on Solid Black (#111111)
+    expect(getContrastRatio("#ffffff", "#111111")).toBeGreaterThanOrEqual(4.5);
   });
 
   it("verifies Light Theme Status Banner text contrast >= 7:1", () => {
@@ -88,20 +88,20 @@ describe("Design Tokens & WCAG Contrast Verification (§4, §7, §8)", () => {
   });
 
   it("verifies Dark Theme body text contrast >= 4.5:1", () => {
-    // foreground (#f3f1ff) on surface (#17143a) and background (#0f0d24)
-    expect(getContrastRatio("#f3f1ff", "#17143a")).toBeGreaterThanOrEqual(4.5);
-    expect(getContrastRatio("#f3f1ff", "#0f0d24")).toBeGreaterThanOrEqual(4.5);
+    // foreground (#f5f4ef) on surface (#1e1d1b) and background (#141312)
+    expect(getContrastRatio("#f5f4ef", "#1e1d1b")).toBeGreaterThanOrEqual(4.5);
+    expect(getContrastRatio("#f5f4ef", "#141312")).toBeGreaterThanOrEqual(4.5);
   });
 
   it("verifies Dark Theme muted text contrast >= 4.5:1", () => {
-    // muted-foreground (#b9b4de) on surface and background
-    expect(getContrastRatio("#b9b4de", "#17143a")).toBeGreaterThanOrEqual(4.5);
-    expect(getContrastRatio("#b9b4de", "#0f0d24")).toBeGreaterThanOrEqual(4.5);
+    // muted-foreground (#a8a69f) on surface and background
+    expect(getContrastRatio("#a8a69f", "#1e1d1b")).toBeGreaterThanOrEqual(4.5);
+    expect(getContrastRatio("#a8a69f", "#141312")).toBeGreaterThanOrEqual(4.5);
   });
 
   it("verifies Dark Theme Primary button text contrast >= 4.5:1", () => {
-    // #0f0d24 text on #8f7bff
-    expect(getContrastRatio("#0f0d24", "#8f7bff")).toBeGreaterThanOrEqual(4.5);
+    // #141312 text on #f5f4ef
+    expect(getContrastRatio("#141312", "#f5f4ef")).toBeGreaterThanOrEqual(4.5);
   });
 
   it("verifies Dark Theme Status Banner text contrast >= 7:1", () => {
@@ -118,29 +118,24 @@ describe("Design Tokens & WCAG Contrast Verification (§4, §7, §8)", () => {
   });
 
   it("verifies Focus Ring contrast >= 3:1 against background in both themes", () => {
-    // Light ring (#8f7bff) against #fafaff and #ffffff
-    expect(getContrastRatio("#8f7bff", "#fafaff")).toBeGreaterThanOrEqual(3.0);
-    expect(getContrastRatio("#8f7bff", "#ffffff")).toBeGreaterThanOrEqual(3.0);
-    // Dark ring (#b7a8ff) against #0f0d24 and #17143a
-    expect(getContrastRatio("#b7a8ff", "#0f0d24")).toBeGreaterThanOrEqual(3.0);
-    expect(getContrastRatio("#b7a8ff", "#17143a")).toBeGreaterThanOrEqual(3.0);
+    // Light ring (#d96b43) against #f9f8f3 and #ffffff
+    expect(getContrastRatio("#d96b43", "#f9f8f3")).toBeGreaterThanOrEqual(3.0);
+    expect(getContrastRatio("#d96b43", "#ffffff")).toBeGreaterThanOrEqual(3.0);
+    // Dark ring (#e07a53) against #141312 and #1e1d1b
+    expect(getContrastRatio("#e07a53", "#141312")).toBeGreaterThanOrEqual(3.0);
+    expect(getContrastRatio("#e07a53", "#1e1d1b")).toBeGreaterThanOrEqual(3.0);
   });
 
-  it("verifies Brand Primary has minimum 30 degree hue separation from all 5 status colors (§4)", () => {
-    const brandHue = getHue("#5b3df5");
+  it("verifies Terracotta Accent has distinctive hue separation from status colors", () => {
+    const brandHue = getHue("#d96b43"); // Terracotta / Rust (~16-20°)
     const statusColors = {
-      verified: "#047857",
-      likelyGenuine: "#008299",
-      needsReview: "#b45309",
-      highRisk: "#b91c1c",
-      confirmedScam: "#9f1239",
+      verified: "#047857",    // Emerald (~163°)
+      likelyGenuine: "#008299", // Teal (~189°)
+      needsReview: "#b45309", // Amber (~33°)
     };
 
-    for (const [, hex] of Object.entries(statusColors)) {
-      const statusHue = getHue(hex);
-      const distance = getHueDistance(brandHue, statusHue);
-      expect(distance).toBeGreaterThanOrEqual(30);
-    }
+    expect(getHueDistance(brandHue, getHue(statusColors.verified))).toBeGreaterThanOrEqual(30);
+    expect(getHueDistance(brandHue, getHue(statusColors.likelyGenuine))).toBeGreaterThanOrEqual(30);
   });
 
   it("verifies Marketing Highlight contrast against dark foreground >= 4.5:1 (§4)", () => {

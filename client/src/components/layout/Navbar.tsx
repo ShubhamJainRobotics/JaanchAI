@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ShieldCheck, Menu, User as UserIcon, LogOut, History, Sun, Moon } from "lucide-react";
+import { Menu, LogOut, Sun, Moon } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
 import { MobileNavDrawer } from "./MobileNavDrawer";
@@ -9,106 +9,132 @@ export function Navbar() {
   const { user, isAuthenticated, signOut } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [language, setLanguage] = useState<"EN" | "HI" | "KN">("EN");
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
 
-  const navLinks = [
-    { name: "Check an offer", path: "/analyze" },
-    { name: "Link checker", path: "/link-check" },
-    { name: "Resources", path: "/resources" },
-    { name: "About", path: "/about" },
-  ];
-
-  const isActive = (path: string) => location.pathname === path;
+  const isHome = location.pathname === "/";
 
   return (
-    <header className="sticky top-0 z-40 bg-surface border-b border-border transition-colors duration-150">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-xs border-b border-border transition-colors duration-150">
+      <div className="max-w-[1280px] mx-auto px-6 sm:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Brand Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2.5 group rounded-md p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <div className="w-9 h-9 rounded-md bg-primary text-primary-foreground flex items-center justify-center shadow-xs group-hover:bg-primary-hover transition-colors">
-              <ShieldCheck className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
-            </div>
-            <div className="flex items-baseline">
-              <span className="text-xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors">
-                Jaanch
+          {/* Left Section: Brand Logo & Sub-brand label */}
+          <div className="flex items-center gap-3">
+            <Link
+              to="/"
+              className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm py-1"
+            >
+              <span className="font-serif font-semibold text-2xl tracking-[0.1em] text-terracotta uppercase">
+                JAANCH
               </span>
-              <span className="ml-1 text-xs font-semibold px-1.5 py-0.5 rounded-sm bg-primary-tint text-primary border border-primary-tint-border">
-                जाँच
-              </span>
-            </div>
-          </Link>
+            </Link>
+            <span className="text-border text-base font-light select-none" aria-hidden="true">
+              |
+            </span>
+            <span className="text-xs uppercase tracking-[0.08em] font-medium text-muted-subtle hidden sm:inline select-none">
+              OFFER VERIFICATION
+            </span>
+          </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
-            {navLinks.map((link) => {
-              const active = isActive(link.path);
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  aria-current={active ? "page" : undefined}
-                  className={`px-3 py-2 min-h-[44px] inline-flex items-center rounded-md text-sm font-medium transition-colors ${
-                    active
-                      ? "bg-surface-raised text-primary font-semibold border-b-2 border-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-surface-raised/60"
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
-
-            {isAuthenticated && (
-              <Link
-                to="/history"
-                aria-current={isActive("/history") ? "page" : undefined}
-                className={`px-3 py-2 min-h-[44px] inline-flex items-center rounded-md text-sm font-medium transition-colors gap-1.5 ${
-                  isActive("/history")
-                    ? "bg-surface-raised text-primary font-semibold border-b-2 border-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-surface-raised/60"
-                }`}
-              >
-                <History className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
-                <span>History</span>
-              </Link>
-            )}
+          {/* Center Links (Desktop) */}
+          <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">
+            <a
+              href={isHome ? "#how-it-works" : "/#how-it-works"}
+              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+            >
+              How it works
+            </a>
+            <a
+              href={isHome ? "#coverage" : "/#coverage"}
+              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+            >
+              Coverage & Facts
+            </a>
+            <Link
+              to="/resources"
+              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+            >
+              Verification Guide
+            </Link>
+            <a
+              href={isHome ? "#helpline" : "/#helpline"}
+              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+            >
+              Helpline 1930
+            </a>
           </nav>
 
-          {/* User actions + Theme Toggle */}
-          <div className="hidden md:flex items-center gap-3">
-            {/* Theme Toggle Button */}
+          {/* Right Section: Language Selectors | Sign in | Check an offer */}
+          <div className="hidden md:flex items-center gap-3.5">
+            {/* Language Selector: EN / हिंदी / ಕನ್ನಡ */}
+            <div className="flex items-center text-xs font-medium text-muted-foreground select-none">
+              <button
+                type="button"
+                onClick={() => setLanguage("EN")}
+                className={`px-1 py-0.5 rounded cursor-pointer transition-colors ${
+                  language === "EN" ? "font-bold text-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+                aria-label="Select English language"
+              >
+                EN
+              </button>
+              <span className="text-border px-0.5">/</span>
+              <button
+                type="button"
+                onClick={() => setLanguage("HI")}
+                className={`px-1 py-0.5 rounded cursor-pointer transition-colors ${
+                  language === "HI" ? "font-bold text-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+                aria-label="Select Hindi language"
+              >
+                हिंदी
+              </button>
+              <span className="text-border px-0.5">/</span>
+              <button
+                type="button"
+                onClick={() => setLanguage("KN")}
+                className={`px-1 py-0.5 rounded cursor-pointer transition-colors ${
+                  language === "KN" ? "font-bold text-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+                aria-label="Select Kannada language"
+              >
+                ಕನ್ನಡ
+              </button>
+            </div>
+
+            <span className="text-border text-sm font-light select-none" aria-hidden="true">
+              |
+            </span>
+
+            {/* Theme Toggle (subtle) */}
             <button
               type="button"
               onClick={toggleTheme}
-              className="min-h-[44px] min-w-[44px] p-2.5 rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-surface-raised transition-colors flex items-center justify-center cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-surface-raised transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               title={isDark ? "Switch to light theme" : "Switch to dark theme"}
               aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
             >
               {isDark ? (
-                <Sun className="w-5 h-5 text-warning" strokeWidth={1.75} aria-hidden="true" />
+                <Sun className="w-4 h-4 text-warning" strokeWidth={1.75} aria-hidden="true" />
               ) : (
-                <Moon className="w-5 h-5 text-muted-foreground" strokeWidth={1.75} aria-hidden="true" />
+                <Moon className="w-4 h-4 text-muted-foreground" strokeWidth={1.75} aria-hidden="true" />
               )}
             </button>
 
+            {/* Auth / Sign in */}
             {isAuthenticated ? (
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2">
                 <Link
                   to="/settings"
-                  className="min-h-[44px] flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary px-3 py-2 rounded-md border border-border hover:bg-surface-raised transition-colors"
+                  className="text-sm font-medium text-foreground hover:text-terracotta px-2 py-1 transition-colors"
                 >
-                  <UserIcon className="w-4 h-4 text-muted-foreground" strokeWidth={1.75} aria-hidden="true" />
-                  <span>{user?.user_metadata?.full_name || user?.email?.split("@")[0]}</span>
+                  {user?.user_metadata?.full_name || user?.email?.split("@")[0]}
                 </Link>
                 <button
                   type="button"
                   onClick={() => signOut()}
-                  className="min-h-[44px] min-w-[44px] text-muted-foreground hover:text-destructive p-2.5 rounded-md hover:bg-surface-raised transition-colors cursor-pointer flex items-center justify-center border border-transparent hover:border-border"
+                  className="text-muted-foreground hover:text-destructive p-1 rounded-sm cursor-pointer transition-colors"
                   title="Sign out"
                   aria-label="Sign out"
                 >
@@ -116,29 +142,29 @@ export function Navbar() {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  to="/login"
-                  className="min-h-[44px] px-3.5 py-2 inline-flex items-center text-sm font-medium text-foreground hover:bg-surface-raised rounded-md transition-colors"
-                >
-                  Log in
-                </Link>
-                <Link
-                  to="/signup"
-                  className="min-h-[44px] px-4 py-2 inline-flex items-center text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-md shadow-xs transition-colors"
-                >
-                  Sign up
-                </Link>
-              </div>
+              <Link
+                to="/login"
+                className="text-sm font-medium text-foreground hover:text-terracotta transition-colors px-2 py-1"
+              >
+                Sign in
+              </Link>
             )}
+
+            {/* Primary Action Button: Solid Black */}
+            <Link
+              to="/analyze"
+              className="bg-primary text-primary-foreground hover:bg-neutral-800 rounded-lg px-4 py-2 text-sm font-medium transition-colors shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Check an offer
+            </Link>
           </div>
 
-          {/* Mobile hamburger & theme toggle */}
-          <div className="md:hidden flex items-center gap-1.5">
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden flex items-center gap-2">
             <button
               type="button"
               onClick={toggleTheme}
-              className="min-h-[44px] min-w-[44px] p-2 rounded-md text-muted-foreground hover:text-foreground flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="p-2 rounded-md text-muted-foreground hover:text-foreground flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
             >
               {isDark ? (
@@ -152,7 +178,7 @@ export function Navbar() {
               ref={menuButtonRef}
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="min-h-[44px] min-w-[44px] p-2 text-foreground hover:bg-surface-raised rounded-md flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="p-2 text-foreground hover:bg-surface-raised rounded-md flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Open navigation menu"
               aria-expanded={mobileMenuOpen}
             >

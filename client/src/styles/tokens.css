@@ -5,28 +5,35 @@
 
 :root {
   /* Color Palette - Light Theme */
-  --color-background: #fafaff;
+  --color-background: #f9f8f3;
   --color-surface: #ffffff;
   --color-surface-raised: #ffffff;
-  --color-foreground: #12102b;
-  --color-muted-foreground: #5b5878;
-  --color-border: #e3dff7;
-  --color-border-subtle: #efebfd;
-  --color-ring: #8f7bff;
+  --color-foreground: #1f1f1f;
+  --color-muted-foreground: #666666;
+  --color-muted-subtle: #8a8a8a;
+  --color-border: #eae8df;
+  --color-border-subtle: #e6e4dc;
+  --color-border-highlight: #d1cfce;
+  --color-border-pill: #e0e0e0;
+  --color-ring: #d96b43;
 
-  --color-primary: #5b3df5;
-  --color-primary-hover: #4b2fe0;
-  --color-primary-pressed: #3f26c4;
+  --color-primary: #111111;
+  --color-primary-hover: #262626;
+  --color-primary-pressed: #000000;
   --color-primary-foreground: #ffffff;
-  --color-primary-tint: #f1eeff;
-  --color-primary-tint-border: #d9d2ff;
+  --color-primary-tint: #fbf0eb;
+  --color-primary-tint-border: #f0d5c9;
 
-  --color-link: #5b3df5;
-  --color-link-hover: #4b2fe0;
+  --color-terracotta: #d96b43;
+  --color-terracotta-hover: #c55c36;
+  --color-terracotta-tint: #fbf0eb;
+
+  --color-link: #d96b43;
+  --color-link-hover: #c55c36;
 
   --color-highlight: #ffd43b;
-  --color-gradient-accent-from: #5b3df5;
-  --color-gradient-accent-to: #8b5cf6;
+  --color-gradient-accent-from: #d96b43;
+  --color-gradient-accent-to: #e88661;
 
   --color-destructive: #dc2626;
   --color-destructive-hover: #b91c1c;
@@ -115,7 +122,8 @@
   --severity-info-fg: #475569;
 
   /* Typography Scales */
-  --font-sans: 'Noto Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Devanagari', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Devanagari', sans-serif;
+  --font-serif: 'Newsreader', 'Playfair Display', Georgia, Cambria, 'Times New Roman', serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --text-xs: 0.75rem;     /* 12px */
@@ -164,28 +172,35 @@
 /* Dark Theme - Prefers Color Scheme */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --color-background: #0f0d24;
-    --color-surface: #17143a;
-    --color-surface-raised: #201c4d;
-    --color-foreground: #f3f1ff;
-    --color-muted-foreground: #b9b4de;
-    --color-border: #2d2960;
-    --color-border-subtle: #242050;
-    --color-ring: #b7a8ff;
+    --color-background: #141312;
+    --color-surface: #1e1d1b;
+    --color-surface-raised: #282624;
+    --color-foreground: #f5f4ef;
+    --color-muted-foreground: #a8a69f;
+    --color-muted-subtle: #7a7873;
+    --color-border: #33312d;
+    --color-border-subtle: #292825;
+    --color-border-highlight: #45433e;
+    --color-border-pill: #3d3b36;
+    --color-ring: #e07a53;
 
-    --color-primary: #8f7bff;
-    --color-primary-hover: #a594ff;
-    --color-primary-pressed: #7c66ff;
-    --color-primary-foreground: #0f0d24;
-    --color-primary-tint: #2a2570;
-    --color-primary-tint-border: #3d368a;
+    --color-primary: #f5f4ef;
+    --color-primary-hover: #e6e4dc;
+    --color-primary-pressed: #ffffff;
+    --color-primary-foreground: #141312;
+    --color-primary-tint: #2e201b;
+    --color-primary-tint-border: #4d3329;
 
-    --color-link: #8f7bff;
-    --color-link-hover: #b7a8ff;
+    --color-terracotta: #e07a53;
+    --color-terracotta-hover: #ea8a65;
+    --color-terracotta-tint: #2e201b;
+
+    --color-link: #e07a53;
+    --color-link-hover: #ea8a65;
 
     --color-highlight: #ffd43b;
-    --color-gradient-accent-from: #8f7bff;
-    --color-gradient-accent-to: #b7a8ff;
+    --color-gradient-accent-from: #e07a53;
+    --color-gradient-accent-to: #ea8a65;
 
     --color-destructive: #ef4444;
     --color-destructive-hover: #dc2626;
@@ -274,28 +289,35 @@
 
 /* Explicit class-based dark mode override */
 .dark {
-  --color-background: #0f0d24;
-  --color-surface: #17143a;
-  --color-surface-raised: #201c4d;
-  --color-foreground: #f3f1ff;
-  --color-muted-foreground: #b9b4de;
-  --color-border: #2d2960;
-  --color-border-subtle: #242050;
-  --color-ring: #b7a8ff;
+  --color-background: #141312;
+  --color-surface: #1e1d1b;
+  --color-surface-raised: #282624;
+  --color-foreground: #f5f4ef;
+  --color-muted-foreground: #a8a69f;
+  --color-muted-subtle: #7a7873;
+  --color-border: #33312d;
+  --color-border-subtle: #292825;
+  --color-border-highlight: #45433e;
+  --color-border-pill: #3d3b36;
+  --color-ring: #e07a53;
 
-  --color-primary: #8f7bff;
-  --color-primary-hover: #a594ff;
-  --color-primary-pressed: #7c66ff;
-  --color-primary-foreground: #0f0d24;
-  --color-primary-tint: #2a2570;
-  --color-primary-tint-border: #3d368a;
+  --color-primary: #f5f4ef;
+  --color-primary-hover: #e6e4dc;
+  --color-primary-pressed: #ffffff;
+  --color-primary-foreground: #141312;
+  --color-primary-tint: #2e201b;
+  --color-primary-tint-border: #4d3329;
 
-  --color-link: #8f7bff;
-  --color-link-hover: #b7a8ff;
+  --color-terracotta: #e07a53;
+  --color-terracotta-hover: #ea8a65;
+  --color-terracotta-tint: #2e201b;
+
+  --color-link: #e07a53;
+  --color-link-hover: #ea8a65;
 
   --color-highlight: #ffd43b;
-  --color-gradient-accent-from: #8f7bff;
-  --color-gradient-accent-to: #b7a8ff;
+  --color-gradient-accent-from: #e07a53;
+  --color-gradient-accent-to: #ea8a65;
 
   --color-destructive: #ef4444;
   --color-destructive-hover: #dc2626;

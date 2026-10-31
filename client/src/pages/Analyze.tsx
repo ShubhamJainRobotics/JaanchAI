@@ -175,11 +175,14 @@ export function Analyze() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 pb-28 sm:pb-12 text-left">
       {/* 1. Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+      <div className="mb-8">
+        <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-subtle block mb-1.5 select-none">
+          OFFER AUDIT
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-serif font-normal text-foreground tracking-tight">
           Check an offer
         </h1>
-        <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
           Paste the offer message or upload a screenshot to inspect warning signs and check official registries.
         </p>
       </div>
@@ -190,7 +193,7 @@ export function Analyze() {
           <AnalysisProgress onCancel={() => analyzeMutation.reset()} />
         </div>
       ) : (
-        <div className="bg-surface rounded-lg border border-border shadow-elevation-1 p-5 sm:p-7">
+        <div className="bg-surface rounded-2xl border border-border shadow-xs p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Top Form Error Summary (§5.7) */}
             {formError && (

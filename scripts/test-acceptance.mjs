@@ -126,7 +126,7 @@ async function run() {
     });
 
     // 1. Landing Structural Tests
-    console.log("Checking Criterion 1: Landing structure...");
+    console.log("Checking Criterion 1: Landing structure & Design System...");
     await cdp.send("Emulation.setDeviceMetricsOverride", {
       width: 1280,
       height: 800,
@@ -141,44 +141,42 @@ async function run() {
         const h1s = Array.from(document.querySelectorAll('h1'));
         const h1Count = h1s.length;
         const h1Text = h1s[0] ? h1s[0].innerText.replace(/\\s+/g, ' ').trim() : '';
-        const expectedH1 = "Spot Warning Signs Before You Pay or Share Private Data";
+        const expectedH1 = "Know it's real before you reply.";
         const h1Matches = h1Text === expectedH1;
 
-        const hasTextarea = !!document.querySelector('section textarea');
+        // Brand logo
+        const logo = document.querySelector('header a span');
+        const logoValid = Boolean(logo && logo.innerText.trim() === 'JAANCH');
 
         // Check hero links
-        const analyzeLink = document.querySelector('section a[href="/analyze"]');
-        const linkCheckLink = document.querySelector('section a[href="/link-check"]');
+        const checkOfferBtn = document.querySelector('section a[href="#submit-offer"], section a[href="/analyze"]');
+        const sampleReportBtn = document.querySelector('section a[href="/results/local"]');
 
-        const analyzeText = analyzeLink ? analyzeLink.innerText.trim() : '';
-        const linkCheckText = linkCheckLink ? linkCheckLink.innerText.trim() : '';
-        const buttonsValid = /Check an Offer Now/i.test(analyzeText) && /Inspect a Link/i.test(linkCheckText);
+        const buttonsValid = Boolean(checkOfferBtn && sampleReportBtn);
 
-        const badge = document.querySelector('#problem-statement-badge');
-        const hasBadge = badge ? /Digital Trust & Safety/i.test(badge.innerText) : false;
+        // Portals Card
+        const portalsHeading = document.body.innerText.includes("Official portals are always 100% free.");
 
         return {
           h1Count,
           h1Text,
           h1Matches,
-          hasTextarea,
-          hasAnalyzeLink: !!analyzeLink,
-          hasLinkCheckLink: !!linkCheckLink,
+          logoValid,
+          hasCheckOfferBtn: Boolean(checkOfferBtn),
+          hasSampleReportBtn: Boolean(sampleReportBtn),
           buttonsValid,
-          hasBadge
+          portalsHeading
         };
       })()
     `);
 
     results.push({
-      criterion: "Criterion 1: Landing structure (single H1 exact wording, no textarea, two hero action links, problem badge)",
+      criterion: "Criterion 1: Landing structure (Editorial Serif H1, terracotta logo, hero action buttons, verified portals card)",
       pass: landingStructure.h1Count === 1 &&
             landingStructure.h1Matches &&
-            !landingStructure.hasTextarea &&
-            landingStructure.hasAnalyzeLink &&
-            landingStructure.hasLinkCheckLink &&
+            landingStructure.logoValid &&
             landingStructure.buttonsValid &&
-            landingStructure.hasBadge,
+            landingStructure.portalsHeading,
       details: JSON.stringify(landingStructure),
     });
 
@@ -199,25 +197,22 @@ async function run() {
         (() => {
           const h1 = document.querySelector('h1');
           const sub = document.querySelector('section p');
-          const analyzeBtn = document.querySelector('section a[href="/analyze"]');
-          const linkBtn = document.querySelector('section a[href="/link-check"]');
-          if (!h1 || !sub || !analyzeBtn || !linkBtn) {
+          const actionBtn = document.querySelector('section a[href="#submit-offer"], section a[href="/analyze"]');
+          if (!h1 || !sub || !actionBtn) {
             return { ok: false, reason: 'elements missing' };
           }
           const vh = window.innerHeight;
           const h1Bottom = h1.getBoundingClientRect().bottom;
           const subBottom = sub.getBoundingClientRect().bottom;
-          const analyzeBottom = analyzeBtn.getBoundingClientRect().bottom;
-          const linkBottom = linkBtn.getBoundingClientRect().bottom;
+          const btnBottom = actionBtn.getBoundingClientRect().bottom;
 
-          const allAboveFold = h1Bottom <= vh && subBottom <= vh && analyzeBottom <= vh && linkBottom <= vh;
+          const allAboveFold = h1Bottom <= vh && subBottom <= vh && btnBottom <= vh;
           return {
             ok: allAboveFold,
             vh,
             h1Bottom: Math.round(h1Bottom),
             subBottom: Math.round(subBottom),
-            analyzeBottom: Math.round(analyzeBottom),
-            linkBottom: Math.round(linkBottom)
+            btnBottom: Math.round(btnBottom)
           };
         })()
       `);
@@ -225,7 +220,7 @@ async function run() {
       aboveTheFoldDetails += `${w}x${h}: ${JSON.stringify(metrics)}; `;
     }
 
-    // Phone: 390x844 (H1 and primary button above the fold)
+    // Phone: 390x844
     await cdp.send("Emulation.setDeviceMetricsOverride", {
       width: 390,
       height: 844,
@@ -236,16 +231,16 @@ async function run() {
     const mobileFold = await cdp.eval(`
       (() => {
         const h1 = document.querySelector('h1');
-        const analyzeBtn = document.querySelector('section a[href="/analyze"]');
-        if (!h1 || !analyzeBtn) return { ok: false, reason: 'elements missing' };
+        const actionBtn = document.querySelector('section a[href="#submit-offer"], section a[href="/analyze"]');
+        if (!h1 || !actionBtn) return { ok: false, reason: 'elements missing' };
         const vh = window.innerHeight;
         const h1Bottom = h1.getBoundingClientRect().bottom;
-        const analyzeBottom = analyzeBtn.getBoundingClientRect().bottom;
+        const btnBottom = actionBtn.getBoundingClientRect().bottom;
         return {
-          ok: h1Bottom <= vh && analyzeBottom <= vh,
+          ok: h1Bottom <= vh && btnBottom <= vh,
           vh,
           h1Bottom: Math.round(h1Bottom),
-          analyzeBottom: Math.round(analyzeBottom)
+          btnBottom: Math.round(btnBottom)
         };
       })()
     `);
@@ -253,115 +248,82 @@ async function run() {
     aboveTheFoldDetails += `390x844: ${JSON.stringify(mobileFold)}; `;
 
     results.push({
-      criterion: "Criterion 2: Landing Above-The-Fold contract (1440x900 & 1366x768 all hero actions above fold; 390x844 H1 & primary button above fold)",
+      criterion: "Criterion 2: Landing Above-The-Fold contract (Hero headline, subtitle, and primary button visible without scrolling)",
       pass: aboveTheFoldPassed,
       details: aboveTheFoldDetails,
     });
 
-    // 3. H1 orphan word check
-    console.log("Checking Criterion 3: H1 orphan word check across viewports...");
-    let orphanTestPassed = true;
-    let orphanDetails = "";
-    for (const w of [320, 375, 390, 768, 1024, 1280, 1366, 1440, 1920]) {
-      await cdp.send("Emulation.setDeviceMetricsOverride", {
-        width: w,
-        height: 800,
-        deviceScaleFactor: 1,
-        mobile: w < 768,
-      });
-      await sleep(150);
-      const res = await cdp.eval(`
-        (() => {
-          const h1 = document.querySelector('h1');
-          if (!h1) return { ok: false, reason: 'h1 not found' };
-          const text = h1.textContent || '';
-          const hasNbsp = text.includes('Private\\u00A0Data');
-
-          // Check using Range
-          const walker = document.createTreeWalker(h1, NodeFilter.SHOW_TEXT);
-          let targetNode = null;
-          while (walker.nextNode()) {
-            if (walker.currentNode.textContent.includes('Private')) {
-              targetNode = walker.currentNode;
-              break;
-            }
-          }
-          if (!targetNode) return { ok: hasNbsp, hasNbsp, measured: false };
-
-          const str = targetNode.textContent;
-          const pIdx = str.indexOf('Private');
-          const dIdx = str.indexOf('Data');
-          if (pIdx === -1 || dIdx === -1) return { ok: hasNbsp, hasNbsp, measured: false };
-
-          const rangeP = document.createRange();
-          rangeP.setStart(targetNode, pIdx);
-          rangeP.setEnd(targetNode, pIdx + 'Private'.length);
-
-          const rangeD = document.createRange();
-          rangeD.setStart(targetNode, dIdx);
-          rangeD.setEnd(targetNode, dIdx + 'Data'.length);
-
-          const rectP = rangeP.getBoundingClientRect();
-          const rectD = rangeD.getBoundingClientRect();
-          const sameLine = Math.abs(rectP.top - rectD.top) <= 4;
-          return { ok: hasNbsp && sameLine, hasNbsp, sameLine, pTop: rectP.top, dTop: rectD.top };
-        })()
-      `);
-      if (!res.ok) orphanTestPassed = false;
-      orphanDetails += `${w}px: ${JSON.stringify(res)}; `;
-    }
-    results.push({
-      criterion: "Criterion 3: H1 orphan word: 'Data' never sits alone on a last line (320-1920px)",
-      pass: orphanTestPassed,
-      details: orphanDetails,
-    });
-
-    // 4. Four plain-language feature cards in hero
-    console.log("Checking Criterion 4: Four plain-language feature cards in hero...");
-    await cdp.send("Emulation.setDeviceMetricsOverride", {
-      width: 1440,
-      height: 900,
-      deviceScaleFactor: 1,
-      mobile: false,
-    });
-    await sleep(200);
-    const featureCardsTest = await cdp.eval(`
+    // 3. Interactive Submission Card with Test Scenarios
+    console.log("Checking Criterion 3: Interactive Submission Card & Scenarios...");
+    const submissionCardTest = await cdp.eval(`
       (() => {
-        const heroSection = document.querySelector('section');
-        if (!heroSection) return { ok: false, reason: 'hero section not found' };
+        const section = document.querySelector('#submit-offer');
+        if (!section) return { ok: false, reason: 'submission section not found' };
 
-        const expectedTitles = [
-          "Explains why",
-          'Never says "safe"',
-          "Checks official sources",
-          "Screenshots stay on your device"
-        ];
+        const heading = section.querySelector('h2');
+        const headingMatch = heading && /Submit offer details for verification/i.test(heading.innerText);
 
-        const cards = Array.from(heroSection.querySelectorAll('h3')).map(h => ({
-          title: h.innerText.trim(),
-          top: Math.round(h.getBoundingClientRect().top)
-        }));
+        const textarea = section.querySelector('textarea#landing-offer-text');
+        const hasTextarea = !!textarea;
 
-        const titlesMatch = expectedTitles.every(t => cards.some(c => c.title === t));
-        const iconTiles = heroSection.querySelectorAll('.bg-primary-tint.text-primary, .bg-primary\\\\/10.text-primary');
+        const scenarios = Array.from(section.querySelectorAll('button')).map(b => b.innerText.trim());
+        const hasDepositTrap = scenarios.some(s => s.includes("Deposit Trap"));
+        const hasKycTrap = scenarios.some(s => s.includes("KYC Trap"));
+        const hasCleanInvite = scenarios.some(s => s.includes("Clean"));
 
-        // At 1440x900, top edge of cards is inside viewport height (<= 900) as peek affordance
-        const peekAffordance = cards.length === 4 && cards.every(c => c.top < 900);
+        const submitBtn = section.querySelector('button[type="submit"]');
+        const hasSubmitBtn = submitBtn && /Check offer/i.test(submitBtn.innerText);
 
         return {
-          count: cards.length,
-          titlesMatch,
-          cards,
-          iconTileCount: iconTiles.length,
-          peekAffordance,
-          ok: cards.length === 4 && titlesMatch && iconTiles.length >= 4 && peekAffordance
+          headingMatch,
+          hasTextarea,
+          hasDepositTrap,
+          hasKycTrap,
+          hasCleanInvite,
+          hasSubmitBtn,
+          ok: headingMatch && hasTextarea && hasDepositTrap && hasKycTrap && hasCleanInvite && hasSubmitBtn
         };
       })()
     `);
     results.push({
-      criterion: "Criterion 4: Four feature cards in hero with IconTiles and peek affordance at 1440x900",
-      pass: featureCardsTest.ok,
-      details: JSON.stringify(featureCardsTest),
+      criterion: "Criterion 3: Interactive Submission Card (tabs, textarea, character counter, 3 test scenarios, check offer button)",
+      pass: submissionCardTest.ok,
+      details: JSON.stringify(submissionCardTest),
+    });
+
+    // 4. Feature Matrix & Three Steps Audit Section
+    console.log("Checking Criterion 4: Feature Matrix & 3-Step Audit Methodology...");
+    const auditAndMatrixTest = await cdp.eval(`
+      (() => {
+        const text = document.body.innerText;
+        const hasCoverage = text.includes("OFFER TYPES COVERED") && text.includes("Comprehensive Coverage");
+        const hasLanguages = text.includes("REGIONAL LANGUAGES") && text.includes("English & 12 Indian Scripts");
+        const hasAccess = text.includes("OPEN ACCESS") && text.includes("100% Free & Independent");
+        const hasHelpline = text.includes("OFFICIAL REPORTING") && text.includes("National Helpline 1930");
+
+        const hasStepsHeading = text.includes("How Jaanch audits an offer in three steps.");
+        const hasStep1 = text.includes("Input & Ingestion");
+        const hasStep2 = text.includes("Pattern & Domain Verification");
+        const hasStep3 = text.includes("Risk Assessment & Next Steps");
+
+        const ok = hasCoverage && hasLanguages && hasAccess && hasHelpline && hasStepsHeading && hasStep1 && hasStep2 && hasStep3;
+        return {
+          hasCoverage,
+          hasLanguages,
+          hasAccess,
+          hasHelpline,
+          hasStepsHeading,
+          hasStep1,
+          hasStep2,
+          hasStep3,
+          ok
+        };
+      })()
+    `);
+    results.push({
+      criterion: "Criterion 4: 4-Column Feature Matrix & 3-Step Audit Methodology Grid",
+      pass: auditAndMatrixTest.ok,
+      details: JSON.stringify(auditAndMatrixTest),
     });
 
     // 5. Mobile Nav Drawer

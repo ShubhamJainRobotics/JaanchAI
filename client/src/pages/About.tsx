@@ -15,10 +15,10 @@ export function About() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-terracotta-tint border border-terracotta/20 text-terracotta text-xs font-semibold mb-3">
           Built for the &ldquo;Fake or Real&rdquo; (Digital Trust &amp; Safety) problem statement
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-serif font-normal text-foreground tracking-tight">
           About Jaanch (&ldquo;जाँच&rdquo;)
         </h1>
         <p className="mt-2 text-base text-muted-foreground leading-relaxed">
@@ -27,7 +27,7 @@ export function About() {
       </div>
 
       {/* The Core Mission */}
-      <section className="bg-surface border border-border rounded-md p-6 sm:p-8 shadow-xs space-y-4">
+      <section className="bg-surface border border-border rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-md bg-primary/10 text-primary flex items-center justify-center">
             <Target className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />

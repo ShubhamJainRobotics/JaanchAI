@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { X, ShieldCheck, User as UserIcon, LogOut, History, Sun, Moon } from "lucide-react";
+import { X, User as UserIcon, LogOut, History, Sun, Moon } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
 
@@ -112,12 +112,8 @@ export function MobileNavDrawer({ isOpen, onClose, triggerRef }: MobileNavDrawer
             }}
             className="min-h-[44px] flex items-center gap-2 rounded-md px-2 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <div className="w-8 h-8 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
-            </div>
-            <span className="font-extrabold tracking-tight text-foreground text-base">Jaanch</span>
-            <span className="text-xs font-semibold px-1.5 py-0.5 rounded-sm bg-primary-tint text-primary border border-primary-tint-border">
-              जाँच
+            <span className="font-serif font-semibold text-xl tracking-[0.1em] text-terracotta uppercase">
+              JAANCH
             </span>
           </Link>
 

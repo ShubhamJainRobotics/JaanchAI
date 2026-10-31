@@ -56,7 +56,10 @@ export function Resources() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+        <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-subtle block mb-1.5 select-none">
+          KNOWLEDGE BASE & GUIDELINES
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-serif font-normal text-foreground tracking-tight">
           Official Verification Directory &amp; Guides
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">

@@ -72,20 +72,20 @@ export function StatusBanner({
   return (
     <section
       data-testid="status-banner"
-      className={`rounded-lg border p-6 sm:p-7 shadow-sm transition-colors ${theme.containerClass}`}
+      className={`rounded-2xl border p-6 sm:p-7 shadow-xs transition-colors ${theme.containerClass}`}
       role="region"
       aria-label="Verification status banner"
     >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-current/20">
         <div className="flex items-center gap-3.5">
-          <div className={`p-2.5 rounded-md border shadow-xs ${theme.iconContainer}`}>
+          <div className={`p-2.5 rounded-xl border shadow-xs ${theme.iconContainer}`}>
             {theme.icon}
           </div>
           <div>
-            <span className="text-xs uppercase font-bold tracking-wider block opacity-85">
+            <span className="text-xs uppercase font-semibold tracking-[0.08em] block opacity-85">
               Verification Status
             </span>
-            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight block">
+            <h1 className="text-2xl sm:text-3xl font-serif font-normal tracking-tight block">
               {copy.label}
             </h1>
           </div>
