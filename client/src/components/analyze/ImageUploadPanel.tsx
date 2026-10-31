@@ -115,7 +115,7 @@ export function ImageUploadPanel({ onTextExtracted }: ImageUploadPanelProps) {
                 Click or drag & drop WhatsApp screenshot
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                PNG, JPG, or WEBP up to 5MB. Optical Character Recognition runs 100% in your browser.
+                PNG, JPG, or WEBP up to 5MB. Optical Character Recognition runs in your browser without uploading your image.
               </p>
             </div>
           </div>

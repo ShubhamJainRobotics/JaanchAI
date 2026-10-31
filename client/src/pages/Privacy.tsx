@@ -24,7 +24,7 @@ export function Privacy() {
             </h2>
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            When you upload a WhatsApp screenshot or PDF offer letter, Optical Character Recognition (OCR) and PDF page rendering run 100% inside your browser using WebAssembly. The actual image or document is <strong>never uploaded to our backend server</strong> or shared with third parties.
+            When you upload a WhatsApp screenshot or PDF offer letter, Optical Character Recognition (OCR) and PDF page rendering run inside your browser using WebAssembly. The actual image or document is <strong>never uploaded to our backend server</strong> or shared with third parties.
           </p>
         </div>
 

@@ -1,4 +1,4 @@
-# JAANCH Privacy Copy & Data Flow Verification Checklist
+# JAANCH Privacy Copy & Data Flow Verification Checklist (§4)
 
 This document verifies every privacy claim made across the Jaanch application against the exact implementation in the codebase.
 
@@ -16,20 +16,20 @@ This document verifies every privacy claim made across the Jaanch application ag
 
 ---
 
-## 2. Approved Privacy Copy Statements
+## 2. Claims Audit & Resolution
 
-1. **Under Hero Analyzer Card:**
-   > *"Screenshots and PDFs are read in your browser and never uploaded. Guest checks are not saved to any database."*
-   - **Proof:** `client/src/lib/ocr.ts` (browser Tesseract worker) and `server/src/services/analyzeService.ts` line 860 (`user && supabase` check).
-
-2. **Benefit Card ("Screenshots stay on your device"):**
-   > *"Text is read from screenshots and PDFs in your browser; the files are never uploaded."*
-   - **Proof:** `client/src/components/analyze/ImageUploadPanel.tsx` handles files in memory with `createObjectURL` and `tesseract.js`.
-
-3. **Analyze Page Privacy Disclosure Summary:**
-   > *"AI context: {on/off} · Third-party checks: {on/off} · Saved to history: {on/off}"*
-   - **Proof:** `client/src/components/analyze/ConsentToggles.tsx` binds directly to `saveToHistory`, `enableAi`, `storeRawText`.
-
-4. **Logged-in vs Guest Storage:**
-   > *"Guest checks are held only in your browser session. If you log in, reports are saved to your private history without storing your raw text unless you choose to."*
-   - **Proof:** `server/src/services/analyzeService.ts` line 862 (`const inputTextToStore = request.storeRawText ? rawText : null;`).
+| Location | Original Claim / Text | Code Path Audit | Audit Finding | Final Accurate Wording |
+|---|---|---|---|---|
+| `Hero.tsx` | `"Instant, browser-side checks for security deposits..."` | Analysis runs via POST `/api/analyze` on server. Not browser-side. | **REMOVED** (Inaccurate) | Replaced with exact original subhead: *"Students encounter hundreds of internship offers, scholarships, and freelance messages online. Jaanch helps you understand why something may be risky and what you should independently verify before taking action."* |
+| `Hero.tsx` | `"100% Free & Open Source"` | Absolute `100%` is unnecessary marketing puffery. | **REMOVED** | Removed with removal of redesigned inline analyzer truth row. |
+| `Hero.tsx` | `"Private · Zero tracking for guests"` | "Zero tracking" is overly absolute. | **REMOVED** | Removed with removal of redesigned inline analyzer truth row. |
+| `HeroAnalyzer.tsx` | `"Analysis runs in your browser. Pasted text is never stored for guests."` | Text is sent to `/api/analyze` on server for rule evaluation; only storage is skipped for guests. | **REMOVED** | Component deleted entirely per §3. |
+| `Hero.tsx` (Cards) | `title: "Screenshots stay on your device"`, `description: "Text is read from screenshots and PDFs in your browser; the files are never uploaded."` | `client/src/lib/ocr.ts` uses Tesseract.js (WASM) locally in worker. `client/src/lib/pdf.ts` uses pdfjs-dist locally in worker. No multipart or file uploads exist. | **VERIFIED & KEPT** | *"Text is read from screenshots and PDFs in your browser; the files are never uploaded."* |
+| `Hero.tsx` (Cards) | `title: "Never says 'safe'"` | `shared/src/config/bannedPhrases.ts` and `shared/src/verification/computeStatus.ts` strictly prohibit "safe" or "guaranteed genuine" statuses. | **VERIFIED & KEPT** | *"We show what we observed and what is still unverified — not a guarantee."* |
+| `Hero.tsx` (Cards) | `title: "Checks official sources"` | `client/src/pages/Resources.tsx` and `ListingService` provide direct links to AICTE, NSP, MCA21 registries. | **VERIFIED & KEPT** | *"Links to AICTE, the National Scholarship Portal and MCA company records."* |
+| `Hero.tsx` (Cards) | `title: "Explains why"` | `AnalyzeService` maps rule hits to `evidenceQuote` and `whyItMatters` in `signals`. | **VERIFIED & KEPT** | *"Every warning sign comes with the exact words from the message and why it matters."* |
+| `HowItWorks.tsx` | `description: "Paste offer text or drop a screenshot. Files stay in your browser."` | Screenshots & PDFs are processed locally via WASM OCR/canvas. | **VERIFIED & REFINED** | *"Paste offer text or drop a screenshot. Screenshots and PDFs are read in your browser."* |
+| `ExportReportDialog.tsx` | `"The PDF is created in your browser; nothing is uploaded."` | `client/src/pdf/generatePdf.ts` invokes `@react-pdf/renderer` in browser thread to produce Blob. Zero server upload. | **VERIFIED & KEPT** | *"The PDF is created in your browser; nothing is uploaded."* |
+| `ImageUploadPanel.tsx` | `"Optical Character Recognition runs 100% in your browser."` | Tesseract.js WASM worker runs in browser thread. Absolute `100%` removed for cleaner tone. | **REFINED** | *"Optical Character Recognition runs in your browser without uploading your image."* |
+| `SenderDetailsSection.tsx` | `"Headers are parsed locally and evaluated for SPF/DKIM/DMARC pass/fail results. Raw headers are never stored without explicit opt-in."` | Parsed with `parseEmailHeaders` (`shared`); server only stores raw headers if `user && storeRawText`. | **VERIFIED & KEPT** | Kept as is. |
+| `Privacy.tsx` | `"...run 100% inside your browser using WebAssembly. The actual image or document is never uploaded to our backend server..."` | Tesseract and PDF.js run via WASM client-side. Binary files are never sent in HTTP requests. Absolute `100%` removed. | **REFINED** | *"Optical Character Recognition (OCR) and PDF page rendering run inside your browser using WebAssembly. The actual image or document is never uploaded to our backend server..."* |

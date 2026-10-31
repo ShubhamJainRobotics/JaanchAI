@@ -681,3 +681,48 @@ Round 3 delivered an airy, centered, high-contrast hero composition, migrated br
 
 
 
+
+
+---
+
+## Landing Hero Restoration — Two-Button Centered Composition
+
+### Overview
+Restored the clean, centered single-column hero on the landing page (`/`) featuring two distinct action buttons (**"Check an Offer Now →"** linking to `/analyze` and **"Inspect a Link"** linking to `/link-check`), while removing the inline analyzer textarea card. Preserved all design achievements from the previous rounds: Electric Indigo palette tokens (`#5B3DF5`), dark mode, navbar with theme toggle and mobile navigation drawer, unified `IconTile` component, accessibility attributes, and full safety copy integrity.
+
+---
+
+### Key Changes
+1. **Landing Configuration Toggle (`client/src/config/landing.ts`):**
+   - Created configuration module exporting `SHOW_PROBLEM_STATEMENT_BADGE = true`.
+   - Controls the visibility of the hackathon problem statement badge pill at the top of the hero: *"Digital Trust & Safety — Problem Statement: 'Fake or Real'"*.
+2. **Hero Recomposition (`client/src/components/landing/Hero.tsx`):**
+   - **H1 exact wording restored:** *"Spot Warning Signs"* (`foreground`) + *"Before You Pay or Share Private&nbsp;Data"* (`bg-gradient-to-r from-gradient-accent-from to-gradient-accent-to`).
+   - Non-breaking space (`Private&nbsp;Data`) applied to prevent "Data" from being orphaned alone on a last line across 320–1920px viewports.
+   - **Subhead exact wording restored:** *"Students encounter hundreds of internship offers, scholarships, and freelance messages online. Jaanch helps you understand **why** something may be risky and **what you should independently verify** before taking action."*
+   - **Two buttons restored:**
+     - Primary button: *"Check an Offer Now"* (`ShieldCheck` and `ArrowRight` icons) -> `/analyze` (`min-h-[48px]`, `bg-primary hover:bg-primary-hover active:bg-primary-pressed text-primary-foreground`).
+     - Secondary button: *"Inspect a Link"* (`Search` icon) -> `/link-check` (`min-h-[48px]`, `bg-surface hover:bg-surface-raised border border-border text-foreground`).
+   - **Four feature cards integrated directly under buttons:**
+     - Embedded directly inside `Hero` without an intervening section or extra H2: *"Explains why"*, *"Never says 'safe'"*, *"Checks official sources"*, *"Screenshots stay on your device"*.
+     - Uses unified `IconTile` (`variant="primary"`).
+     - Responsive grid: 4 columns on desktop, 2×2 on tablet, stacked on mobile.
+3. **Landing Structure Streamlining (`client/src/pages/Landing.tsx`):**
+   - Removed `BenefitsGrid` component and import to prevent duplicate feature cards.
+   - Page flow: `<Hero />` -> `<HowItWorks />` -> `<LimitsStrip />` -> `<ClosingCta />`.
+4. **Obsolete Components Removed:**
+   - Deleted `client/src/components/landing/HeroAnalyzer.tsx` (verified `/analyze` functions completely independently with prefill support).
+   - Deleted `client/src/components/landing/BenefitsGrid.tsx`.
+5. **Privacy Copy Accuracy (§4 & `/docs/privacy-copy-check.md`):**
+   - Refined `ImageUploadPanel.tsx`: removed absolute `"100%"` phrasing.
+   - Refined `Privacy.tsx`: changed *"run 100% inside your browser"* to *"run inside your browser using WebAssembly"*.
+   - Refined `HowItWorks.tsx`: clarified *"Screenshots and PDFs are read in your browser."*
+6. **Automated Testing & Acceptance:**
+   - Added `client/src/__tests__/landingHero.test.ts` (4 new tests) validating configuration export, exact H1 & subhead wording, link routes, absence of inline textarea, and privacy copy bounds.
+   - Updated `scripts/test-acceptance.mjs` with updated Criterion 1 (exact H1, two action links, badge, no textarea), Criterion 2 (above-the-fold contract at 1440×900, 1366×768, and 390×844), Criterion 3 (H1 orphan word prevention across 320–1920px), Criterion 4 (hero feature cards with peek affordance at 1440×900), and Criterion 10 (zero horizontal scroll across 320–1920px on all routes).
+7. **Verification Results:**
+   - `npm run lint`: PASSED (0 secrets, 0 banned phrases, 0 hardcoded colors, typecheck clean).
+   - `npm run test`: PASSED (346/346 tests passed: 267 shared, 38 server, 41 client).
+   - `npm run eval -w shared`: PASSED (25/25 corpus test cases passed: 100% precision & recall).
+   - `node scripts/test-acceptance.mjs`: PASSED (10/10 criteria passed).
+   - Screenshots: 24 baseline captured in `/docs/ui-shots/hero-restore-before/`, 24 post-restoration captured in `/docs/ui-shots/hero-restore-after/`.

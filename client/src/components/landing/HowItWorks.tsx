@@ -8,7 +8,7 @@ export function HowItWorks() {
       number: "1",
       icon: ClipboardPaste,
       title: "Paste or upload",
-      description: "Paste offer text or drop a screenshot. Files stay in your browser.",
+      description: "Paste offer text or drop a screenshot. Screenshots and PDFs are read in your browser.",
     },
     {
       number: "2",

@@ -136,25 +136,57 @@ async function run() {
     await cdp.send("Page.navigate", { url: `${APP_BASE}/` });
     await sleep(800);
 
-    const h1Count = await cdp.eval("document.querySelectorAll('h1').length");
-    const hasHeroAnalyzer = await cdp.eval("!!document.querySelector('textarea#hero-offer-text')");
-    const sampleLabel = await cdp.eval("/Example\\s*[-—]\\s*fictional offer/i.test(document.body.innerText)");
-    const sampleFocusable = await cdp.eval(`
-      const sample = document.querySelector('[aria-label=\"Example report preview\"]');
-      sample ? sample.querySelectorAll('button, a, input, [tabindex=\"0\"]').length : -1
+    const landingStructure = await cdp.eval(`
+      (() => {
+        const h1s = Array.from(document.querySelectorAll('h1'));
+        const h1Count = h1s.length;
+        const h1Text = h1s[0] ? h1s[0].innerText.replace(/\\s+/g, ' ').trim() : '';
+        const expectedH1 = "Spot Warning Signs Before You Pay or Share Private Data";
+        const h1Matches = h1Text === expectedH1;
+
+        const hasTextarea = !!document.querySelector('section textarea');
+
+        // Check hero links
+        const analyzeLink = document.querySelector('section a[href="/analyze"]');
+        const linkCheckLink = document.querySelector('section a[href="/link-check"]');
+
+        const analyzeText = analyzeLink ? analyzeLink.innerText.trim() : '';
+        const linkCheckText = linkCheckLink ? linkCheckLink.innerText.trim() : '';
+        const buttonsValid = /Check an Offer Now/i.test(analyzeText) && /Inspect a Link/i.test(linkCheckText);
+
+        const badge = document.querySelector('#problem-statement-badge');
+        const hasBadge = badge ? /Digital Trust & Safety/i.test(badge.innerText) : false;
+
+        return {
+          h1Count,
+          h1Text,
+          h1Matches,
+          hasTextarea,
+          hasAnalyzeLink: !!analyzeLink,
+          hasLinkCheckLink: !!linkCheckLink,
+          buttonsValid,
+          hasBadge
+        };
+      })()
     `);
-    const iconTileCount = await cdp.eval("document.querySelectorAll('.rounded-md.bg-primary\\\\/10.text-primary, .bg-primary-tint.text-primary').length");
 
     results.push({
-      criterion: "Landing structure (single h1, hero analyzer, sample label, sample inert, 4 icon tiles)",
-      pass: h1Count === 1 && hasHeroAnalyzer && sampleLabel && sampleFocusable === 0 && iconTileCount >= 4,
-      details: `h1Count=${h1Count}, hasHeroAnalyzer=${hasHeroAnalyzer}, sampleLabel=${sampleLabel}, sampleFocusable=${sampleFocusable}, iconTiles=${iconTileCount}`,
+      criterion: "Criterion 1: Landing structure (single H1 exact wording, no textarea, two hero action links, problem badge)",
+      pass: landingStructure.h1Count === 1 &&
+            landingStructure.h1Matches &&
+            !landingStructure.hasTextarea &&
+            landingStructure.hasAnalyzeLink &&
+            landingStructure.hasLinkCheckLink &&
+            landingStructure.buttonsValid &&
+            landingStructure.hasBadge,
+      details: JSON.stringify(landingStructure),
     });
 
-    // Round 3: Above-the-fold contract at 1440x900 and 1366x768
-    console.log("Checking Round 3: Landing above-the-fold contract at desktop...");
+    // 2. Above-the-fold contract at 1440x900, 1366x768, and 390x844
+    console.log("Checking Criterion 2: Landing above-the-fold contract...");
     let aboveTheFoldPassed = true;
     let aboveTheFoldDetails = "";
+
     for (const [w, h] of [[1440, 900], [1366, 768]]) {
       await cdp.send("Emulation.setDeviceMetricsOverride", {
         width: w,
@@ -163,83 +195,177 @@ async function run() {
         mobile: false,
       });
       await sleep(200);
-      const btnMetrics = await cdp.eval(`
+      const metrics = await cdp.eval(`
         (() => {
-          const btn = document.querySelector('button[type="submit"]');
-          if (!btn) return { found: false };
-          const rect = btn.getBoundingClientRect();
+          const h1 = document.querySelector('h1');
+          const sub = document.querySelector('section p');
+          const analyzeBtn = document.querySelector('section a[href="/analyze"]');
+          const linkBtn = document.querySelector('section a[href="/link-check"]');
+          if (!h1 || !sub || !analyzeBtn || !linkBtn) {
+            return { ok: false, reason: 'elements missing' };
+          }
+          const vh = window.innerHeight;
+          const h1Bottom = h1.getBoundingClientRect().bottom;
+          const subBottom = sub.getBoundingClientRect().bottom;
+          const analyzeBottom = analyzeBtn.getBoundingClientRect().bottom;
+          const linkBottom = linkBtn.getBoundingClientRect().bottom;
+
+          const allAboveFold = h1Bottom <= vh && subBottom <= vh && analyzeBottom <= vh && linkBottom <= vh;
           return {
-            found: true,
-            bottom: Math.round(rect.bottom),
-            viewportHeight: window.innerHeight,
-            isAboveFold: rect.bottom <= window.innerHeight
+            ok: allAboveFold,
+            vh,
+            h1Bottom: Math.round(h1Bottom),
+            subBottom: Math.round(subBottom),
+            analyzeBottom: Math.round(analyzeBottom),
+            linkBottom: Math.round(linkBottom)
           };
         })()
       `);
-      if (!btnMetrics.found || !btnMetrics.isAboveFold) {
-        aboveTheFoldPassed = false;
-      }
-      aboveTheFoldDetails += `${w}x${h}: bottom=${btnMetrics.bottom}px <= ${btnMetrics.viewportHeight}px (${btnMetrics.isAboveFold}); `;
+      if (!metrics.ok) aboveTheFoldPassed = false;
+      aboveTheFoldDetails += `${w}x${h}: ${JSON.stringify(metrics)}; `;
     }
+
+    // Phone: 390x844 (H1 and primary button above the fold)
+    await cdp.send("Emulation.setDeviceMetricsOverride", {
+      width: 390,
+      height: 844,
+      deviceScaleFactor: 1,
+      mobile: true,
+    });
+    await sleep(200);
+    const mobileFold = await cdp.eval(`
+      (() => {
+        const h1 = document.querySelector('h1');
+        const analyzeBtn = document.querySelector('section a[href="/analyze"]');
+        if (!h1 || !analyzeBtn) return { ok: false, reason: 'elements missing' };
+        const vh = window.innerHeight;
+        const h1Bottom = h1.getBoundingClientRect().bottom;
+        const analyzeBottom = analyzeBtn.getBoundingClientRect().bottom;
+        return {
+          ok: h1Bottom <= vh && analyzeBottom <= vh,
+          vh,
+          h1Bottom: Math.round(h1Bottom),
+          analyzeBottom: Math.round(analyzeBottom)
+        };
+      })()
+    `);
+    if (!mobileFold.ok) aboveTheFoldPassed = false;
+    aboveTheFoldDetails += `390x844: ${JSON.stringify(mobileFold)}; `;
+
     results.push({
-      criterion: "Landing Above-The-Fold: Analyze button visible without scrolling at 1440x900 & 1366x768 (§3.1, §5.1)",
+      criterion: "Criterion 2: Landing Above-The-Fold contract (1440x900 & 1366x768 all hero actions above fold; 390x844 H1 & primary button above fold)",
       pass: aboveTheFoldPassed,
       details: aboveTheFoldDetails,
     });
 
-    // Round 3: Offer-Type Chips Single-Row check
-    console.log("Checking Round 3: Offer-type chips single-row layout...");
-    await cdp.send("Emulation.setDeviceMetricsOverride", {
-      width: 1280,
-      height: 800,
-      deviceScaleFactor: 1,
-      mobile: false,
-    });
-    await sleep(200);
-    const chipsSingleRow = await cdp.eval(`
-      (() => {
-        const chips = Array.from(document.querySelectorAll('#hero-offer-type button, [aria-labelledby="hero-offer-type-label"] button'));
-        if (chips.length < 7) return { count: chips.length, singleRow: false };
-        const tops = chips.map(c => Math.round(c.getBoundingClientRect().top));
-        const allSameTop = tops.every(t => Math.abs(t - tops[0]) <= 2);
-        return { count: chips.length, allSameTop, tops };
-      })()
-    `);
-    results.push({
-      criterion: "Offer-Type Chips Single-Row: All 7 chips on a single row at desktop without orphan wrapping (§3.3, §5.2)",
-      pass: chipsSingleRow.allSameTop && chipsSingleRow.count === 7,
-      details: JSON.stringify(chipsSingleRow),
-    });
-
-    // 2. H1 text wrap across viewports
-    console.log("Checking Criterion 2: H1 text wrap / orphan word check...");
-    let h1NoOrphan = true;
-    for (const w of [320, 375, 390, 768, 1280, 1440]) {
+    // 3. H1 orphan word check
+    console.log("Checking Criterion 3: H1 orphan word check across viewports...");
+    let orphanTestPassed = true;
+    let orphanDetails = "";
+    for (const w of [320, 375, 390, 768, 1024, 1280, 1366, 1440, 1920]) {
       await cdp.send("Emulation.setDeviceMetricsOverride", {
         width: w,
         height: 800,
         deviceScaleFactor: 1,
         mobile: w < 768,
       });
-      await sleep(200);
-      const isClean = await cdp.eval(`
+      await sleep(150);
+      const res = await cdp.eval(`
         (() => {
           const h1 = document.querySelector('h1');
-          if (!h1) return false;
-          const text = h1.innerText.trim();
-          return text.length > 10;
+          if (!h1) return { ok: false, reason: 'h1 not found' };
+          const text = h1.textContent || '';
+          const hasNbsp = text.includes('Private\\u00A0Data');
+
+          // Check using Range
+          const walker = document.createTreeWalker(h1, NodeFilter.SHOW_TEXT);
+          let targetNode = null;
+          while (walker.nextNode()) {
+            if (walker.currentNode.textContent.includes('Private')) {
+              targetNode = walker.currentNode;
+              break;
+            }
+          }
+          if (!targetNode) return { ok: hasNbsp, hasNbsp, measured: false };
+
+          const str = targetNode.textContent;
+          const pIdx = str.indexOf('Private');
+          const dIdx = str.indexOf('Data');
+          if (pIdx === -1 || dIdx === -1) return { ok: hasNbsp, hasNbsp, measured: false };
+
+          const rangeP = document.createRange();
+          rangeP.setStart(targetNode, pIdx);
+          rangeP.setEnd(targetNode, pIdx + 'Private'.length);
+
+          const rangeD = document.createRange();
+          rangeD.setStart(targetNode, dIdx);
+          rangeD.setEnd(targetNode, dIdx + 'Data'.length);
+
+          const rectP = rangeP.getBoundingClientRect();
+          const rectD = rangeD.getBoundingClientRect();
+          const sameLine = Math.abs(rectP.top - rectD.top) <= 4;
+          return { ok: hasNbsp && sameLine, hasNbsp, sameLine, pTop: rectP.top, dTop: rectD.top };
         })()
       `);
-      if (!isClean) h1NoOrphan = false;
+      if (!res.ok) orphanTestPassed = false;
+      orphanDetails += `${w}px: ${JSON.stringify(res)}; `;
     }
     results.push({
-      criterion: "H1 balanced text wrap without orphans at 320-1440px",
-      pass: h1NoOrphan,
-      details: "Tested viewports 320, 375, 390, 768, 1280, 1440 px with text-wrap:balance and non-breaking ending phrase",
+      criterion: "Criterion 3: H1 orphan word: 'Data' never sits alone on a last line (320-1920px)",
+      pass: orphanTestPassed,
+      details: orphanDetails,
     });
 
-    // 3. Mobile Nav Drawer
-    console.log("Checking Criterion 3: Mobile navigation drawer...");
+    // 4. Four plain-language feature cards in hero
+    console.log("Checking Criterion 4: Four plain-language feature cards in hero...");
+    await cdp.send("Emulation.setDeviceMetricsOverride", {
+      width: 1440,
+      height: 900,
+      deviceScaleFactor: 1,
+      mobile: false,
+    });
+    await sleep(200);
+    const featureCardsTest = await cdp.eval(`
+      (() => {
+        const heroSection = document.querySelector('section');
+        if (!heroSection) return { ok: false, reason: 'hero section not found' };
+
+        const expectedTitles = [
+          "Explains why",
+          'Never says "safe"',
+          "Checks official sources",
+          "Screenshots stay on your device"
+        ];
+
+        const cards = Array.from(heroSection.querySelectorAll('h3')).map(h => ({
+          title: h.innerText.trim(),
+          top: Math.round(h.getBoundingClientRect().top)
+        }));
+
+        const titlesMatch = expectedTitles.every(t => cards.some(c => c.title === t));
+        const iconTiles = heroSection.querySelectorAll('.bg-primary-tint.text-primary, .bg-primary\\\\/10.text-primary');
+
+        // At 1440x900, top edge of cards is inside viewport height (<= 900) as peek affordance
+        const peekAffordance = cards.length === 4 && cards.every(c => c.top < 900);
+
+        return {
+          count: cards.length,
+          titlesMatch,
+          cards,
+          iconTileCount: iconTiles.length,
+          peekAffordance,
+          ok: cards.length === 4 && titlesMatch && iconTiles.length >= 4 && peekAffordance
+        };
+      })()
+    `);
+    results.push({
+      criterion: "Criterion 4: Four feature cards in hero with IconTiles and peek affordance at 1440x900",
+      pass: featureCardsTest.ok,
+      details: JSON.stringify(featureCardsTest),
+    });
+
+    // 5. Mobile Nav Drawer
+    console.log("Checking Criterion 5: Mobile navigation drawer...");
     await cdp.send("Emulation.setDeviceMetricsOverride", {
       width: 375,
       height: 667,
@@ -270,13 +396,13 @@ async function run() {
       })()
     `);
     results.push({
-      criterion: "Mobile nav drawer (dialog, Esc to close, min 44px tap targets)",
+      criterion: "Criterion 5: Mobile nav drawer (dialog, Esc to close, min 44px tap targets)",
       pass: drawerTest.ok,
       details: JSON.stringify(drawerTest),
     });
 
-    // 4. Analyze Page Disclosures & Layout
-    console.log("Checking Criterion 4: Analyze page progressive disclosure...");
+    // 6. Analyze Page Disclosures & Layout
+    console.log("Checking Criterion 6: Analyze page progressive disclosure...");
     await cdp.send("Page.navigate", { url: `${APP_BASE}/analyze` });
     await sleep(800);
 
@@ -295,13 +421,13 @@ async function run() {
       })()
     `);
     results.push({
-      criterion: "Analyze progressive disclosures (collapsed by default, summaries, sticky CTA safe spacing)",
+      criterion: "Criterion 6: Analyze progressive disclosures (collapsed by default, summaries, sticky CTA safe spacing)",
       pass: analyzeTest.detailsCollapsed && analyzeTest.privacyCollapsed && analyzeTest.hasStickyBar,
       details: JSON.stringify(analyzeTest),
     });
 
-    // 5. Results Above-The-Fold Contract at 375x667
-    console.log("Checking Criterion 5: Results above-the-fold contract at 375x667...");
+    // 7. Results Above-The-Fold Contract at 375x667
+    console.log("Checking Criterion 7: Results above-the-fold contract at 375x667...");
     await cdp.send("Emulation.setDeviceMetricsOverride", {
       width: 375,
       height: 667,
@@ -404,9 +530,6 @@ async function run() {
     await cdp.send("Page.navigate", { url: `${APP_BASE}/results/local` });
     await sleep(800);
 
-    const bodyText = await cdp.eval("document.body.innerText");
-    console.log("Results page rendered text:", bodyText.slice(0, 300));
-
     const foldTest = await cdp.eval(`
       (() => {
         const topSection = document.querySelector('#above-the-fold-summary');
@@ -423,13 +546,13 @@ async function run() {
       })()
     `);
     results.push({
-      criterion: "Results 375x667 above-the-fold contract and 'Stop and protect yourself' block",
+      criterion: "Criterion 7: Results 375x667 above-the-fold contract and 'Stop and protect yourself' block",
       pass: foldTest.hasTopSection && foldTest.hasCtaBtn && foldTest.hasStopBlock,
       details: JSON.stringify(foldTest),
     });
 
-    // 6. Results at 1280x800 Two-Column & Sticky Sidebar
-    console.log("Checking Criterion 6: Desktop two-column and sticky sidebar...");
+    // 8. Results at 1280x800 Two-Column & Sticky Sidebar
+    console.log("Checking Criterion 8: Desktop two-column and sticky sidebar...");
     await cdp.send("Emulation.setDeviceMetricsOverride", {
       width: 1280,
       height: 800,
@@ -451,13 +574,13 @@ async function run() {
       })()
     `);
     results.push({
-      criterion: "Desktop 1280x800 two-column layout with sticky sidebar and jump nav",
+      criterion: "Criterion 8: Desktop 1280x800 two-column layout with sticky sidebar and jump nav",
       pass: desktopTest.hasSidebar && desktopTest.isSticky && desktopTest.jumpLinks >= 3,
       details: JSON.stringify(desktopTest),
     });
 
-    // 7. High-Risk variant checks
-    console.log("Checking Criterion 7: High-risk variant (Safe Reply hidden, Stop and protect present)...");
+    // 9. High-Risk variant checks
+    console.log("Checking Criterion 9: High-risk variant (Safe Reply hidden, Stop and protect present)...");
     const highRiskTest = await cdp.eval(`
       (() => {
         const safeReply = document.querySelector('#safe-reply-template');
@@ -469,19 +592,19 @@ async function run() {
       })()
     `);
     results.push({
-      criterion: "High-risk variant: Safe reply hidden, 'Stop and protect yourself' block prominent",
+      criterion: "Criterion 9: High-risk variant: Safe reply hidden, 'Stop and protect yourself' block prominent",
       pass: highRiskTest.safeReplyHidden && highRiskTest.stopBlockPresent,
       details: JSON.stringify(highRiskTest),
     });
 
-    // 8. Horizontal scroll check at all viewports (320-1440)
-    console.log("Checking Criterion 8: Zero horizontal scroll across all viewports...");
+    // 10. Horizontal scroll check at all viewports (320-1920)
+    console.log("Checking Criterion 10: Zero horizontal scroll across all viewports...");
     let zeroHScroll = true;
     const pages = ["/", "/analyze", "/history", "/resources", "/about", "/login"];
     for (const p of pages) {
       await cdp.send("Page.navigate", { url: `${APP_BASE}${p}` });
       await sleep(300);
-      for (const w of [320, 375, 390, 768, 1024, 1280, 1440]) {
+      for (const w of [320, 375, 390, 768, 1024, 1280, 1366, 1440, 1920]) {
         await cdp.send("Emulation.setDeviceMetricsOverride", {
           width: w,
           height: 800,
@@ -497,9 +620,9 @@ async function run() {
       }
     }
     results.push({
-      criterion: "Zero horizontal scroll at 320-1440px across all routes",
+      criterion: "Criterion 10: Zero horizontal scroll at 320-1920px across all routes",
       pass: zeroHScroll,
-      details: "Tested routes /, /analyze, /history, /resources, /about, /login at 320, 375, 390, 768, 1024, 1280, 1440 px",
+      details: "Tested routes /, /analyze, /history, /resources, /about, /login at 320, 375, 390, 768, 1024, 1280, 1366, 1440, 1920 px",
     });
 
   } finally {
