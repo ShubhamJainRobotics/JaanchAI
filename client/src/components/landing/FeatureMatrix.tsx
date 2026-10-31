@@ -1,24 +1,28 @@
+import { useLanguage } from "../../context/LanguageContext";
+
 export function FeatureMatrix() {
+  const { t } = useLanguage();
+
   const items = [
     {
-      eyebrow: "OFFER TYPES COVERED",
-      title: "Comprehensive Coverage",
-      description: "Placements, internships, freelance",
+      eyebrow: t.matrix.col1_eyebrow,
+      title: t.matrix.col1_title,
+      description: t.matrix.col1_desc,
     },
     {
-      eyebrow: "REGIONAL LANGUAGES",
-      title: "English & 12 Indian Scripts",
-      description: "English, Hindi, Tamil, Telugu, Marathi, Bengali, Kannada, etc.",
+      eyebrow: t.matrix.col2_eyebrow,
+      title: t.matrix.col2_title,
+      description: t.matrix.col2_desc,
     },
     {
-      eyebrow: "OPEN ACCESS",
-      title: "100% Free & Independent",
-      description: "No fees, zero data tracking",
+      eyebrow: t.matrix.col3_eyebrow,
+      title: t.matrix.col3_title,
+      description: t.matrix.col3_desc,
     },
     {
-      eyebrow: "OFFICIAL REPORTING",
-      title: "National Helpline 1930",
-      description: "Direct referral to Cyber Crime Portal",
+      eyebrow: t.matrix.col4_eyebrow,
+      title: t.matrix.col4_title,
+      description: t.matrix.col4_desc,
     },
   ];
 

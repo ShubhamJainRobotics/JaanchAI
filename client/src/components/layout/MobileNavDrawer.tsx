@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { X, User as UserIcon, LogOut, History, Sun, Moon } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface MobileNavDrawerProps {
   isOpen: boolean;
@@ -13,14 +14,15 @@ interface MobileNavDrawerProps {
 export function MobileNavDrawer({ isOpen, onClose, triggerRef }: MobileNavDrawerProps) {
   const { user, isAuthenticated, signOut } = useAuth();
   const { isDark, toggleTheme } = useTheme();
+  const { currentLang, setLang, t } = useLanguage();
   const location = useLocation();
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const navLinks = [
-    { name: "Check an offer", path: "/analyze" },
+    { name: t.nav.check_offer, path: "/analyze" },
     { name: "Link checker", path: "/link-check" },
-    { name: "Resources", path: "/resources" },
+    { name: t.nav.verification_guide, path: "/resources" },
     { name: "About", path: "/about" },
   ];
 
@@ -166,7 +168,7 @@ export function MobileNavDrawer({ isOpen, onClose, triggerRef }: MobileNavDrawer
                 }`}
               >
                 <History className="w-5 h-5" aria-hidden="true" />
-                <span>My History</span>
+                <span>{t.nav.my_history}</span>
               </Link>
               <Link
                 to="/settings"
@@ -181,14 +183,49 @@ export function MobileNavDrawer({ isOpen, onClose, triggerRef }: MobileNavDrawer
                 }`}
               >
                 <UserIcon className="w-5 h-5" aria-hidden="true" />
-                <span>Settings</span>
+                <span>{t.nav.settings}</span>
               </Link>
             </>
           )}
         </nav>
 
-        {/* Bottom Theme & Auth */}
+        {/* Bottom Language, Theme & Auth */}
         <div className="p-4 border-t border-border space-y-3 bg-surface-raised/50">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-muted-foreground">Language</span>
+            <div className="flex items-center text-xs font-medium select-none" role="group" aria-label="Language selection">
+              <button
+                type="button"
+                onClick={() => setLang("en")}
+                className={`px-2 py-1 rounded min-h-[36px] cursor-pointer transition-colors ${
+                  currentLang === "en" ? "font-bold text-foreground bg-surface border border-border" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                EN
+              </button>
+              <span className="text-border px-0.5" aria-hidden="true">/</span>
+              <button
+                type="button"
+                onClick={() => setLang("hi")}
+                className={`px-2 py-1 rounded min-h-[36px] cursor-pointer transition-colors ${
+                  currentLang === "hi" ? "font-bold text-foreground bg-surface border border-border" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                हिंदी
+              </button>
+              <span className="text-border px-0.5" aria-hidden="true">/</span>
+              <button
+                type="button"
+                onClick={() => setLang("kn")}
+                className={`px-2 py-1 rounded min-h-[36px] cursor-pointer transition-colors ${
+                  currentLang === "kn" ? "font-bold text-foreground bg-surface border border-border" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                ಕನ್ನಡ
+              </button>
+            </div>
+          </div>
+
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-muted-foreground">Theme</span>
             <button
@@ -220,7 +257,7 @@ export function MobileNavDrawer({ isOpen, onClose, triggerRef }: MobileNavDrawer
                 className="w-full min-h-[44px] px-3.5 py-2.5 rounded-md text-sm font-medium text-destructive hover:bg-surface-raised flex items-center justify-center gap-2 cursor-pointer border border-border"
               >
                 <LogOut className="w-4 h-4" aria-hidden="true" />
-                <span>Sign out</span>
+                <span>{t.nav.sign_out}</span>
               </button>
             </div>
           ) : (
@@ -233,7 +270,7 @@ export function MobileNavDrawer({ isOpen, onClose, triggerRef }: MobileNavDrawer
                 }}
                 className="w-full min-h-[44px] px-4 py-2.5 flex items-center justify-center text-sm font-medium text-foreground border border-border rounded-md hover:bg-surface-raised transition-colors"
               >
-                Log in
+                {t.nav.log_in}
               </Link>
               <Link
                 to="/signup"
@@ -243,7 +280,7 @@ export function MobileNavDrawer({ isOpen, onClose, triggerRef }: MobileNavDrawer
                 }}
                 className="w-full min-h-[44px] px-4 py-2.5 flex items-center justify-center text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-md shadow-xs transition-colors"
               >
-                Sign up
+                {t.nav.sign_up}
               </Link>
             </div>
           )}

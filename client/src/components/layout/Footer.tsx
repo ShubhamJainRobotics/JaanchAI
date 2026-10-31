@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PhoneCall } from "lucide-react";
 import { FeedbackPill } from "./FeedbackPill";
+import { useLanguage } from "../../context/LanguageContext";
 
 export function Footer() {
-  const [selectedLang, setSelectedLang] = useState<"en" | "hi" | "kn">("en");
+  const { currentLang, setLang, t } = useLanguage();
 
   return (
     <footer className="mt-auto bg-background border-t border-border text-foreground transition-colors duration-150">
@@ -21,31 +21,31 @@ export function Footer() {
               <span className="text-sm font-medium text-muted-foreground">जाँच</span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
-              An independent, student-first verification utility. Check job, internship, and scholarship offers before sharing fees or private data.
+              {t.footer.tagline}
             </p>
             <div className="pt-2 flex items-center gap-2 text-xs text-foreground font-medium">
               <PhoneCall className="w-3.5 h-3.5 text-terracotta shrink-0" aria-hidden="true" />
-              <span>National Cyber Crime Helpline: <strong>1930</strong></span>
+              <span>{t.footer.helpline_label}<strong>1930</strong></span>
             </div>
           </div>
 
           {/* Middle Column 1: Educational Guidance */}
           <div className="md:col-span-3 space-y-2.5">
             <h2 className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-subtle">
-              EDUCATIONAL GUIDANCE
+              {t.footer.edu_title}
             </h2>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Jaanch is a non-commercial educational decision support tool. It highlights common warning signs and guides students to independently verify hiring credentials on government databases.
+              {t.footer.edu_desc}
             </p>
             <ul className="space-y-1 text-xs text-muted-foreground pt-1">
               <li>
                 <Link to="/resources" className="hover:text-terracotta transition-colors underline underline-offset-2">
-                  Student Verification Guide
+                  {t.footer.edu_link1}
                 </Link>
               </li>
               <li>
                 <Link to="/about" className="hover:text-terracotta transition-colors underline underline-offset-2">
-                  Audit Methodology & Facts
+                  {t.footer.edu_link2}
                 </Link>
               </li>
             </ul>
@@ -54,14 +54,14 @@ export function Footer() {
           {/* Middle Column 2: Local Privacy Architecture */}
           <div className="md:col-span-4 space-y-2.5">
             <h2 className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-subtle">
-              LOCAL PRIVACY ARCHITECTURE
+              {t.footer.privacy_title}
             </h2>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Files and uploaded screenshots are read locally in your browser using client-side WebAssembly. Personal documents and unconsented contact information are never permanently retained on any server.
+              {t.footer.privacy_desc}
             </p>
             <div className="pt-1">
               <Link to="/privacy" className="text-xs text-muted-foreground hover:text-terracotta transition-colors underline underline-offset-2">
-                Plain-Language Privacy Policy
+                {t.footer.privacy_link}
               </Link>
             </div>
           </div>
@@ -70,44 +70,50 @@ export function Footer() {
         {/* Bottom Bar: Copyright & Language Selector */}
         <div className="pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
-            <span>© 2026 Jaanch Student Safety Initiative.</span>
+            <span>{t.footer.copyright}</span>
             <span className="text-border" aria-hidden="true">•</span>
             <Link to="/about" className="hover:text-foreground transition-colors">
-              Feedback
+              {t.footer.feedback}
             </Link>
           </div>
 
           {/* Right Language Selector */}
-          <div className="flex items-center gap-1.5 select-none">
-            <span className="text-muted-foreground">Select language: [</span>
+          <div className="flex items-center gap-1.5 select-none" role="group" aria-label="Language selection">
+            <span className="text-muted-foreground">{t.footer.select_lang} [</span>
             <button
               type="button"
-              onClick={() => setSelectedLang("en")}
-              className={`hover:text-foreground cursor-pointer transition-colors ${
-                selectedLang === "en" ? "font-bold text-foreground" : "text-muted-foreground"
+              onClick={() => setLang("en")}
+              className={`hover:text-foreground cursor-pointer transition-colors px-1 py-0.5 rounded ${
+                currentLang === "en" ? "font-bold text-foreground bg-surface-raised shadow-xs" : "text-muted-foreground"
               }`}
+              aria-label="Select English language"
+              aria-pressed={currentLang === "en"}
             >
-              English
+              {t.footer.lang_en}
             </button>
-            <span className="text-border">|</span>
+            <span className="text-border" aria-hidden="true">|</span>
             <button
               type="button"
-              onClick={() => setSelectedLang("hi")}
-              className={`hover:text-foreground cursor-pointer transition-colors ${
-                selectedLang === "hi" ? "font-bold text-foreground" : "text-muted-foreground"
+              onClick={() => setLang("hi")}
+              className={`hover:text-foreground cursor-pointer transition-colors px-1 py-0.5 rounded ${
+                currentLang === "hi" ? "font-bold text-foreground bg-surface-raised shadow-xs" : "text-muted-foreground"
               }`}
+              aria-label="Select Hindi language"
+              aria-pressed={currentLang === "hi"}
             >
-              हिंदी
+              {t.footer.lang_hi}
             </button>
-            <span className="text-border">|</span>
+            <span className="text-border" aria-hidden="true">|</span>
             <button
               type="button"
-              onClick={() => setSelectedLang("kn")}
-              className={`hover:text-foreground cursor-pointer transition-colors ${
-                selectedLang === "kn" ? "font-bold text-foreground" : "text-muted-foreground"
+              onClick={() => setLang("kn")}
+              className={`hover:text-foreground cursor-pointer transition-colors px-1 py-0.5 rounded ${
+                currentLang === "kn" ? "font-bold text-foreground bg-surface-raised shadow-xs" : "text-muted-foreground"
               }`}
+              aria-label="Select Kannada language"
+              aria-pressed={currentLang === "kn"}
             >
-              ಕನ್ನಡ
+              {t.footer.lang_kn}
             </button>
             <span className="text-muted-foreground">]</span>
           </div>

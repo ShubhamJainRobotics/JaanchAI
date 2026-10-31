@@ -3,13 +3,14 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, LogOut, Sun, Moon } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
+import { useLanguage } from "../../context/LanguageContext";
 import { MobileNavDrawer } from "./MobileNavDrawer";
 
 export function Navbar() {
   const { user, isAuthenticated, signOut } = useAuth();
   const { isDark, toggleTheme } = useTheme();
+  const { currentLang, setLang, t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [language, setLanguage] = useState<"EN" | "HI" | "KN">("EN");
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
 
@@ -33,7 +34,7 @@ export function Navbar() {
               |
             </span>
             <span className="text-xs uppercase tracking-[0.08em] font-medium text-muted-subtle hidden sm:inline select-none">
-              OFFER VERIFICATION
+              {t.nav.brand_sub}
             </span>
           </div>
 
@@ -43,61 +44,70 @@ export function Navbar() {
               href={isHome ? "#how-it-works" : "/#how-it-works"}
               className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
-              How it works
+              {t.nav.how_it_works}
             </a>
             <a
               href={isHome ? "#coverage" : "/#coverage"}
               className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
-              Coverage & Facts
+              {t.nav.coverage_facts}
             </a>
             <Link
               to="/resources"
               className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
-              Verification Guide
+              {t.nav.verification_guide}
             </Link>
             <a
               href={isHome ? "#helpline" : "/#helpline"}
               className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
-              Helpline 1930
+              {t.nav.helpline_nav}
             </a>
           </nav>
 
           {/* Right Section: Language Selectors | Sign in | Check an offer */}
           <div className="hidden md:flex items-center gap-3.5">
             {/* Language Selector: EN / हिंदी / ಕನ್ನಡ */}
-            <div className="flex items-center text-xs font-medium text-muted-foreground select-none">
+            <div className="flex items-center text-xs font-medium select-none" role="group" aria-label="Language selection">
               <button
                 type="button"
-                onClick={() => setLanguage("EN")}
-                className={`px-1 py-0.5 rounded cursor-pointer transition-colors ${
-                  language === "EN" ? "font-bold text-foreground" : "text-muted-foreground hover:text-foreground"
+                onClick={() => setLang("en")}
+                className={`px-1.5 py-0.5 rounded cursor-pointer transition-colors ${
+                  currentLang === "en"
+                    ? "font-bold text-foreground bg-surface-raised shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
                 aria-label="Select English language"
+                aria-pressed={currentLang === "en"}
               >
                 EN
               </button>
-              <span className="text-border px-0.5">/</span>
+              <span className="text-border px-0.5" aria-hidden="true">/</span>
               <button
                 type="button"
-                onClick={() => setLanguage("HI")}
-                className={`px-1 py-0.5 rounded cursor-pointer transition-colors ${
-                  language === "HI" ? "font-bold text-foreground" : "text-muted-foreground hover:text-foreground"
+                onClick={() => setLang("hi")}
+                className={`px-1.5 py-0.5 rounded cursor-pointer transition-colors ${
+                  currentLang === "hi"
+                    ? "font-bold text-foreground bg-surface-raised shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
                 aria-label="Select Hindi language"
+                aria-pressed={currentLang === "hi"}
               >
                 हिंदी
               </button>
-              <span className="text-border px-0.5">/</span>
+              <span className="text-border px-0.5" aria-hidden="true">/</span>
               <button
                 type="button"
-                onClick={() => setLanguage("KN")}
-                className={`px-1 py-0.5 rounded cursor-pointer transition-colors ${
-                  language === "KN" ? "font-bold text-foreground" : "text-muted-foreground hover:text-foreground"
+                onClick={() => setLang("kn")}
+                className={`px-1.5 py-0.5 rounded cursor-pointer transition-colors ${
+                  currentLang === "kn"
+                    ? "font-bold text-foreground bg-surface-raised shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
                 aria-label="Select Kannada language"
+                aria-pressed={currentLang === "kn"}
               >
                 ಕನ್ನಡ
               </button>
@@ -135,8 +145,8 @@ export function Navbar() {
                   type="button"
                   onClick={() => signOut()}
                   className="text-muted-foreground hover:text-destructive p-1 rounded-sm cursor-pointer transition-colors"
-                  title="Sign out"
-                  aria-label="Sign out"
+                  title={t.nav.sign_out}
+                  aria-label={t.nav.sign_out}
                 >
                   <LogOut className="w-4 h-4" strokeWidth={1.75} aria-hidden="true" />
                 </button>
@@ -146,7 +156,7 @@ export function Navbar() {
                 to="/login"
                 className="text-sm font-medium text-foreground hover:text-terracotta transition-colors px-2 py-1"
               >
-                Sign in
+                {t.nav.sign_in}
               </Link>
             )}
 
@@ -155,7 +165,7 @@ export function Navbar() {
               to="/analyze"
               className="bg-primary text-primary-foreground hover:bg-neutral-800 rounded-lg px-4 py-2 text-sm font-medium transition-colors shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              Check an offer
+              {t.nav.check_offer}
             </Link>
           </div>
 

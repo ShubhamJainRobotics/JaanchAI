@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Clipboard, Shield, UploadCloud, AlertCircle, Loader2 } from "lucide-react";
 import { useAnalyze } from "../../hooks/useAnalyze";
+import { useLanguage } from "../../context/LanguageContext";
 import { OpportunityDomain, Channel } from "shared";
 
 interface Scenario {
+  id: string;
   name: string;
   domain: OpportunityDomain;
   channel: Channel;
@@ -12,59 +14,63 @@ interface Scenario {
   text: string;
 }
 
-const SCENARIOS: Scenario[] = [
-  {
-    name: "Fake TechCorp Internship (Deposit Trap)",
-    domain: "internship",
-    channel: "whatsapp",
-    claimedOrg: "TechCorp Labs",
-    text: "Congratulations! You have been shortlisted for the Web Development Internship at TechCorp Labs with a stipend of ₹25,000/month. To confirm your joining slot and receive your laptop courier, you must deposit a mandatory refundable security charge of ₹1,500 within 2 hours to UPI: techcorp-security@okhdfc. If not deposited, your offer will be cancelled and given to the waitlist candidate.",
-  },
-  {
-    name: "Scholarship Grant KYC Trap",
-    domain: "scholarship",
-    channel: "email",
-    claimedOrg: "National Merit Foundation",
-    text: "URGENT: Your National Youth Merit Scholarship application for ₹50,000 grant has received conditional approval. To process the direct bank disbursement today, you must provide your Aadhaar copy, bank account number, and complete KYC debit card verification by submitting your bank OTP at the grant portal link before 5 PM deadline.",
-  },
-  {
-    name: "Genuine Enterprise Invite (Clean)",
-    domain: "job",
-    channel: "email",
-    claimedOrg: "Tata Consultancy Services",
-    text: "Dear Candidate, Thank you for expressing interest in the Graduate Engineering Trainee opening at Tata Consultancy Services. We invite you to attend the online technical assessment on Saturday at 10:00 AM IST via our secure portal. Please note that TCS never charges any registration fees, security deposits, or documentation charges at any stage of hiring. Verify your candidacy status anytime on ibegin.tcs.com.",
-  },
-];
-
 export function SubmissionCard() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<"text" | "screenshot">("text");
   const [text, setText] = useState("");
-  const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
+  const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [clipboardNotice, setClipboardNotice] = useState<string | null>(null);
 
   const analyzeMutation = useAnalyze();
   const navigate = useNavigate();
 
+  const scenarios: Scenario[] = [
+    {
+      id: "techcorp",
+      name: t.submission.scenarios.techcorp_name,
+      domain: "internship",
+      channel: "whatsapp",
+      claimedOrg: "TechCorp Labs",
+      text: "Congratulations! You have been shortlisted for the Web Development Internship at TechCorp Labs with a stipend of ₹25,000/month. To confirm your joining slot and receive your laptop courier, you must deposit a mandatory refundable security charge of ₹1,500 within 2 hours to UPI: techcorp-security@okhdfc. If not deposited, your offer will be cancelled and given to the waitlist candidate.",
+    },
+    {
+      id: "scholarship",
+      name: t.submission.scenarios.scholarship_name,
+      domain: "scholarship",
+      channel: "email",
+      claimedOrg: "National Merit Foundation",
+      text: "URGENT: Your National Youth Merit Scholarship application for ₹50,000 grant has received conditional approval. To process the direct bank disbursement today, you must provide your Aadhaar copy, bank account number, and complete KYC debit card verification by submitting your bank OTP at the grant portal link before 5 PM deadline.",
+    },
+    {
+      id: "genuine",
+      name: t.submission.scenarios.genuine_name,
+      domain: "job",
+      channel: "email",
+      claimedOrg: "Tata Consultancy Services",
+      text: "Dear Candidate, Thank you for expressing interest in the Graduate Engineering Trainee opening at Tata Consultancy Services. We invite you to attend the online technical assessment on Saturday at 10:00 AM IST via our secure portal. Please note that TCS never charges any registration fees, security deposits, or documentation charges at any stage of hiring. Verify your candidacy status anytime on ibegin.tcs.com.",
+    },
+  ];
+
   const handlePasteClipboard = async () => {
     try {
       const clipText = await navigator.clipboard.readText();
       if (clipText) {
         setText(clipText);
-        setSelectedScenario(null);
+        setSelectedScenarioId(null);
         setError(null);
-        setClipboardNotice("Pasted from clipboard");
+        setClipboardNotice(t.submission.pasted_notice);
         setTimeout(() => setClipboardNotice(null), 2500);
       }
     } catch {
-      setClipboardNotice("Clipboard permission needed or empty");
+      setClipboardNotice(t.submission.clipboard_err);
       setTimeout(() => setClipboardNotice(null), 3000);
     }
   };
 
   const handleSelectScenario = (scenario: Scenario) => {
     setText(scenario.text);
-    setSelectedScenario(scenario.name);
+    setSelectedScenarioId(scenario.id);
     setError(null);
   };
 
@@ -74,12 +80,12 @@ export function SubmissionCard() {
 
     const trimmed = text.trim();
     if (trimmed.length < 25) {
-      setError("Please paste at least 25 characters of the offer message to run an audit.");
+      setError(t.submission.err_min_chars);
       return;
     }
 
     // Identify active domain/channel from scenario if matched, else defaults
-    const activeScenario = SCENARIOS.find((s) => s.name === selectedScenario);
+    const activeScenario = scenarios.find((s) => s.id === selectedScenarioId);
     const domain: OpportunityDomain = activeScenario?.domain || "internship";
     const channel: Channel = activeScenario?.channel || "whatsapp";
     const claimedOrg = activeScenario?.claimedOrg || undefined;
@@ -97,7 +103,7 @@ export function SubmissionCard() {
         storeRawText: true,
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to analyze offer. Please try again.");
+      setError(err instanceof Error ? err.message : t.submission.err_generic);
     }
   };
 
@@ -107,10 +113,10 @@ export function SubmissionCard() {
         {/* Section Header */}
         <div className="max-w-3xl">
           <h2 className="font-serif text-3xl sm:text-4xl font-normal text-foreground leading-tight tracking-tight">
-            Submit offer details for verification.
+            {t.submission.title}
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mt-2.5">
-            Analyzed locally in your browser. Personal contact details and documents are never sent to or stored on any server.
+            {t.submission.subtitle}
           </p>
         </div>
 
@@ -128,7 +134,7 @@ export function SubmissionCard() {
                     : "text-muted-subtle hover:text-foreground"
                 }`}
               >
-                Paste offer text
+                {t.submission.tab_paste}
               </button>
               <button
                 type="button"
@@ -143,7 +149,7 @@ export function SubmissionCard() {
                 }`}
               >
                 <UploadCloud className="w-4 h-4" aria-hidden="true" />
-                <span>Upload screenshot</span>
+                <span>{t.submission.tab_upload}</span>
               </button>
             </div>
 
@@ -159,7 +165,7 @@ export function SubmissionCard() {
                 className="text-xs text-muted-foreground hover:text-terracotta inline-flex items-center gap-1 cursor-pointer transition-colors py-1 px-2 rounded-md hover:bg-neutral-100"
               >
                 <Clipboard className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>Paste from clipboard</span>
+                <span>{t.submission.action_paste}</span>
               </button>
             </div>
           </div>
@@ -168,7 +174,7 @@ export function SubmissionCard() {
             {/* Large Textarea */}
             <div className="relative">
               <label htmlFor="landing-offer-text" className="sr-only">
-                Offer message content
+                {t.submission.title}
               </label>
               <textarea
                 id="landing-offer-text"
@@ -178,17 +184,17 @@ export function SubmissionCard() {
                   setText(e.target.value);
                   if (error) setError(null);
                 }}
-                placeholder="Paste the complete offer message, email text, WhatsApp forward, or onboarding communication here (minimum 25 characters)..."
+                placeholder={t.submission.placeholder}
                 className="w-full bg-surface border border-border rounded-xl p-4 text-sm sm:text-base text-foreground placeholder:text-muted-subtle focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta resize-y transition-colors leading-relaxed"
               />
 
               {/* Character Counter at bottom left */}
               <div className="mt-2 flex items-center justify-between text-xs text-muted-subtle select-none">
                 <span className={text.length >= 25 ? "text-foreground font-medium" : "text-muted-subtle"}>
-                  {text.length} characters {text.length < 25 && "(min 25)"}
+                  {text.length} {t.submission.characters} {text.length < 25 && t.submission.min_chars}
                 </span>
-                {selectedScenario && (
-                  <span className="text-terracotta font-medium">Scenario active</span>
+                {selectedScenarioId && (
+                  <span className="text-terracotta font-medium">{t.submission.scenario_active}</span>
                 )}
               </div>
             </div>
@@ -204,14 +210,14 @@ export function SubmissionCard() {
             {/* Test Scenarios Section */}
             <div className="pt-2 border-t border-border space-y-2.5">
               <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-subtle block">
-                OR TEST WITH REALISTIC SCENARIOS:
+                {t.submission.scenario_eyebrow}
               </span>
               <div className="flex flex-wrap gap-2.5">
-                {SCENARIOS.map((scenario) => {
-                  const isSelected = selectedScenario === scenario.name;
+                {scenarios.map((scenario) => {
+                  const isSelected = selectedScenarioId === scenario.id;
                   return (
                     <button
-                      key={scenario.name}
+                      key={scenario.id}
                       type="button"
                       onClick={() => handleSelectScenario(scenario)}
                       className={`px-3.5 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-colors shadow-xs ${
@@ -237,16 +243,16 @@ export function SubmissionCard() {
                 {analyzeMutation.isPending ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-                    <span>Analyzing offer...</span>
+                    <span>{t.submission.analyzing_btn}</span>
                   </>
                 ) : (
-                  <span>Check offer</span>
+                  <span>{t.submission.submit_btn}</span>
                 )}
               </button>
 
               <div className="flex items-center gap-2 text-xs text-muted-subtle">
                 <Shield className="w-3.5 h-3.5 text-muted-subtle shrink-0" aria-hidden="true" />
-                <span>Instant local check</span>
+                <span>{t.submission.instant_check}</span>
               </div>
             </div>
           </form>

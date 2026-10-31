@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ExternalLink } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 export function Hero() {
+  const { t } = useLanguage();
+
   const scrollToSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
     const target = document.getElementById("submit-offer");
@@ -13,19 +16,19 @@ export function Hero() {
   const portals = [
     {
       num: "01",
-      name: "PM Internship Scheme (Ministry of Corporate Affairs)",
+      name: t.hero.portal1_name,
       url: "https://pminternship.mca.gov.in",
       displayUrl: "pminternship.mca.gov.in",
     },
     {
       num: "02",
-      name: "National Career Service (Ministry of Labour)",
+      name: t.hero.portal2_name,
       url: "https://ncs.gov.in",
       displayUrl: "ncs.gov.in",
     },
     {
       num: "03",
-      name: "National Scholarship Portal (NSP)",
+      name: t.hero.portal3_name,
       url: "https://scholarships.gov.in",
       displayUrl: "scholarships.gov.in",
     },
@@ -40,18 +43,18 @@ export function Hero() {
             <div>
               {/* Eyebrow */}
               <div className="inline-block text-xs font-semibold uppercase tracking-[0.08em] text-muted-subtle mb-3 select-none">
-                INDEPENDENT VERIFICATION FOR STUDENTS
+                {t.hero.eyebrow}
               </div>
 
               {/* Main Heading */}
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] text-foreground tracking-tight">
-                Know it's real <br />
-                <span className="text-terracotta">before you reply.</span>
+                {t.hero.title_p1} <br />
+                <span className="text-terracotta">{t.hero.title_accent}</span>
               </h1>
 
               {/* Subtitle */}
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mt-5 max-w-xl">
-                A free tool that helps Indian students check job, internship and training offers before sharing money or documents.
+                {t.hero.subtitle}
               </p>
 
               {/* Action Buttons */}
@@ -61,7 +64,7 @@ export function Hero() {
                   onClick={scrollToSubmit}
                   className="bg-primary text-primary-foreground hover:bg-neutral-800 rounded-lg px-6 py-3 font-medium text-sm sm:text-base transition-colors shadow-xs inline-flex items-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta"
                 >
-                  <span>Check an offer</span>
+                  <span>{t.hero.cta_check}</span>
                   <ArrowRight className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
                 </a>
 
@@ -69,7 +72,7 @@ export function Hero() {
                   to="/results/local"
                   className="bg-surface border border-border-pill text-foreground hover:bg-neutral-50 rounded-lg px-6 py-3 font-medium text-sm sm:text-base transition-colors shadow-xs inline-flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta"
                 >
-                  <span>See a sample report</span>
+                  <span>{t.hero.cta_sample}</span>
                 </Link>
               </div>
             </div>
@@ -78,37 +81,37 @@ export function Hero() {
             <div className="border-t border-border pt-6 mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div className="space-y-1">
                 <span className="font-serif text-lg font-normal text-terracotta block">
-                  01
+                  {t.hero.feature1_num}
                 </span>
                 <span className="text-sm font-semibold text-foreground block">
-                  Don't pay to start
+                  {t.hero.feature1_title}
                 </span>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Real internships never ask for fees, deposits, or kit charges.
+                  {t.hero.feature1_desc}
                 </p>
               </div>
 
               <div className="space-y-1">
                 <span className="font-serif text-lg font-normal text-terracotta block">
-                  02
+                  {t.hero.feature2_num}
                 </span>
                 <span className="text-sm font-semibold text-foreground block">
-                  Check the sender
+                  {t.hero.feature2_title}
                 </span>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Verify free email IDs, lookalike links, and official corporate CINs.
+                  {t.hero.feature2_desc}
                 </p>
               </div>
 
               <div className="space-y-1">
                 <span className="font-serif text-lg font-normal text-terracotta block">
-                  03
+                  {t.hero.feature3_num}
                 </span>
                 <span className="text-sm font-semibold text-foreground block">
-                  Verify, then reply
+                  {t.hero.feature3_title}
                 </span>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Follow 8 verified student safety rules before accepting terms.
+                  {t.hero.feature3_desc}
                 </p>
               </div>
             </div>
@@ -120,10 +123,10 @@ export function Hero() {
               <div className="space-y-6">
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-subtle block mb-1">
-                    VERIFIED CHANNELS
+                    {t.hero.portals_eyebrow}
                   </span>
                   <h2 className="font-serif text-2xl font-normal text-foreground leading-snug">
-                    Official portals are always 100% free.
+                    {t.hero.portals_title}
                   </h2>
                 </div>
 
@@ -157,7 +160,7 @@ export function Hero() {
               <div className="border-t border-border pt-4 mt-6">
                 <p className="text-xs text-muted-subtle leading-relaxed flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-success shrink-0" aria-hidden="true" />
-                  <span>Reference: Official Government Portals • Zero Application Fees</span>
+                  <span>{t.hero.portals_footer}</span>
                 </p>
               </div>
             </div>

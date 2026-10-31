@@ -1,22 +1,26 @@
+import { useLanguage } from "../../context/LanguageContext";
+
 export function AuditSteps() {
+  const { t } = useLanguage();
+
   const steps = [
     {
-      stepNumber: "01",
-      title: "Input & Ingestion",
-      summary: "Text paste, messaging apps (WhatsApp, Telegram, LinkedIn), or OCR screenshot upload.",
-      details: "Text is extracted safely inside your browser session. Contact identifiers and sensitive identity markers are redacted before contextual evaluation.",
+      stepNumber: t.audit.step1_num,
+      title: t.audit.step1_title,
+      summary: t.audit.step1_summary,
+      details: t.audit.step1_details,
     },
     {
-      stepNumber: "02",
-      title: "Pattern & Domain Verification",
-      summary: "Cross-checking upfront fees, free email domains, and official communication standards.",
-      details: "An 8-point deterministic rule engine inspects suspicious keywords, lookalike URLs (e.g. tcs-careers.org vs tcs.com), and coercive 2-hour deadline tactics.",
+      stepNumber: t.audit.step2_num,
+      title: t.audit.step2_title,
+      summary: t.audit.step2_summary,
+      details: t.audit.step2_details,
     },
     {
-      stepNumber: "03",
-      title: "Risk Assessment & Next Steps",
-      summary: "Risk classification, cited evidence phrases, and reporting options.",
-      details: "Receive a transparent verdict citing exact flagged quotes, verified MCA and AICTE registry links, and direct escalation to the 1930 Cyber Helpline.",
+      stepNumber: t.audit.step3_num,
+      title: t.audit.step3_title,
+      summary: t.audit.step3_summary,
+      details: t.audit.step3_details,
     },
   ];
 
@@ -26,13 +30,13 @@ export function AuditSteps() {
         {/* Section Header */}
         <div className="max-w-3xl">
           <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-subtle block mb-2 select-none">
-            AUDIT METHODOLOGY
+            {t.audit.eyebrow}
           </span>
           <h2 className="font-serif text-3xl sm:text-4xl font-normal text-foreground leading-[1.2] tracking-tight">
-            How Jaanch audits an offer in three steps.
+            {t.audit.title}
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mt-2.5">
-            A transparent rule-based evaluation model calibrated to common student recruitment scam vectors and verified hiring standards.
+            {t.audit.subtitle}
           </p>
         </div>
 
@@ -64,7 +68,7 @@ export function AuditSteps() {
 
               <div className="pt-6 mt-6 border-t border-border">
                 <span className="text-xs font-semibold uppercase tracking-[0.08em] text-terracotta">
-                  PHASE {step.stepNumber}
+                  {t.audit.phase_prefix} {step.stepNumber}
                 </span>
               </div>
             </div>
