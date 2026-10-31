@@ -59,3 +59,4 @@ describe("i18n Multi-Language System", () => {
     expect(kn.footer.select_lang).toBe("ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ:");
   });
 });
+
