@@ -16,7 +16,7 @@ export function Navbar() {
   const isHome = location.pathname === "/";
 
   return (
-    <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-xs border-b border-border transition-colors duration-150">
+    <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border transition-colors duration-150">
       <div className="max-w-[1280px] mx-auto px-6 sm:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Left Section: Brand Logo & Sub-brand label */}

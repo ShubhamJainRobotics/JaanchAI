@@ -32,7 +32,7 @@ export function Hero() {
   ];
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 border-b border-border">
+    <section className="pt-20 pb-12 sm:pt-24 sm:pb-16 lg:pt-24 lg:pb-20 border-b border-border">
       <div className="max-w-[1280px] mx-auto px-6 sm:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
           {/* Left Column: Hero Copy */}
